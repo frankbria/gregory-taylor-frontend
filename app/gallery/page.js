@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import axios from 'axios'
+import Link from 'next/link'
 
 export default function GalleryPage() {
   const [photos, setPhotos] = useState([])
@@ -28,10 +29,10 @@ export default function GalleryPage() {
       <header className="text-center py-10 border-b border-gray-800">
         <h1 className="text-4xl font-serif tracking-wide">GREG TAYLOR PHOTOGRAPHY</h1>
         <nav className="mt-4 space-x-6 text-sm uppercase">
-          <a href="/" className="hover:underline">Home</a>
-          <a href="/gallery" className="hover:underline">Gallery</a>
-          <a href="/about" className="hover:underline">About</a>
-          <a href="/contact" className="hover:underline">Contact</a>
+          <Link href="/" className="hover:underline">Home</Link>
+          <Link href="/gallery" className="hover:underline">Gallery</Link>
+          <Link href="/about" className="hover:underline">About</Link>
+          <Link href="/contact" className="hover:underline">Contact</Link>
         </nav>
       </header>
 
