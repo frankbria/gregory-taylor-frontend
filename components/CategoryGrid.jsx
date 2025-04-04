@@ -31,16 +31,17 @@ export default function CategoryGrid() {
           href={`/gallery/${category.slug}`}
           className="block group rounded overflow-hidden shadow hover:shadow-lg transition bg-white"
         >
-          <div className="relative aspect-square">
+          <div className="relative w-full h-[240px]">
             {category.featuredImage ? (
               <Image
                 src={category.featuredImage}
                 alt={category.name}
-                fill
-                className="object-cover transition group-hover:scale-105"
+                width={360}
+                height={240}
+                className="object-cover w-full h-full transition group-hover:scale-105"
               />
             ) : (
-              <div className="absolute inset-0 flex items-center justify-center bg-gray-200 text-gray-500">
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-200 text-gray-500 text-sm">
                 No Image
               </div>
             )}
