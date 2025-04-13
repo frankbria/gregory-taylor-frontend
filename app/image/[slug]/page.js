@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
-import Image from 'next/image'
 import Link from 'next/link'
 import { toast } from 'react-hot-toast'
 import { RoomPreviews } from '@/components/RoomPreviews'
 import { getPhotoBySlug, getSizes, getFrames, getFormats } from '@/lib/api'
+import CloudinaryImage from '@/components/CloudinaryImage'
 
 export default function ImageDetailPage() {
   const { slug } = useParams()
@@ -90,13 +90,18 @@ export default function ImageDetailPage() {
     <div className="max-w-6xl mx-auto px-6 py-10 space-y-10 text-white">
       {/* Hero Image */}
       <div className="w-full aspect-[3/2] relative overflow-hidden rounded shadow">
-        <Image
-          src={photo.imageUrl}
-          alt={photo.title}
-          fill
-          className="object-cover"
-          sizes="(max-width: 768px) 100vw, 75vw"
-        />
+        {photo.imageUrl ? (
+          <CloudinaryImage
+            src={photo.imageUrl}
+            alt={photo.title}
+            className="object-cover"
+            fullLength={photo.fullLength}
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-200 text-gray-500 text-sm">
+            No Image
+          </div>
+        )}
       </div>
 
       {/* Title & Description */}
