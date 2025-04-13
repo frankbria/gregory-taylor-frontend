@@ -6,6 +6,7 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Image from 'next/image'
+import Link from 'next/link'
 import { toast } from 'react-hot-toast'
 import { getPhotosByCategory } from '@/lib/api'
 
@@ -40,7 +41,8 @@ export default function CategoryGalleryPage() {
           const isFullLength = photo.fullLength && index % 3 === 0
 
           return (
-            <div
+            <Link
+              href={`/image/${photo.slug}`}
               key={photo._id}
               className={`group relative overflow-hidden rounded shadow hover:shadow-lg transition bg-white ${
                 isFullLength ? 'md:col-span-3' : ''
@@ -58,7 +60,7 @@ export default function CategoryGalleryPage() {
               <div className="text-center text-sm font-serif tracking-wide uppercase text-gray-600 py-2">
                 {photo.title}
               </div>
-            </div>
+            </Link>
           )
         })}
       </div>
