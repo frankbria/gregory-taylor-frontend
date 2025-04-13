@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useRef } from "react"
 import Image from "next/image"
 
 const ROOM_TEMPLATES = [
@@ -36,21 +36,56 @@ function buildPreviewUrl(photoId, templateId, overlay) {
 
 export function RoomPreviews({ photoPublicId }) {
   const [selectedIndex, setSelectedIndex] = useState(0)
+  const [previewError, setPreviewError] = useState(false)
+  const [thumbnailErrors, setThumbnailErrors] = useState({})
+  const errorCountRef = useRef(0)
 
   const selectedTemplate = ROOM_TEMPLATES[selectedIndex]
   const mainImageUrl = buildPreviewUrl(photoPublicId, selectedTemplate.id, selectedTemplate.overlay)
+
+  // Handle image error by showing the original photo
+  const handleImageError = () => {
+    setPreviewError(true)
+  }
+
+  // Handle thumbnail error with a fallback mechanism
+  const handleThumbnailError = (templateId) => {
+    // Only set error for this template if not already set
+    if (!thumbnailErrors[templateId]) {
+      setThumbnailErrors(prev => ({
+        ...prev,
+        [templateId]: true
+      }))
+    }
+  }
 
   return (
     <div className="flex flex-col md:flex-row items-start gap-6 mt-6 relative">
       {/* Main preview */}
       <div className="relative overflow-hidden rounded-lg shadow-md w-full md:w-3/4 max-w-4xl group">
-        <Image
-          src={mainImageUrl}
-          alt={`Room preview - ${selectedTemplate.label}`}
-          width={1000}
-          height={700}
-          className="object-cover w-full h-auto transition-transform duration-300 group-hover:scale-105"
-        />
+        {previewError ? (
+          // If preview fails, show the original photo
+          <div className="relative w-full h-[500px]">
+            <Image
+              src={`https://res.cloudinary.com/${cloudName}/image/upload/${photoPublicId}`}
+              alt="Original photo"
+              fill
+              className="object-contain"
+            />
+            <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white p-4 text-center">
+              <p>Preview not available.</p>
+            </div>
+          </div>
+        ) : (
+          <Image
+            src={mainImageUrl}
+            alt={`Room preview - ${selectedTemplate.label}`}
+            width={1000}
+            height={700}
+            className="object-cover w-full h-auto transition-transform duration-300 group-hover:scale-105"
+            onError={handleImageError}
+          />
+        )}
       </div>
 
       {/* Thumbnails */}
@@ -58,6 +93,7 @@ export function RoomPreviews({ photoPublicId }) {
         {ROOM_TEMPLATES.map((template, index) => {
           const thumbUrl = buildPreviewUrl(photoPublicId, template.id, template.overlay)
           const isSelected = index === selectedIndex
+          const hasError = thumbnailErrors[template.id]
 
           return (
             <div
@@ -67,13 +103,21 @@ export function RoomPreviews({ photoPublicId }) {
                 isSelected ? "border-blue-600 shadow-lg" : "border-transparent opacity-80 hover:opacity-100"
               }`}
             >
-              <Image
-                src={thumbUrl}
-                alt={`Thumbnail - ${template.label}`}
-                width={100}
-                height={75}
-                className="object-cover"
-              />
+              {hasError ? (
+                // Show a placeholder if there was an error
+                <div className="w-[100px] h-[75px] bg-gray-200 flex items-center justify-center text-xs text-gray-500">
+                  {template.label}
+                </div>
+              ) : (
+                <Image
+                  src={thumbUrl}
+                  alt={`Thumbnail - ${template.label}`}
+                  width={100}
+                  height={75}
+                  className="object-cover"
+                  onError={() => handleThumbnailError(template.id)}
+                />
+              )}
             </div>
           )
         })}
