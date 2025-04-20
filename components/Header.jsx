@@ -2,8 +2,11 @@
 
 import Link from 'next/link'
 import { FaShoppingCart } from 'react-icons/fa'
+import { useCart } from '@/lib/CartContext'
 
 export default function Header() {
+  const { cartCount } = useCart()
+
   return (
     <header className="bg-[#0a0000] text-white">
       {/* Site Title */}
@@ -23,7 +26,7 @@ export default function Header() {
           <div className="absolute right-60 flex items-center space-x-1">
             <Link href="/cart" className="flex items-center hover:text-blue-400 transition">
               <FaShoppingCart />
-              <span className="ml-1">0</span>
+              <span className="ml-1">{cartCount}</span>
             </Link>
           </div>
         </div>

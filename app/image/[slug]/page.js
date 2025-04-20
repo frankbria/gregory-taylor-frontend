@@ -1,15 +1,18 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { toast } from 'react-hot-toast'
 import { RoomPreviews } from '@/components/RoomPreviews'
 import { getPhotoBySlug, getSizes, getFrames, getFormats } from '@/lib/api'
 import CloudinaryImage from '@/components/CloudinaryImage'
+import { useCart } from '@/lib/CartContext'
 
 export default function ImageDetailPage() {
   const { slug } = useParams()
+  const router = useRouter()
+  const { addToCart } = useCart()
   const [photo, setPhoto] = useState(null)
   const [sizes, setSizes] = useState([])
   const [frames, setFrames] = useState([])
@@ -33,15 +36,33 @@ export default function ImageDetailPage() {
 
         // Fetch sizes data
         const sizesData = await getSizes()
-        setSizes(sizesData)
+        // Sort sizes by price (lowest to highest)
+        const sortedSizes = [...sizesData].sort((a, b) => a.price - b.price)
+        setSizes(sortedSizes)
+        // Set default to lowest price size
+        if (sortedSizes.length > 0) {
+          setSelectedSize(sortedSizes[0])
+        }
 
         // Fetch frames data
         const framesData = await getFrames()
-        setFrames(framesData)
+        // Sort frames by price (lowest to highest)
+        const sortedFrames = [...framesData].sort((a, b) => a.price - b.price)
+        setFrames(sortedFrames)
+        // Set default to lowest price frame
+        if (sortedFrames.length > 0) {
+          setSelectedFrame(sortedFrames[0])
+        }
 
         // Fetch formats data
         const formatsData = await getFormats()
-        setFormats(formatsData)
+        // Sort formats by price (lowest to highest)
+        const sortedFormats = [...formatsData].sort((a, b) => a.price - b.price)
+        setFormats(sortedFormats)
+        // Set default to lowest price format
+        if (sortedFormats.length > 0) {
+          setSelectedFormat(sortedFormats[0])
+        }
 
         setLoading(false)
       } catch (err) {
@@ -60,6 +81,37 @@ export default function ImageDetailPage() {
     if (selectedFrame) total += selectedFrame.price
     if (selectedFormat) total += selectedFormat.price
     return total
+  }
+
+  const handleAddToCart = () => {
+    if (!selectedSize) {
+      return toast.error('Please select a size')
+    }
+    if (!selectedFormat) {
+      return toast.error('Please select a format')
+    }
+
+    // Create a unique ID for the cart item
+    const itemId = `${photo._id}-${selectedSize._id}-${selectedFrame?._id || 'no-frame'}-${selectedFormat._id}`
+    
+    // Create the cart item
+    const cartItem = {
+      id: itemId,
+      photoId: photo._id,
+      title: photo.title,
+      imageUrl: photo.imageUrl,
+      price: calculateTotalPrice(),
+      size: `${selectedSize.width}" × ${selectedSize.height}"`,
+      frame: selectedFrame ? selectedFrame.style : 'No Frame',
+      format: selectedFormat.name,
+      quantity: 1
+    }
+
+    // Add to cart
+    addToCart(cartItem)
+    toast.success('Added to cart!')
+    // Redirect to cart page
+    router.push('/cart')
   }
 
   if (loading) {
@@ -153,7 +205,6 @@ export default function ImageDetailPage() {
                 }}
                 className="w-full border p-2 rounded text-white bg-gray-800"
               >
-                <option value="">Select a size</option>
                 {sizes.map(size => (
                   <option key={size._id} value={size._id}>
                     {size.width}&quot; × {size.height}&quot; - ${size.price.toFixed(2)}
@@ -173,7 +224,6 @@ export default function ImageDetailPage() {
                 }}
                 className="w-full border p-2 rounded text-white bg-gray-800"
               >
-                <option value="">Select a format</option>
                 {formats.map(format => (
                   <option key={format._id} value={format._id}>
                     {format.name} - ${format.price.toFixed(2)}
@@ -193,7 +243,6 @@ export default function ImageDetailPage() {
                 }}
                 className="w-full border p-2 rounded text-white bg-gray-800"
               >
-                <option value="">No Frame</option>
                 {frames.map(frame => (
                   <option key={frame._id} value={frame._id}>
                     {frame.style} - ${frame.price.toFixed(2)}
@@ -203,16 +252,7 @@ export default function ImageDetailPage() {
             </div>
 
             <button
-              onClick={() => {
-                if (!selectedSize) {
-                  return toast.error('Please select a size')
-                }
-                if (!selectedFormat) {
-                  return toast.error('Please select a format')
-                }
-                // TODO: Implement add to cart functionality
-                toast.success('Added to cart!')
-              }}
+              onClick={handleAddToCart}
               className="mt-4 w-full bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700 transition"
             >
               Add to Cart
