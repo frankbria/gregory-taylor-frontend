@@ -77,9 +77,15 @@ export default function ImageDetailPage() {
 
   const calculateTotalPrice = () => {
     let total = 0
-    if (selectedSize) total += selectedSize.price
-    if (selectedFrame) total += selectedFrame.price
-    if (selectedFormat) total += selectedFormat.price
+    if (selectedSize && typeof selectedSize.price === 'number' && !isNaN(selectedSize.price)) {
+      total += selectedSize.price
+    }
+    if (selectedFrame && typeof selectedFrame.price === 'number' && !isNaN(selectedFrame.price)) {
+      total += selectedFrame.price
+    }
+    if (selectedFormat && typeof selectedFormat.price === 'number' && !isNaN(selectedFormat.price)) {
+      total += selectedFormat.price
+    }
     return total
   }
 
