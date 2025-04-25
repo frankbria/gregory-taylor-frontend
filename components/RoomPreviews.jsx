@@ -5,7 +5,13 @@ const ROOM_TEMPLATES = [
   {
     id: "room_1",
     label: "Living Room",
-    overlay: { x: 100, y: 100, w: 500, h: 300 }
+    overlay: {
+      x: 51,
+      y: 240,
+      w: 669,
+      h: 400
+    },
+    t_name: "t_living-room-1"
   },
   {
     id: "room_2",
@@ -27,12 +33,15 @@ const ROOM_TEMPLATES = [
 // Use environment variable for Cloudinary cloud name
 const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
 
-function buildPreviewUrl(photoId, templateId, overlay) {
-  const { x, y, w, h } = overlay
-  return `https://res.cloudinary.com/${cloudName}/image/upload/` +
-         `l_${photoId},w_${w},h_${h},x_${x},y_${y},c_fit/` +
-         `${templateId}.png`
+function buildPreviewUrl(photoId, templateId, overlay, t_name) {
+//  return `https://res.cloudinary.com/${cloudName}/image/upload/` +
+//         `c_scale,w_${overlay.w}/l_${templateId}/fl_layer_apply,x_${overlay.x},y_${overlay.y}/` +
+//         `${photoId}`;
+    return `https://res.cloudinary.com/${cloudName}/image/upload/` +
+        `${t_name}/${photoId}`;
 }
+
+
 
 export function RoomPreviews({ photoPublicId }) {
   const [selectedIndex, setSelectedIndex] = useState(0)
@@ -41,7 +50,7 @@ export function RoomPreviews({ photoPublicId }) {
   const errorCountRef = useRef(0)
 
   const selectedTemplate = ROOM_TEMPLATES[selectedIndex]
-  const mainImageUrl = buildPreviewUrl(photoPublicId, selectedTemplate.id, selectedTemplate.overlay)
+  const mainImageUrl = buildPreviewUrl(photoPublicId, selectedTemplate.id, selectedTemplate.overlay, selectedTemplate.t_name)
 
   // Handle image error by showing the original photo
   const handleImageError = () => {
@@ -91,7 +100,7 @@ export function RoomPreviews({ photoPublicId }) {
       {/* Thumbnails */}
       <div className="flex md:flex-col gap-3 mt-4 md:mt-0 md:absolute md:top-0 md:right-0 p-2 bg-white bg-opacity-80 rounded-md shadow">
         {ROOM_TEMPLATES.map((template, index) => {
-          const thumbUrl = buildPreviewUrl(photoPublicId, template.id, template.overlay)
+          const thumbUrl = buildPreviewUrl(photoPublicId, template.id, template.overlay, template.t_name)
           const isSelected = index === selectedIndex
           const hasError = thumbnailErrors[template.id]
 
