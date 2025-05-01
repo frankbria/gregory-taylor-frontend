@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Greg Taylor Photography",
+  title: "Gregory Taylor Photography",
   description: "Fine art landscape photography from the Southwest and beyond.",
 };
 
