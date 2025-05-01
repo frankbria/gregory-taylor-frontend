@@ -147,12 +147,12 @@ export default function ImageDetailPage() {
   return (
     <div className="max-w-6xl mx-auto px-6 py-10 space-y-10 text-white">
       {/* Hero Image */}
-      <div className="w-full aspect-[3/2] relative overflow-hidden rounded shadow">
+      <div className="w-full relative overflow-hidden rounded shadow">
         {photo.imageUrl ? (
           <CloudinaryImage
             src={photo.imageUrl}
             alt={photo.title}
-            className="object-cover"
+            className=""
             fullLength={photo.fullLength}
           />
         ) : (

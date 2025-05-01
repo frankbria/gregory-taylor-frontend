@@ -30,7 +30,7 @@ export default function CategoryGalleryPage() {
             const isFullLength = photo.fullLength
             const optimized = await getOptimizedImageUrl(photo.imageUrl, {
               width: isFullLength ? 1200 : 800,
-              crop: 'fill',
+              crop: isFullLength ? 'fit' : 'fill',
             })
             return [photo._id, optimized]
           } catch (err) {
@@ -70,12 +70,12 @@ export default function CategoryGalleryPage() {
                 isFullLength ? 'md:col-span-3' : ''
               }`}
             >
-              <div className="relative w-full aspect-[3/2] overflow-hidden">
+              <div className={`relative w-full overflow-hidden`}>
                 {optimizedImage ? (
                   <CloudinaryImage
                     src={optimizedImage}
                     alt={photo.title}
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="group-hover:scale-105 transition-transform duration-300"
                     fullLength={photo.fullLength}
                   />
                 ) : (

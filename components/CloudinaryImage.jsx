@@ -19,7 +19,7 @@ export default function CloudinaryImage({
     ? src.replace('/upload/', '/upload/e_blur:1000,q_1/')
     : undefined
 
-  // Aspect ratio logic
+  // Improved aspect ratio logic for panoramic images
   const aspectRatio = fullLength ? (5 / 1) : (3 / 2) // 5:1 panoramic or 3:2 standard
   const paddingTop = 100 / aspectRatio // percent-based for CSS trick
 
@@ -32,7 +32,7 @@ export default function CloudinaryImage({
         loader={isCloudinary ? cloudinaryLoader : undefined}
         placeholder={blurDataURL ? 'blur' : undefined}
         blurDataURL={blurDataURL}
-        className={`object-contain ${className}`}
+        className={`object-cover ${fullLength ? 'object-contain' : 'object-cover'} ${className}`}
         {...rest}
       />
     </div>
