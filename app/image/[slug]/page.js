@@ -105,7 +105,7 @@ export default function ImageDetailPage() {
       id: itemId,
       photoId: photo._id,
       title: photo.title,
-      imageUrl: photo.imageUrl,
+      displayUrl: photo.displayUrl,
       price: calculateTotalPrice(),
       size: `${selectedSize.width}" × ${selectedSize.height}"`,
       frame: selectedFrame ? selectedFrame.style : 'No Frame',
@@ -148,9 +148,9 @@ export default function ImageDetailPage() {
     <div className="max-w-6xl mx-auto px-6 py-10 space-y-10 text-white">
       {/* Hero Image */}
       <div className="w-full relative overflow-hidden rounded shadow">
-        {photo.imageUrl ? (
+        {photo.displayUrl ? (
           <CloudinaryImage
-            src={photo.imageUrl}
+            src={photo.displayUrl}
             alt={photo.title}
             className=""
             fullLength={photo.fullLength}
