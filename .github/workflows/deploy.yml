@@ -99,7 +99,9 @@ jobs:
       - name: Install dependencies and restart PM2
         run: |
           ssh -i ~/.ssh/deploy_key -p ${{ secrets.VPS_PORT }} \
-            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} 'bash -l -c "
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} 'bash -c "
+              export NVM_DIR=\"\$HOME/.nvm\"
+              [ -s \"\$NVM_DIR/nvm.sh\" ] && . \"\$NVM_DIR/nvm.sh\"
               cd ${{ vars.DEPLOY_PATH }}
               npm ci --omit=dev
               pm2 reload ecosystem.config.cjs --env production || pm2 start ecosystem.config.cjs --env production
