@@ -3,7 +3,14 @@
 import Stripe from 'stripe';
 import { NextResponse } from 'next/server';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+// Lazy initialization to avoid build-time errors when STRIPE_SECRET_KEY is not available
+let stripe = null;
+function getStripe() {
+  if (!stripe) {
+    stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+  }
+  return stripe;
+}
 
 export async function POST(request) {
   try {
@@ -19,7 +26,7 @@ export async function POST(request) {
     }));
 
     const origin = request.headers.get('origin') || '';
-    const session = await stripe.checkout.sessions.create({
+    const session = await getStripe().checkout.sessions.create({
       payment_method_types: ['card'],
       line_items,
       mode: 'payment',

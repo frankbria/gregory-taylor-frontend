@@ -2,11 +2,11 @@
 
 'use client'
 
-import { useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
 import { useCart } from '@/lib/CartContext'
 import { useSearchParams, useRouter } from 'next/navigation'
 
-export default function CartSuccessPage() {
+function CartSuccessContent() {
   const { clearCart } = useCart()
   const searchParams = useSearchParams()
   const sessionId = searchParams.get('session_id')
@@ -30,5 +30,17 @@ export default function CartSuccessPage() {
         Continue Shopping
       </button>
     </div>
+  )
+}
+
+export default function CartSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="max-w-2xl mx-auto px-4 py-16 text-center">
+        <p>Loading...</p>
+      </div>
+    }>
+      <CartSuccessContent />
+    </Suspense>
   )
 }
