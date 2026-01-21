@@ -84,7 +84,7 @@ export default function PhotoSlider() {
             fill
             priority={index === 0}
             sizes="100vw"
-            className="object-cover"
+            className={photo.aspectRatio > 2.5 ? 'object-contain' : 'object-cover'}
           />
           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 text-white">
             <h2 className="text-xl font-semibold mb-1">{photo.title}</h2>

@@ -154,6 +154,9 @@ export default function ImageDetailPage() {
             alt={photo.title}
             className=""
             fullLength={photo.fullLength}
+            aspectRatio={photo.aspectRatio}
+            width={photo.width}
+            height={photo.height}
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center bg-gray-200 text-gray-500 text-sm">

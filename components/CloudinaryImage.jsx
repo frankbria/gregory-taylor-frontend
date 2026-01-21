@@ -7,6 +7,10 @@ export default function CloudinaryImage({
   src,
   alt,
   fullLength = false,
+  aspectRatio: aspectRatioProp,
+  width,
+  height,
+  objectFit,
   className = '',
   ...rest
 }) {
@@ -14,14 +18,43 @@ export default function CloudinaryImage({
 
   const isCloudinary = typeof src === 'string' && src.includes('res.cloudinary.com')
 
-  // Generate blurred placeholder
+  // Generate blurred placeholder with width parameter for better performance
   const blurDataURL = isCloudinary
-    ? src.replace('/upload/', '/upload/e_blur:1000,q_1/')
+    ? src.replace('/upload/', '/upload/e_blur:1000,q_1,w_50/')
     : undefined
 
-  // Improved aspect ratio logic for panoramic images
-  const aspectRatio = fullLength ? (5 / 1) : (3 / 2) // 5:1 panoramic or 3:2 standard
-  const paddingTop = 100 / aspectRatio // percent-based for CSS trick
+  // Calculate aspect ratio with priority order:
+  // 1. Use aspectRatio prop if provided
+  // 2. Calculate from width and height if both provided
+  // 3. Fall back to fullLength (5:1) if true
+  // 4. Default to 3:2 for backward compatibility
+  let calculatedRatio
+  if (aspectRatioProp !== undefined) {
+    calculatedRatio = aspectRatioProp
+  } else if (width !== undefined && height !== undefined) {
+    calculatedRatio = width / height
+  } else if (fullLength) {
+    calculatedRatio = 5 / 1
+  } else {
+    calculatedRatio = 3 / 2
+  }
+
+  const paddingTop = 100 / calculatedRatio // percent-based for CSS trick
+
+  // Determine object-fit:
+  // - If objectFit prop is explicitly provided, use it
+  // - For very wide images (aspectRatio > 2.5), use 'contain' to prevent cropping
+  // - Otherwise use 'cover' as default
+  let effectiveObjectFit
+  if (objectFit !== undefined) {
+    effectiveObjectFit = objectFit
+  } else if (calculatedRatio > 2.5) {
+    effectiveObjectFit = 'contain'
+  } else {
+    effectiveObjectFit = 'cover'
+  }
+
+  const objectFitClass = effectiveObjectFit === 'contain' ? 'object-contain' : 'object-cover'
 
   return (
     <div className={`relative w-full`} style={{ paddingTop: `${paddingTop}%` }}>
@@ -32,7 +65,7 @@ export default function CloudinaryImage({
         loader={isCloudinary ? cloudinaryLoader : undefined}
         placeholder={blurDataURL ? 'blur' : undefined}
         blurDataURL={blurDataURL}
-        className={`object-cover ${fullLength ? 'object-contain' : 'object-cover'} ${className}`}
+        className={`${objectFitClass} ${className}`}
         {...rest}
       />
     </div>

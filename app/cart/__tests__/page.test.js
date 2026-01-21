@@ -12,12 +12,21 @@ jest.mock('@/lib/api')
 jest.mock('@/lib/stripe')
 jest.mock('react-hot-toast')
 jest.mock('next/link', () => {
-  return ({ children, href }) => <a href={href}>{children}</a>
+  const MockLink = ({ children, href }) => <a href={href}>{children}</a>
+  MockLink.displayName = 'MockLink'
+  return MockLink
 })
+// Track CloudinaryImage props for testing
+let cloudinaryImageCalls = []
+
 jest.mock('@/components/CloudinaryImage', () => {
-  return function CloudinaryImage({ src, alt }) {
-    return <img src={src} alt={alt} />
+  const MockCloudinaryImage = function(props) {
+    cloudinaryImageCalls.push(props)
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img src={props.src} alt={props.alt} data-testid="cloudinary-image" />
   }
+  MockCloudinaryImage.displayName = 'MockCloudinaryImage'
+  return MockCloudinaryImage
 })
 
 describe('CartPage Component', () => {
@@ -42,6 +51,7 @@ describe('CartPage Component', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
+    cloudinaryImageCalls = []
 
     useCart.mockReturnValue({
       cart: [],
@@ -442,6 +452,105 @@ describe('CartPage Component', () => {
         const prices = screen.getAllByText('$0.00')
         expect(prices.length).toBeGreaterThan(0)
       }, { timeout: 3000 })
+    })
+  })
+
+  describe('CloudinaryImage Dimension Props', () => {
+    it('should pass aspectRatio prop when cart item has aspectRatio', async () => {
+      const cartWithAspectRatio = [
+        {
+          id: 'item1',
+          title: 'Photo with aspect ratio',
+          imageUrl: 'https://example.com/photo.jpg',
+          price: 50,
+          quantity: 1,
+          aspectRatio: 16/9
+        }
+      ]
+
+      useCart.mockReturnValue({
+        cart: cartWithAspectRatio,
+        removeFromCart: mockRemoveFromCart,
+        updateQuantity: mockUpdateQuantity,
+        clearCart: mockClearCart
+      })
+
+      render(<CartPage />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Photo with aspect ratio')).toBeInTheDocument()
+      })
+
+      await waitFor(() => {
+        const lastCall = cloudinaryImageCalls[cloudinaryImageCalls.length - 1]
+        expect(lastCall.aspectRatio).toBe(16/9)
+      })
+    })
+
+    it('should pass width and height props when cart item has dimensions', async () => {
+      const cartWithDimensions = [
+        {
+          id: 'item1',
+          title: 'Photo with dimensions',
+          imageUrl: 'https://example.com/photo.jpg',
+          price: 50,
+          quantity: 1,
+          width: 1920,
+          height: 1080
+        }
+      ]
+
+      useCart.mockReturnValue({
+        cart: cartWithDimensions,
+        removeFromCart: mockRemoveFromCart,
+        updateQuantity: mockUpdateQuantity,
+        clearCart: mockClearCart
+      })
+
+      render(<CartPage />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Photo with dimensions')).toBeInTheDocument()
+      })
+
+      await waitFor(() => {
+        const lastCall = cloudinaryImageCalls[cloudinaryImageCalls.length - 1]
+        expect(lastCall.width).toBe(1920)
+        expect(lastCall.height).toBe(1080)
+      })
+    })
+
+    it('should work without dimension props (graceful degradation)', async () => {
+      const cartWithoutDimensions = [
+        {
+          id: 'item1',
+          title: 'Legacy cart item',
+          imageUrl: 'https://example.com/photo.jpg',
+          price: 50,
+          quantity: 1
+          // No dimension props
+        }
+      ]
+
+      useCart.mockReturnValue({
+        cart: cartWithoutDimensions,
+        removeFromCart: mockRemoveFromCart,
+        updateQuantity: mockUpdateQuantity,
+        clearCart: mockClearCart
+      })
+
+      render(<CartPage />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Legacy cart item')).toBeInTheDocument()
+      })
+
+      await waitFor(() => {
+        const lastCall = cloudinaryImageCalls[cloudinaryImageCalls.length - 1]
+        expect(lastCall.aspectRatio).toBeUndefined()
+        expect(lastCall.width).toBeUndefined()
+        expect(lastCall.height).toBeUndefined()
+      })
     })
   })
 })

@@ -59,7 +59,8 @@ export default function CategoryGalleryPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {photos.map((photo, index) => {
-          const isFullLength = photo.fullLength && index % 3 === 0
+          // Use aspectRatio if available, otherwise fall back to fullLength for wide column span
+          const isWideImage = photo.aspectRatio > 2 || (photo.fullLength && index % 3 === 0)
           const optimizedImage = optimizedImages[photo._id]
 
           return (
@@ -67,7 +68,7 @@ export default function CategoryGalleryPage() {
               href={`/image/${photo.slug}`}
               key={photo._id}
               className={`group relative overflow-hidden rounded shadow hover:shadow-lg transition bg-white ${
-                isFullLength ? 'md:col-span-3' : ''
+                isWideImage ? 'md:col-span-3' : ''
               }`}
             >
               <div className={`relative w-full overflow-hidden`}>
@@ -77,6 +78,9 @@ export default function CategoryGalleryPage() {
                     alt={photo.title}
                     className="group-hover:scale-105 transition-transform duration-300"
                     fullLength={photo.fullLength}
+                    aspectRatio={photo.aspectRatio}
+                    width={photo.width}
+                    height={photo.height}
                   />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center bg-gray-200 text-gray-500 text-sm">
