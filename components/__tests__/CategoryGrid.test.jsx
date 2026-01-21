@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
 import CategoryGrid from '../CategoryGrid'
-import { getCategories, getOptimizedImageUrl } from '@/lib/api'
+import { getCategories } from '@/lib/api'
 
 // Mock dependencies
 jest.mock('next/link', () => {
@@ -50,13 +50,12 @@ describe('CategoryGrid', () => {
           _id: '1',
           slug: 'landscapes',
           name: 'Landscapes',
-          featuredImage: 'https://res.cloudinary.com/demo/image/upload/landscapes.jpg',
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/landscapes.jpg',
           aspectRatio: 16/9
         }
       ]
 
       getCategories.mockResolvedValue(mockCategories)
-      getOptimizedImageUrl.mockResolvedValue('https://res.cloudinary.com/demo/image/upload/optimized-landscapes.jpg')
 
       render(<CategoryGrid />)
 
@@ -76,14 +75,13 @@ describe('CategoryGrid', () => {
           _id: '1',
           slug: 'portraits',
           name: 'Portraits',
-          featuredImage: 'https://res.cloudinary.com/demo/image/upload/portraits.jpg',
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/portraits.jpg',
           width: 800,
           height: 1200
         }
       ]
 
       getCategories.mockResolvedValue(mockCategories)
-      getOptimizedImageUrl.mockResolvedValue('https://res.cloudinary.com/demo/image/upload/optimized-portraits.jpg')
 
       render(<CategoryGrid />)
 
@@ -104,13 +102,12 @@ describe('CategoryGrid', () => {
           _id: '1',
           slug: 'legacy',
           name: 'Legacy Category',
-          featuredImage: 'https://res.cloudinary.com/demo/image/upload/legacy.jpg'
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/legacy.jpg'
           // No dimension props
         }
       ]
 
       getCategories.mockResolvedValue(mockCategories)
-      getOptimizedImageUrl.mockResolvedValue('https://res.cloudinary.com/demo/image/upload/optimized-legacy.jpg')
 
       render(<CategoryGrid />)
 
@@ -134,7 +131,7 @@ describe('CategoryGrid', () => {
           _id: '1',
           slug: 'full-data',
           name: 'Full Data Category',
-          featuredImage: 'https://res.cloudinary.com/demo/image/upload/full.jpg',
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/full.jpg',
           aspectRatio: 4/3,
           width: 1200,
           height: 900
@@ -142,7 +139,6 @@ describe('CategoryGrid', () => {
       ]
 
       getCategories.mockResolvedValue(mockCategories)
-      getOptimizedImageUrl.mockResolvedValue('https://res.cloudinary.com/demo/image/upload/optimized-full.jpg')
 
       render(<CategoryGrid />)
 
@@ -160,19 +156,17 @@ describe('CategoryGrid', () => {
   })
 
   describe('Category without featured image', () => {
-    it('should show "No Image" placeholder when no featured image', async () => {
+    it('should show "No Image" placeholder when no displayUrl', async () => {
       const mockCategories = [
         {
           _id: '1',
           slug: 'no-image',
           name: 'No Image Category'
-          // No featuredImage
+          // No displayUrl
         }
       ]
 
       getCategories.mockResolvedValue(mockCategories)
-      // No image to optimize
-      getOptimizedImageUrl.mockResolvedValue(null)
 
       render(<CategoryGrid />)
 

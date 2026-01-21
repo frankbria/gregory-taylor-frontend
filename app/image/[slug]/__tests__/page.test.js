@@ -87,7 +87,7 @@ describe('ImageDetailPage', () => {
         slug: 'test-photo',
         title: 'Test Photo',
         description: 'Test description',
-        imageUrl: 'https://res.cloudinary.com/demo/image/upload/test.jpg',
+        displayUrl: 'https://res.cloudinary.com/demo/image/upload/test.jpg',
         aspectRatio: 16/9,
         fullLength: false
       }
@@ -112,7 +112,7 @@ describe('ImageDetailPage', () => {
         slug: 'test-photo',
         title: 'Test Photo',
         description: 'Test description',
-        imageUrl: 'https://res.cloudinary.com/demo/image/upload/test.jpg',
+        displayUrl: 'https://res.cloudinary.com/demo/image/upload/test.jpg',
         width: 1920,
         height: 1080,
         fullLength: false
@@ -139,7 +139,7 @@ describe('ImageDetailPage', () => {
         slug: 'panorama',
         title: 'Panorama Photo',
         description: 'A wide panorama',
-        imageUrl: 'https://res.cloudinary.com/demo/image/upload/panorama.jpg',
+        displayUrl: 'https://res.cloudinary.com/demo/image/upload/panorama.jpg',
         fullLength: true
       }
 
@@ -163,7 +163,7 @@ describe('ImageDetailPage', () => {
         slug: 'legacy-photo',
         title: 'Legacy Photo',
         description: 'An old photo without dimension data',
-        imageUrl: 'https://res.cloudinary.com/demo/image/upload/legacy.jpg'
+        displayUrl: 'https://res.cloudinary.com/demo/image/upload/legacy.jpg'
         // No dimension props
       }
 
@@ -189,7 +189,7 @@ describe('ImageDetailPage', () => {
         slug: 'full-data',
         title: 'Full Data Photo',
         description: 'Photo with all dimension data',
-        imageUrl: 'https://res.cloudinary.com/demo/image/upload/full.jpg',
+        displayUrl: 'https://res.cloudinary.com/demo/image/upload/full.jpg',
         aspectRatio: 4/3,
         width: 1600,
         height: 1200,

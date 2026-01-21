@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
 import CategoryGalleryPage from '../page'
-import { getPhotosByCategory, getOptimizedImageUrl } from '@/lib/api'
+import { getPhotosByCategory } from '@/lib/api'
 
 // Mock dependencies
 jest.mock('next/navigation', () => ({
@@ -57,7 +57,7 @@ describe('CategoryGalleryPage', () => {
           _id: '1',
           slug: 'photo-1',
           title: 'Test Photo',
-          imageUrl: 'https://res.cloudinary.com/demo/image/upload/test.jpg',
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/test.jpg',
           aspectRatio: 16/9,
           fullLength: false
         }
@@ -67,7 +67,6 @@ describe('CategoryGalleryPage', () => {
         category: { name: 'Test Category' },
         photos: mockPhotos
       })
-      getOptimizedImageUrl.mockResolvedValue('https://res.cloudinary.com/demo/image/upload/optimized-test.jpg')
 
       render(<CategoryGalleryPage />)
 
@@ -87,7 +86,7 @@ describe('CategoryGalleryPage', () => {
           _id: '1',
           slug: 'photo-1',
           title: 'Test Photo',
-          imageUrl: 'https://res.cloudinary.com/demo/image/upload/test.jpg',
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/test.jpg',
           width: 1920,
           height: 1080,
           fullLength: false
@@ -98,7 +97,6 @@ describe('CategoryGalleryPage', () => {
         category: { name: 'Test Category' },
         photos: mockPhotos
       })
-      getOptimizedImageUrl.mockResolvedValue('https://res.cloudinary.com/demo/image/upload/optimized-test.jpg')
 
       render(<CategoryGalleryPage />)
 
@@ -119,7 +117,7 @@ describe('CategoryGalleryPage', () => {
           _id: '1',
           slug: 'photo-1',
           title: 'Panorama',
-          imageUrl: 'https://res.cloudinary.com/demo/image/upload/panorama.jpg',
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/panorama.jpg',
           fullLength: true
         }
       ]
@@ -128,7 +126,6 @@ describe('CategoryGalleryPage', () => {
         category: { name: 'Test Category' },
         photos: mockPhotos
       })
-      getOptimizedImageUrl.mockResolvedValue('https://res.cloudinary.com/demo/image/upload/optimized-panorama.jpg')
 
       render(<CategoryGalleryPage />)
 
@@ -148,7 +145,7 @@ describe('CategoryGalleryPage', () => {
           _id: '1',
           slug: 'photo-1',
           title: 'Legacy Photo',
-          imageUrl: 'https://res.cloudinary.com/demo/image/upload/legacy.jpg'
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/legacy.jpg'
           // No dimension props
         }
       ]
@@ -157,7 +154,6 @@ describe('CategoryGalleryPage', () => {
         category: { name: 'Test Category' },
         photos: mockPhotos
       })
-      getOptimizedImageUrl.mockResolvedValue('https://res.cloudinary.com/demo/image/upload/optimized-legacy.jpg')
 
       render(<CategoryGalleryPage />)
 
@@ -183,7 +179,7 @@ describe('CategoryGalleryPage', () => {
           _id: '1',
           slug: 'photo-1',
           title: 'Full Data Photo',
-          imageUrl: 'https://res.cloudinary.com/demo/image/upload/full.jpg',
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/full.jpg',
           aspectRatio: 4/3,
           width: 1600,
           height: 1200,
@@ -195,7 +191,6 @@ describe('CategoryGalleryPage', () => {
         category: { name: 'Test Category' },
         photos: mockPhotos
       })
-      getOptimizedImageUrl.mockResolvedValue('https://res.cloudinary.com/demo/image/upload/optimized-full.jpg')
 
       render(<CategoryGalleryPage />)
 
@@ -220,7 +215,7 @@ describe('CategoryGalleryPage', () => {
           _id: '1',
           slug: 'panorama-1',
           title: 'Wide Panorama',
-          imageUrl: 'https://res.cloudinary.com/demo/image/upload/panorama.jpg',
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/panorama.jpg',
           aspectRatio: 3, // > 2, should span multiple columns
           fullLength: true
         }
@@ -230,7 +225,6 @@ describe('CategoryGalleryPage', () => {
         category: { name: 'Test Category' },
         photos: mockPhotos
       })
-      getOptimizedImageUrl.mockResolvedValue('https://res.cloudinary.com/demo/image/upload/optimized-panorama.jpg')
 
       render(<CategoryGalleryPage />)
 

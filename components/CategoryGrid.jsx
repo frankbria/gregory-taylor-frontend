@@ -25,35 +25,31 @@ export default function CategoryGrid() {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-      {categories.map(category => {
-        const optimizedImage = optimizedImages[category._id]
-
-        return (
-          <Link
-            key={category._id}
-            href={`/gallery/${category.slug}`}
-            className="block group rounded overflow-hidden shadow hover:shadow-lg transition bg-white"
-          >
-            <div className="flex flex-col h-[280px]">
-              <div className="relative flex-1 overflow-hidden">
-                {optimizedImage ? (
-                  <CloudinaryImage
-                    src={optimizedImage}
-                    alt={category.name}
-                    className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
-                    aspectRatio={category.aspectRatio}
-                    width={category.width}
-                    height={category.height}
-                  />
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center bg-gray-200 text-gray-500 text-sm">
-                    No Image
-                  </div>
-                )}
-              </div>
-              <div className="p-4 text-center text-lg font-semibold text-gray-800 group-hover:text-blue-600 transition">
-                {category.name}
-              </div>
+      {categories.map(category => (
+        <Link
+          key={category._id}
+          href={`/gallery/${category.slug}`}
+          className="block group rounded overflow-hidden shadow hover:shadow-lg transition bg-white"
+        >
+          <div className="flex flex-col h-[280px]">
+            <div className="relative flex-1 overflow-hidden">
+              {category.displayUrl ? (
+                <CloudinaryImage
+                  src={category.displayUrl}
+                  alt={category.name}
+                  className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+                  aspectRatio={category.aspectRatio}
+                  width={category.width}
+                  height={category.height}
+                />
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-200 text-gray-500 text-sm">
+                  No Image
+                </div>
+              )}
+            </div>
+            <div className="p-4 text-center text-lg font-semibold text-gray-800 group-hover:text-blue-600 transition">
+              {category.name}
             </div>
           </div>
         </Link>

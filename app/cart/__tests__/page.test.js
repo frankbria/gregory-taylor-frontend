@@ -461,7 +461,7 @@ describe('CartPage Component', () => {
         {
           id: 'item1',
           title: 'Photo with aspect ratio',
-          imageUrl: 'https://example.com/photo.jpg',
+          displayUrl: 'https://example.com/photo.jpg',
           price: 50,
           quantity: 1,
           aspectRatio: 16/9
@@ -492,7 +492,7 @@ describe('CartPage Component', () => {
         {
           id: 'item1',
           title: 'Photo with dimensions',
-          imageUrl: 'https://example.com/photo.jpg',
+          displayUrl: 'https://example.com/photo.jpg',
           price: 50,
           quantity: 1,
           width: 1920,
@@ -525,7 +525,7 @@ describe('CartPage Component', () => {
         {
           id: 'item1',
           title: 'Legacy cart item',
-          imageUrl: 'https://example.com/photo.jpg',
+          displayUrl: 'https://example.com/photo.jpg',
           price: 50,
           quantity: 1
           // No dimension props

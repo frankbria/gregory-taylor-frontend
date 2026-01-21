@@ -77,7 +77,7 @@ describe('PhotoSlider', () => {
         {
           _id: '1',
           title: 'Normal Photo',
-          imageUrl: 'https://res.cloudinary.com/demo/image/upload/normal.jpg',
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/normal.jpg',
           aspectRatio: 16/9 // Normal landscape
         }
       ]
@@ -102,7 +102,7 @@ describe('PhotoSlider', () => {
         {
           _id: '1',
           title: 'Panorama',
-          imageUrl: 'https://res.cloudinary.com/demo/image/upload/panorama.jpg',
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/panorama.jpg',
           aspectRatio: 3 // Wide panorama
         }
       ]
@@ -126,7 +126,7 @@ describe('PhotoSlider', () => {
         {
           _id: '1',
           title: 'Borderline Photo',
-          imageUrl: 'https://res.cloudinary.com/demo/image/upload/borderline.jpg',
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/borderline.jpg',
           aspectRatio: 2.5 // Exactly at boundary
         }
       ]
@@ -150,7 +150,7 @@ describe('PhotoSlider', () => {
         {
           _id: '1',
           title: 'Legacy Photo',
-          imageUrl: 'https://res.cloudinary.com/demo/image/upload/legacy.jpg'
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/legacy.jpg'
           // No aspectRatio
         }
       ]
@@ -176,12 +176,12 @@ describe('PhotoSlider', () => {
         {
           _id: '1',
           title: 'Photo 1',
-          imageUrl: 'https://res.cloudinary.com/demo/image/upload/photo1.jpg'
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/photo1.jpg'
         },
         {
           _id: '2',
           title: 'Photo 2',
-          imageUrl: 'https://res.cloudinary.com/demo/image/upload/photo2.jpg'
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/photo2.jpg'
         }
       ]
 
@@ -208,12 +208,12 @@ describe('PhotoSlider', () => {
         {
           _id: '1',
           title: 'Photo 1',
-          imageUrl: 'https://res.cloudinary.com/demo/image/upload/photo1.jpg'
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/photo1.jpg'
         },
         {
           _id: '2',
           title: 'Photo 2',
-          imageUrl: 'https://res.cloudinary.com/demo/image/upload/photo2.jpg'
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/photo2.jpg'
         }
       ]
 
@@ -242,12 +242,12 @@ describe('PhotoSlider', () => {
         {
           _id: '1',
           title: 'Photo 1',
-          imageUrl: 'https://res.cloudinary.com/demo/image/upload/photo1.jpg'
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/photo1.jpg'
         },
         {
           _id: '2',
           title: 'Photo 2',
-          imageUrl: 'https://res.cloudinary.com/demo/image/upload/photo2.jpg'
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/photo2.jpg'
         }
       ]
 
@@ -278,17 +278,17 @@ describe('PhotoSlider', () => {
         {
           _id: '1',
           title: 'Photo 1',
-          imageUrl: 'https://res.cloudinary.com/demo/image/upload/photo1.jpg'
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/photo1.jpg'
         },
         {
           _id: '2',
           title: 'Photo 2',
-          imageUrl: 'https://res.cloudinary.com/demo/image/upload/photo2.jpg'
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/photo2.jpg'
         },
         {
           _id: '3',
           title: 'Photo 3',
-          imageUrl: 'https://res.cloudinary.com/demo/image/upload/photo3.jpg'
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/photo3.jpg'
         }
       ]
 
@@ -310,17 +310,17 @@ describe('PhotoSlider', () => {
         {
           _id: '1',
           title: 'Photo 1',
-          imageUrl: 'https://res.cloudinary.com/demo/image/upload/photo1.jpg'
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/photo1.jpg'
         },
         {
           _id: '2',
           title: 'Photo 2',
-          imageUrl: 'https://res.cloudinary.com/demo/image/upload/photo2.jpg'
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/photo2.jpg'
         },
         {
           _id: '3',
           title: 'Photo 3',
-          imageUrl: 'https://res.cloudinary.com/demo/image/upload/photo3.jpg'
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/photo3.jpg'
         }
       ]
 

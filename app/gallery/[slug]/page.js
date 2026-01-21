@@ -40,7 +40,6 @@ export default function CategoryGalleryPage() {
         {photos.map((photo, index) => {
           // Use aspectRatio if available, otherwise fall back to fullLength for wide column span
           const isWideImage = photo.aspectRatio > 2 || (photo.fullLength && index % 3 === 0)
-          const optimizedImage = optimizedImages[photo._id]
 
           return (
             <Link
