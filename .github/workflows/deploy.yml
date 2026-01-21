@@ -99,12 +99,12 @@ jobs:
       - name: Install dependencies and restart PM2
         run: |
           ssh -i ~/.ssh/deploy_key -p ${{ secrets.VPS_PORT }} \
-            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'ENDSSH'
-          cd ${{ vars.DEPLOY_PATH }}
-          npm ci --omit=dev
-          pm2 reload ecosystem.config.cjs --env production || pm2 start ecosystem.config.cjs --env production
-          pm2 save
-          ENDSSH
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} 'bash -l -c "
+              cd ${{ vars.DEPLOY_PATH }}
+              npm ci --omit=dev
+              pm2 reload ecosystem.config.cjs --env production || pm2 start ecosystem.config.cjs --env production
+              pm2 save
+            "'
 
       - name: Cleanup SSH key
         if: always()
