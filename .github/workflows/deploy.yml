@@ -82,6 +82,13 @@ jobs:
           name: nextjs-build
           path: ./deploy
 
+      - name: Verify artifact contents
+        run: |
+          echo "Contents of ./deploy:"
+          ls -la ./deploy/
+          echo "Checking for .next directory:"
+          ls -la ./deploy/.next/ 2>/dev/null || echo ".next directory not found!"
+
       - name: Setup SSH key
         run: |
           mkdir -p ~/.ssh
