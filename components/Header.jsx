@@ -21,7 +21,7 @@ export default function Header() {
           <Link href="/gallery" className="hover:underline">Gallery</Link>
           <Link href="/about" className="hover:underline">About</Link>
           <Link href="/contact" className="hover:underline">Contact</Link>
-          {/* TODO: My Orders link functionality coming soon */}
+          <Link href="/orders" className="hover:underline">My Orders</Link>
 
           {/* Cart icon positioned on the right edge */}
           <div className="absolute right-60 flex items-center space-x-1">
