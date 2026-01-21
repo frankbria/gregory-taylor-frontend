@@ -30,10 +30,12 @@ export default function CloudinaryImage({
   // 4. Default to 3:2 for backward compatibility
   const isValidAspectRatio = Number.isFinite(aspectRatioProp) && aspectRatioProp > 0
 
+  const isValidDimension = (val) => Number.isFinite(val) && val > 0
+
   let calculatedRatio
   if (isValidAspectRatio) {
     calculatedRatio = aspectRatioProp
-  } else if (width !== undefined && height !== undefined && height > 0) {
+  } else if (isValidDimension(width) && isValidDimension(height)) {
     calculatedRatio = width / height
   } else if (fullLength) {
     calculatedRatio = 5 / 1
@@ -56,7 +58,15 @@ export default function CloudinaryImage({
     effectiveObjectFit = 'cover'
   }
 
-  const objectFitClass = effectiveObjectFit === 'contain' ? 'object-contain' : 'object-cover'
+  // Map object-fit values to Tailwind classes
+  const objectFitClasses = {
+    contain: 'object-contain',
+    cover: 'object-cover',
+    fill: 'object-fill',
+    none: 'object-none',
+    'scale-down': 'object-scale-down'
+  }
+  const objectFitClass = objectFitClasses[effectiveObjectFit] || 'object-cover'
 
   return (
     <div className={`relative w-full`} style={{ paddingTop: `${paddingTop}%` }}>

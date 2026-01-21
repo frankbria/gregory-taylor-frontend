@@ -80,7 +80,7 @@ export default function PhotoSlider() {
           }`}
         >
           <Image
-            src={photo.imageUrl}
+            src={photo.displayUrl}
             alt={photo.title || 'Featured photograph'}
             fill
             priority={index === 0}
