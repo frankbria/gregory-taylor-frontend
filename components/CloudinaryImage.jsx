@@ -32,7 +32,7 @@ export default function CloudinaryImage({
   if (aspectRatioProp !== undefined) {
     calculatedRatio = aspectRatioProp
   } else if (width !== undefined && height !== undefined) {
-    calculatedRatio = width / height
+    calculatedRatio = height > 0 ? width / height : 3 / 2
   } else if (fullLength) {
     calculatedRatio = 5 / 1
   } else {
