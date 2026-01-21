@@ -17,7 +17,8 @@ export default function PhotoSlider() {
         setIsLoading(true);
         setError(false);
         const featuredPhotos = await getFeaturedPhotos();
-        setPhotos(featuredPhotos);
+        // Filter out photos without displayUrl to prevent Image component errors
+        setPhotos((featuredPhotos || []).filter(photo => photo.displayUrl));
       } catch (error) {
         console.error('Error fetching featured photos:', error);
         setError(true);
@@ -78,14 +79,16 @@ export default function PhotoSlider() {
             index === currentIndex ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          <Image
-            src={photo.imageUrl}
-            alt={photo.title || 'Featured photograph'}
-            fill
-            priority={index === 0}
-            sizes="100vw"
-            className="object-cover"
-          />
+          {photo.displayUrl && (
+            <Image
+              src={photo.displayUrl}
+              alt={photo.title || 'Featured photograph'}
+              fill
+              priority={index === 0}
+              sizes="100vw"
+              className="object-cover"
+            />
+          )}
           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 text-white">
             <h2 className="text-xl font-semibold mb-1">{photo.title}</h2>
             {photo.description && (
