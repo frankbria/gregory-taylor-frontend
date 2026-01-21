@@ -346,4 +346,205 @@ describe('OrdersPage Component', () => {
       expect(images).toHaveLength(2)
     })
   })
+
+  describe('Missing/Undefined Properties', () => {
+    it('should handle order with missing _id', async () => {
+      const orderWithoutId = {
+        userId: 'user123',
+        createdAt: '2024-01-15T10:30:00Z',
+        totalAmount: 100.00,
+        status: 'paid',
+        items: [{ imageUrl: 'https://example.com/img.jpg', title: 'Test', unitPrice: 100 }]
+      }
+
+      localStorageMock.getItem.mockReturnValue('user123')
+      mockGetUserOrders.mockResolvedValue([orderWithoutId])
+
+      render(<OrdersPage />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Order #N/A')).toBeInTheDocument()
+      })
+    })
+
+    it('should handle order with missing createdAt', async () => {
+      const orderWithoutDate = {
+        _id: '507f1f77bcf86cd799439011',
+        userId: 'user123',
+        totalAmount: 100.00,
+        status: 'paid',
+        items: [{ imageUrl: 'https://example.com/img.jpg', title: 'Test', unitPrice: 100 }]
+      }
+
+      localStorageMock.getItem.mockReturnValue('user123')
+      mockGetUserOrders.mockResolvedValue([orderWithoutDate])
+
+      render(<OrdersPage />)
+
+      await waitFor(() => {
+        expect(screen.getByText('N/A')).toBeInTheDocument()
+      })
+    })
+
+    it('should handle order with invalid createdAt', async () => {
+      const orderWithInvalidDate = {
+        _id: '507f1f77bcf86cd799439011',
+        userId: 'user123',
+        createdAt: 'not-a-date',
+        totalAmount: 100.00,
+        status: 'paid',
+        items: [{ imageUrl: 'https://example.com/img.jpg', title: 'Test', unitPrice: 100 }]
+      }
+
+      localStorageMock.getItem.mockReturnValue('user123')
+      mockGetUserOrders.mockResolvedValue([orderWithInvalidDate])
+
+      render(<OrdersPage />)
+
+      await waitFor(() => {
+        expect(screen.getByText('N/A')).toBeInTheDocument()
+      })
+    })
+
+    it('should handle order with missing totalAmount', async () => {
+      const orderWithoutTotal = {
+        _id: '507f1f77bcf86cd799439011',
+        userId: 'user123',
+        createdAt: '2024-01-15T10:30:00Z',
+        status: 'paid',
+        items: [{ imageUrl: 'https://example.com/img.jpg', title: 'Test', unitPrice: 100 }]
+      }
+
+      localStorageMock.getItem.mockReturnValue('user123')
+      mockGetUserOrders.mockResolvedValue([orderWithoutTotal])
+
+      render(<OrdersPage />)
+
+      await waitFor(() => {
+        expect(screen.getByText('$0.00')).toBeInTheDocument()
+      })
+    })
+
+    it('should handle order with missing status', async () => {
+      const orderWithoutStatus = {
+        _id: '507f1f77bcf86cd799439011',
+        userId: 'user123',
+        createdAt: '2024-01-15T10:30:00Z',
+        totalAmount: 100.00,
+        items: [{ imageUrl: 'https://example.com/img.jpg', title: 'Test', unitPrice: 100 }]
+      }
+
+      localStorageMock.getItem.mockReturnValue('user123')
+      mockGetUserOrders.mockResolvedValue([orderWithoutStatus])
+
+      render(<OrdersPage />)
+
+      await waitFor(() => {
+        const badge = screen.getByText('unknown')
+        expect(badge).toHaveClass('bg-gray-100', 'text-gray-800')
+      })
+    })
+
+    it('should handle order with missing items array', async () => {
+      const orderWithoutItems = {
+        _id: '507f1f77bcf86cd799439011',
+        userId: 'user123',
+        createdAt: '2024-01-15T10:30:00Z',
+        totalAmount: 100.00,
+        status: 'paid'
+      }
+
+      localStorageMock.getItem.mockReturnValue('user123')
+      mockGetUserOrders.mockResolvedValue([orderWithoutItems])
+
+      render(<OrdersPage />)
+
+      await waitFor(() => {
+        expect(screen.getByText('$100.00')).toBeInTheDocument()
+      })
+
+      // Should not crash, just render no items
+      expect(screen.queryAllByTestId('cloudinary-image')).toHaveLength(0)
+    })
+
+    it('should handle item with missing title', async () => {
+      const orderWithUntitledItem = {
+        _id: '507f1f77bcf86cd799439011',
+        userId: 'user123',
+        createdAt: '2024-01-15T10:30:00Z',
+        totalAmount: 100.00,
+        status: 'paid',
+        items: [{ imageUrl: 'https://example.com/img.jpg', unitPrice: 100 }]
+      }
+
+      localStorageMock.getItem.mockReturnValue('user123')
+      mockGetUserOrders.mockResolvedValue([orderWithUntitledItem])
+
+      render(<OrdersPage />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Untitled')).toBeInTheDocument()
+      })
+    })
+
+    it('should handle item with missing size/frame/format', async () => {
+      const orderWithMinimalItem = {
+        _id: '507f1f77bcf86cd799439011',
+        userId: 'user123',
+        createdAt: '2024-01-15T10:30:00Z',
+        totalAmount: 100.00,
+        status: 'paid',
+        items: [{ imageUrl: 'https://example.com/img.jpg', title: 'Test Photo', unitPrice: 100 }]
+      }
+
+      localStorageMock.getItem.mockReturnValue('user123')
+      mockGetUserOrders.mockResolvedValue([orderWithMinimalItem])
+
+      render(<OrdersPage />)
+
+      await waitFor(() => {
+        expect(screen.getByText('No details')).toBeInTheDocument()
+      })
+    })
+
+    it('should handle item with missing unitPrice', async () => {
+      const orderWithNoPriceItem = {
+        _id: '507f1f77bcf86cd799439011',
+        userId: 'user123',
+        createdAt: '2024-01-15T10:30:00Z',
+        totalAmount: 100.00,
+        status: 'paid',
+        items: [{ imageUrl: 'https://example.com/img.jpg', title: 'Test Photo' }]
+      }
+
+      localStorageMock.getItem.mockReturnValue('user123')
+      mockGetUserOrders.mockResolvedValue([orderWithNoPriceItem])
+
+      render(<OrdersPage />)
+
+      await waitFor(() => {
+        expect(screen.getByText(/\$0\.00 each/)).toBeInTheDocument()
+      })
+    })
+
+    it('should handle item with missing quantity', async () => {
+      const orderWithNoQuantityItem = {
+        _id: '507f1f77bcf86cd799439011',
+        userId: 'user123',
+        createdAt: '2024-01-15T10:30:00Z',
+        totalAmount: 100.00,
+        status: 'paid',
+        items: [{ imageUrl: 'https://example.com/img.jpg', title: 'Test Photo', unitPrice: 100 }]
+      }
+
+      localStorageMock.getItem.mockReturnValue('user123')
+      mockGetUserOrders.mockResolvedValue([orderWithNoQuantityItem])
+
+      render(<OrdersPage />)
+
+      await waitFor(() => {
+        expect(screen.getByText(/Qty: 1/)).toBeInTheDocument()
+      })
+    })
+  })
 })
