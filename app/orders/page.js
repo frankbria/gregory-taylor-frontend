@@ -93,8 +93,8 @@ export default function OrdersPage() {
       <h1 className="text-3xl font-serif mb-8 text-center">My Orders</h1>
 
       <div className="space-y-6">
-        {orders.map((order) => (
-          <div key={order._id || Math.random()} className="border rounded-lg p-6 shadow-sm">
+        {orders.map((order, orderIndex) => (
+          <div key={order._id || `order-${orderIndex}`} className="border rounded-lg p-6 shadow-sm">
             {/* Order Header */}
             <div className="flex justify-between items-start mb-4">
               <div>
