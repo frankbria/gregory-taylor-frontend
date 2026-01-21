@@ -3,38 +3,17 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { toast } from 'react-hot-toast'
-import { getCategories, getOptimizedImageUrl } from '@/lib/api'
+import { getCategories } from '@/lib/api'
 import CloudinaryImage from '@/components/CloudinaryImage'
 
 export default function CategoryGrid() {
   const [categories, setCategories] = useState([])
-  const [optimizedImages, setOptimizedImages] = useState({})
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getCategories()
-        setCategories(data)
-        
-        // Pre-optimize all images
-        const imagePromises = data.map(async category => {
-          if (!category.featuredImage) return null
-          try {
-            const optimized = await getOptimizedImageUrl(category.featuredImage, {
-              width: 360,
-              height: 240,
-              crop: 'fill'
-            })
-            return [category._id, optimized]
-          } catch (err) {
-            console.error(`Error optimizing image for category ${category._id}:`, err)
-            return [category._id, null]
-          }
-        })
-
-        const results = await Promise.all(imagePromises)
-        const optimizedUrls = Object.fromEntries(results.filter(result => result !== null))
-        setOptimizedImages(optimizedUrls)
+        setCategories(data || [])
       } catch (err) {
         console.error('Error fetching categories:', err)
         toast.error('Failed to load categories')
@@ -76,9 +55,9 @@ export default function CategoryGrid() {
                 {category.name}
               </div>
             </div>
-          </Link>
-        )
-      })}
+          </div>
+        </Link>
+      ))}
     </div>
   )
 }

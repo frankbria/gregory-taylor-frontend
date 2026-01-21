@@ -93,7 +93,7 @@ describe('CartPage Component', () => {
       {
         id: 'item1',
         title: 'Beautiful Sunset',
-        imageUrl: 'https://example.com/sunset.jpg',
+        displayUrl: 'https://example.com/sunset.jpg',
         sizeId: 'size1',
         size: '8x10',
         frameId: 'frame1',
@@ -106,7 +106,7 @@ describe('CartPage Component', () => {
       {
         id: 'item2',
         title: 'Mountain View',
-        imageUrl: 'https://example.com/mountain.jpg',
+        displayUrl: 'https://example.com/mountain.jpg',
         sizeId: 'size2',
         size: '11x14',
         quantity: 1,
@@ -189,7 +189,7 @@ describe('CartPage Component', () => {
         {
           id: 'item1',
           title: 'Test Photo',
-          imageUrl: 'https://example.com/photo.jpg',
+          displayUrl: 'https://example.com/photo.jpg',
           sizeId: 'size1',
           frameId: 'frame1',
           formatId: 'format1',
@@ -223,7 +223,7 @@ describe('CartPage Component', () => {
         title: 'Test Photo',
         price: 50,
         quantity: 1,
-        imageUrl: 'https://example.com/photo.jpg'
+        displayUrl: 'https://example.com/photo.jpg'
       }
     ]
 
@@ -372,7 +372,7 @@ describe('CartPage Component', () => {
         {
           id: 'item1',
           title: 'Photo',
-          imageUrl: 'https://example.com/photo.jpg',
+          displayUrl: 'https://example.com/photo.jpg',
           price: 100,
           sizeId: 'size1',
           quantity: 1
@@ -401,7 +401,7 @@ describe('CartPage Component', () => {
         {
           id: 'item1',
           title: 'Photo',
-          imageUrl: 'https://example.com/photo.jpg',
+          displayUrl: 'https://example.com/photo.jpg',
           price: NaN,
           sizeId: 'size1',
           frameId: 'frame1',
@@ -432,7 +432,7 @@ describe('CartPage Component', () => {
         {
           id: 'item1',
           title: 'Photo',
-          imageUrl: 'https://example.com/photo.jpg',
+          displayUrl: 'https://example.com/photo.jpg',
           quantity: 1
         }
       ]

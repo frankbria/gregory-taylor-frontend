@@ -110,10 +110,10 @@ export default function CartPage() {
         {cart.map((item) => (
           <div key={item.id} className="flex flex-col md:flex-row items-start md:items-center gap-4 p-4 border border-gray-200 rounded">
             <div className="w-full md:w-1/4">
-              {item.imageUrl && (
+              {item.displayUrl && (
                 <div className="aspect-[3/2] relative overflow-hidden rounded">
                   <CloudinaryImage
-                    src={item.imageUrl}
+                    src={item.displayUrl}
                     alt={item.title}
                     className="object-cover"
                     aspectRatio={item.aspectRatio}

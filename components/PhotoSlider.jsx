@@ -17,7 +17,8 @@ export default function PhotoSlider() {
         setIsLoading(true);
         setError(false);
         const featuredPhotos = await getFeaturedPhotos();
-        setPhotos(featuredPhotos);
+        // Filter out photos without displayUrl to prevent Image component errors
+        setPhotos((featuredPhotos || []).filter(photo => photo.displayUrl));
       } catch (error) {
         console.error('Error fetching featured photos:', error);
         setError(true);
