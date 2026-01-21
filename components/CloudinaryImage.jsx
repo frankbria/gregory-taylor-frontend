@@ -24,15 +24,17 @@ export default function CloudinaryImage({
     : undefined
 
   // Calculate aspect ratio with priority order:
-  // 1. Use aspectRatio prop if provided
+  // 1. Use aspectRatio prop if provided and valid (finite positive number)
   // 2. Calculate from width and height if both provided
   // 3. Fall back to fullLength (5:1) if true
   // 4. Default to 3:2 for backward compatibility
+  const isValidAspectRatio = Number.isFinite(aspectRatioProp) && aspectRatioProp > 0
+
   let calculatedRatio
-  if (aspectRatioProp !== undefined) {
+  if (isValidAspectRatio) {
     calculatedRatio = aspectRatioProp
-  } else if (width !== undefined && height !== undefined) {
-    calculatedRatio = height > 0 ? width / height : 3 / 2
+  } else if (width !== undefined && height !== undefined && height > 0) {
+    calculatedRatio = width / height
   } else if (fullLength) {
     calculatedRatio = 5 / 1
   } else {

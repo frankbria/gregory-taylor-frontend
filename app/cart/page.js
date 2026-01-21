@@ -115,7 +115,6 @@ export default function CartPage() {
                   <CloudinaryImage
                     src={item.displayUrl}
                     alt={item.title}
-                    className="object-cover"
                     aspectRatio={item.aspectRatio}
                     width={item.width}
                     height={item.height}
