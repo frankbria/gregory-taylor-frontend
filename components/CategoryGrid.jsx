@@ -38,6 +38,9 @@ export default function CategoryGrid() {
                   src={category.displayUrl}
                   alt={category.name}
                   className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+                  aspectRatio={category.aspectRatio}
+                  width={category.width}
+                  height={category.height}
                 />
               ) : (
                 <div className="absolute inset-0 flex items-center justify-center bg-gray-200 text-gray-500 text-sm">

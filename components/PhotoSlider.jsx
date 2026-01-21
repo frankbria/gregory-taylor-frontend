@@ -3,6 +3,20 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import useAPI from '@/lib/api';
+import cloudinaryLoader from '@/lib/cloudinaryLoader';
+
+// Generate blur placeholder URL for Cloudinary images
+const getBlurDataURL = (src) => {
+  if (typeof src === 'string' && src.includes('res.cloudinary.com')) {
+    return src.replace('/upload/', '/upload/e_blur:1000,q_1,w_50/');
+  }
+  return undefined;
+};
+
+// Check if aspectRatio is valid for object-fit decision
+const isWideImage = (aspectRatio) => {
+  return Number.isFinite(aspectRatio) && aspectRatio > 2.5;
+};
 
 export default function PhotoSlider() {
   const [photos, setPhotos] = useState([]);
@@ -79,16 +93,17 @@ export default function PhotoSlider() {
             index === currentIndex ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          {photo.displayUrl && (
-            <Image
-              src={photo.displayUrl}
-              alt={photo.title || 'Featured photograph'}
-              fill
-              priority={index === 0}
-              sizes="100vw"
-              className="object-cover"
-            />
-          )}
+          <Image
+            src={photo.displayUrl}
+            alt={photo.title || 'Featured photograph'}
+            fill
+            priority={index === 0}
+            sizes="100vw"
+            loader={photo.displayUrl?.includes('res.cloudinary.com') ? cloudinaryLoader : undefined}
+            placeholder={getBlurDataURL(photo.displayUrl) ? 'blur' : undefined}
+            blurDataURL={getBlurDataURL(photo.displayUrl)}
+            className={isWideImage(photo.aspectRatio) ? 'object-contain' : 'object-cover'}
+          />
           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 text-white">
             <h2 className="text-xl font-semibold mb-1">{photo.title}</h2>
             {photo.description && (
