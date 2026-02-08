@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import { CartProvider } from "@/lib/CartContext";
 import { ErrorProvider } from "@/lib/ErrorContext";
 import { Toaster } from "react-hot-toast";
+import DevInspectorWrapper from "@/components/dev/DevInspectorWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,15 +34,17 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ErrorProvider>
-          <CartProvider>
-            <Header />
-            <div className="flex flex-col min-h-screen">
-              <main className="flex-grow">
-                {children}
-              </main>
-              <Footer />
-            </div>
-          </CartProvider>
+          <DevInspectorWrapper>
+            <CartProvider>
+              <Header />
+              <div className="flex flex-col min-h-screen">
+                <main className="flex-grow">
+                  {children}
+                </main>
+                <Footer />
+              </div>
+            </CartProvider>
+          </DevInspectorWrapper>
           <Toaster 
             position="top-center"
             toastOptions={{

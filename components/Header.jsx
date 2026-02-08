@@ -3,8 +3,9 @@
 import Link from 'next/link'
 import { FaShoppingCart } from 'react-icons/fa'
 import { useCart } from '@/lib/CartContext'
+import withInspector from '@/lib/withInspector'
 
-export default function Header() {
+function Header() {
   const { cartCount } = useCart()
 
   return (
@@ -35,4 +36,9 @@ export default function Header() {
     </header>
   )
 }
+
+export default withInspector(Header, {
+  componentName: 'Header',
+  filePath: 'components/Header.jsx',
+})
 

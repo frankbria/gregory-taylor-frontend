@@ -1,5 +1,6 @@
 import { useState, useRef } from "react"
 import Image from "next/image"
+import withInspector from '@/lib/withInspector'
 
 const ROOM_TEMPLATES = [
   {
@@ -43,7 +44,7 @@ function buildPreviewUrl(photoId, templateId, overlay, t_name) {
 
 
 
-export function RoomPreviews({ photoPublicId }) {
+function RoomPreviewsBase({ photoPublicId }) {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [previewError, setPreviewError] = useState(false)
   const [thumbnailErrors, setThumbnailErrors] = useState({})
@@ -134,3 +135,8 @@ export function RoomPreviews({ photoPublicId }) {
     </div>
   )
 }
+
+export const RoomPreviews = withInspector(RoomPreviewsBase, {
+  componentName: 'RoomPreviews',
+  filePath: 'components/RoomPreviews.jsx',
+})
