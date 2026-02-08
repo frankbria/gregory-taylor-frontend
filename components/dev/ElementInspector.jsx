@@ -47,7 +47,7 @@ function ElementInspectorInner() {
       id,
       componentName: inspectable.getAttribute('data-inspector-component'),
       filePath: inspectable.getAttribute('data-inspector-file'),
-      className: inspectable.children[0]?.className || '',
+      className: inspectable.children[0]?.getAttribute('class') || '',
       ...registeredMeta,
     })
   }, [isEnabled, getElement, setHoveredId])

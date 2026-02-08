@@ -15,7 +15,7 @@ function InspectorToggleInner() {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+      if (e.ctrlKey && e.shiftKey && e.key === 'D') {
         e.preventDefault()
         toggle()
       }
@@ -48,7 +48,7 @@ function InspectorToggleInner() {
         {isEnabled ? 'Inspector ON' : 'Inspector OFF'}
       </button>
       <div className="text-[10px] text-gray-500 text-center mt-1">
-        Ctrl+Shift+I
+        Ctrl+Shift+D
       </div>
     </div>
   )

@@ -47,7 +47,7 @@ describe('InspectorToggle', () => {
 
     it('shows keyboard shortcut hint', () => {
       renderWithInspector(<InspectorToggle />)
-      expect(screen.getByText(/ctrl.*shift.*i/i)).toBeInTheDocument()
+      expect(screen.getByText(/ctrl.*shift.*d/i)).toBeInTheDocument()
     })
 
     it('toggles inspector on click', () => {
@@ -64,7 +64,7 @@ describe('InspectorToggle', () => {
       expect(screen.getByTestId('inspector-state')).toHaveTextContent('enabled')
     })
 
-    it('toggles inspector on Ctrl+Shift+I keyboard shortcut', () => {
+    it('toggles inspector on Ctrl+Shift+D keyboard shortcut', () => {
       renderWithInspector(
         <>
           <InspectorToggle />
@@ -75,7 +75,7 @@ describe('InspectorToggle', () => {
       expect(screen.getByTestId('inspector-state')).toHaveTextContent('disabled')
 
       fireEvent.keyDown(window, {
-        key: 'I',
+        key: 'D',
         ctrlKey: true,
         shiftKey: true,
       })

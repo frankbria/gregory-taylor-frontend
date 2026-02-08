@@ -117,7 +117,7 @@ To modify how CloudinaryImage handles quality, edit `lib/cloudinaryLoader.js`:
 ## Important Notes
 
 1. **Development Only**: The inspector only works in `NODE_ENV=development`. There is zero code trace in production.
-2. **Toggle**: Press `Ctrl+Shift+I` to toggle the inspector on/off, or click the floating button in the bottom-right corner.
+2. **Toggle**: Press `Ctrl+Shift+D` to toggle the inspector on/off, or click the floating button in the bottom-right corner.
 3. **Server Components**: Some pages use Server Components. Client-side modifications should be in files marked with `'use client'`.
 4. **API Proxy**: In development, `/api/*` requests proxy to `http://localhost:4000/api/*`.
 5. **Testing**: Run `npm test` to verify changes don't break existing functionality.
