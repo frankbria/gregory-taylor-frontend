@@ -3,7 +3,7 @@ import { getSessionCookie } from 'better-auth/cookies'
 
 export function middleware(request) {
   const sessionCookie = getSessionCookie(request)
-  const { pathname } = request.nextUrl
+  const pathname = request.nextUrl.pathname.replace(/\/+$/, '') || '/'
 
   // Allow access to login page when not authenticated
   if (pathname === '/admin/login') {

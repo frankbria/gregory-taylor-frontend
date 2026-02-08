@@ -51,8 +51,9 @@ export default function AdminLoginPage() {
 
   if (authLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen" role="status">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-800"></div>
+        <span className="sr-only">Loading...</span>
       </div>
     )
   }

@@ -90,6 +90,16 @@ describe('middleware', () => {
     expect(mockRedirect).not.toHaveBeenCalled()
   })
 
+  it('normalizes trailing slash on /admin/login/', () => {
+    getSessionCookie.mockReturnValue(null)
+    const request = createMockRequest('/admin/login/')
+
+    middleware(request)
+
+    expect(mockNext).toHaveBeenCalled()
+    expect(mockRedirect).not.toHaveBeenCalled()
+  })
+
   it('has correct config matcher for admin routes', () => {
     expect(config.matcher).toContain('/admin/:path*')
   })

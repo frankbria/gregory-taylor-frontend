@@ -180,15 +180,17 @@ describe('AdminLoginPage', () => {
     })
   })
 
-  it('shows loading spinner when auth is loading', () => {
+  it('shows accessible loading spinner when auth is loading', () => {
     mockUseAuth.mockReturnValue({
       isAuthenticated: false,
       isLoading: true,
     })
 
-    const { container } = render(<AdminLoginPage />)
+    render(<AdminLoginPage />)
 
-    expect(container.querySelector('.animate-spin')).toBeInTheDocument()
+    const spinner = screen.getByRole('status')
+    expect(spinner).toBeInTheDocument()
+    expect(screen.getByText('Loading...')).toBeInTheDocument()
     expect(screen.queryByPlaceholderText('Email *')).not.toBeInTheDocument()
   })
 })
