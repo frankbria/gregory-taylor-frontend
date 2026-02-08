@@ -47,7 +47,7 @@ function ElementInspectorInner() {
       id,
       componentName: inspectable.getAttribute('data-inspector-component'),
       filePath: inspectable.getAttribute('data-inspector-file'),
-      className: inspectable.querySelector('[class]')?.className || '',
+      className: inspectable.children[0]?.className || '',
       ...registeredMeta,
     })
   }, [isEnabled, getElement, setHoveredId])
@@ -92,15 +92,6 @@ function ElementInspectorInner() {
   }
 
   if (!mounted || !isEnabled || !hoveredMeta) return null
-
-  // Highlight the hovered element
-  const highlightStyle = {
-    position: 'absolute',
-    top: tooltipPos.y,
-    left: tooltipPos.x,
-    zIndex: 99998,
-    pointerEvents: 'none',
-  }
 
   const tooltipStyle = {
     position: 'absolute',
