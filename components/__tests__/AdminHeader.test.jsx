@@ -22,6 +22,7 @@ jest.mock('@/lib/AuthContext', () => ({
 jest.mock('react-hot-toast', () => ({
   toast: {
     success: jest.fn(),
+    error: jest.fn(),
   },
 }))
 
@@ -76,5 +77,18 @@ describe('AdminHeader', () => {
       expect(toast.success).toHaveBeenCalledWith('Logged out successfully')
       expect(mockPush).toHaveBeenCalledWith('/admin/login')
     })
+  })
+
+  it('shows error toast when logout fails', async () => {
+    mockSignOut.mockRejectedValue(new Error('Network error'))
+    const user = userEvent.setup()
+    render(<AdminHeader />)
+
+    await user.click(screen.getByRole('button', { name: /logout/i }))
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith('Logout failed. Please try again.')
+    })
+    expect(mockPush).not.toHaveBeenCalled()
   })
 })

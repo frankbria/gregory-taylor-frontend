@@ -10,9 +10,13 @@ export default function AdminHeader() {
   const router = useRouter()
 
   const handleLogout = async () => {
-    await signOut()
-    toast.success('Logged out successfully')
-    router.push('/admin/login')
+    try {
+      await signOut()
+      toast.success('Logged out successfully')
+      router.push('/admin/login')
+    } catch {
+      toast.error('Logout failed. Please try again.')
+    }
   }
 
   return (
