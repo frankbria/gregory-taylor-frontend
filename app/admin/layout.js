@@ -1,10 +1,20 @@
 'use client'
 
+import { useEffect } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
 import { useAuth } from '@/lib/AuthContext'
 import AdminHeader from '@/components/AdminHeader'
 
 export default function AdminLayout({ children }) {
-  const { isLoading } = useAuth()
+  const { isLoading, isAuthenticated } = useAuth()
+  const router = useRouter()
+  const pathname = usePathname()
+
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated && pathname !== '/admin/login') {
+      router.push('/admin/login')
+    }
+  }, [isLoading, isAuthenticated, pathname, router])
 
   if (isLoading) {
     return (
@@ -13,6 +23,10 @@ export default function AdminLayout({ children }) {
         <span className="sr-only">Loading...</span>
       </div>
     )
+  }
+
+  if (!isAuthenticated && pathname !== '/admin/login') {
+    return null
   }
 
   return (
