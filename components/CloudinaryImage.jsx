@@ -2,8 +2,9 @@
 
 import Image from 'next/image'
 import cloudinaryLoader from '@/lib/cloudinaryLoader'
+import withInspector from '@/lib/withInspector'
 
-export default function CloudinaryImage({
+function CloudinaryImage({
   src,
   alt,
   fullLength = false,
@@ -84,4 +85,7 @@ export default function CloudinaryImage({
   )
 }
 
-
+export default withInspector(CloudinaryImage, {
+  componentName: 'CloudinaryImage',
+  filePath: 'components/CloudinaryImage.jsx',
+})

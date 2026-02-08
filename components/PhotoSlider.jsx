@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import useAPI from '@/lib/api';
 import cloudinaryLoader from '@/lib/cloudinaryLoader';
+import withInspector from '@/lib/withInspector';
 
 // Generate blur placeholder URL for Cloudinary images
 const getBlurDataURL = (src) => {
@@ -18,7 +19,7 @@ const isWideImage = (aspectRatio) => {
   return Number.isFinite(aspectRatio) && aspectRatio > 2.5;
 };
 
-export default function PhotoSlider() {
+function PhotoSlider() {
   const [photos, setPhotos] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -149,3 +150,8 @@ export default function PhotoSlider() {
     </div>
   );
 }
+
+export default withInspector(PhotoSlider, {
+  componentName: 'PhotoSlider',
+  filePath: 'components/PhotoSlider.jsx',
+})

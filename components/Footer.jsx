@@ -2,8 +2,9 @@
 
 import Image from 'next/image'
 import { FaFacebookSquare, FaInstagram, FaLinkedinIn } from 'react-icons/fa'
+import withInspector from '@/lib/withInspector'
 
-export default function Footer() {
+function Footer() {
   return (
     <footer className="bg-black text-white border-t border-gray-800 mt-12 py-10 px-6">
       <div className="max-w-4xl mx-auto flex flex-col items-center space-y- 6 md:flex-row md:justify-center md:space-y-0 md:gap-16">
@@ -52,3 +53,8 @@ export default function Footer() {
     </footer>
   )
 }
+
+export default withInspector(Footer, {
+  componentName: 'Footer',
+  filePath: 'components/Footer.jsx',
+})

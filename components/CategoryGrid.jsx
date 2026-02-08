@@ -5,8 +5,9 @@ import Link from 'next/link'
 import { toast } from 'react-hot-toast'
 import { getCategories } from '@/lib/api'
 import CloudinaryImage from '@/components/CloudinaryImage'
+import withInspector from '@/lib/withInspector'
 
-export default function CategoryGrid() {
+function CategoryGrid() {
   const [categories, setCategories] = useState([])
 
   useEffect(() => {
@@ -57,3 +58,8 @@ export default function CategoryGrid() {
     </div>
   )
 }
+
+export default withInspector(CategoryGrid, {
+  componentName: 'CategoryGrid',
+  filePath: 'components/CategoryGrid.jsx',
+})
