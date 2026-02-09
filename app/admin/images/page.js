@@ -167,7 +167,7 @@ export default function ImageSettingsPage() {
           <div>
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || loading}
               className="bg-gray-800 hover:bg-gray-700 text-white py-2 px-4 rounded-md transition duration-300 disabled:opacity-50"
             >
               {isSubmitting ? 'Saving...' : 'Save'}

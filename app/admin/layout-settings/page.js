@@ -5,12 +5,14 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'react-hot-toast'
 import { useContent } from '@/lib/ContentContext'
 
+const generateNavItemId = () => Math.random().toString(36).slice(2, 11)
+
 const DEFAULT_SETTINGS = {
   showHeader: true,
   showFooter: true,
   navItems: [
-    { label: 'Home', href: '/' },
-    { label: 'Gallery', href: '/gallery' },
+    { id: 'default-home', label: 'Home', href: '/' },
+    { id: 'default-gallery', label: 'Gallery', href: '/gallery' },
   ],
   colorScheme: 'light',
   gridColumns: 3,
@@ -39,7 +41,10 @@ export default function LayoutSettingsPage() {
         colorScheme: layoutSettings.colorScheme || 'light',
         gridColumns: layoutSettings.gridColumns || 3,
       })
-      setNavItems(layoutSettings.navItems || [])
+      setNavItems((layoutSettings.navItems || []).map(item => ({
+        ...item,
+        id: item.id || generateNavItemId(),
+      })))
     }
   }, [layoutSettings, reset])
 
@@ -49,7 +54,7 @@ export default function LayoutSettingsPage() {
         showHeader: data.showHeader,
         showFooter: data.showFooter,
         colorScheme: data.colorScheme,
-        gridColumns: Number(data.gridColumns),
+        gridColumns: Number(data.gridColumns) || 3,
         navItems,
       })
       toast.success('Layout settings updated successfully')
@@ -59,7 +64,7 @@ export default function LayoutSettingsPage() {
   }
 
   const addNavItem = () => {
-    setNavItems((prev) => [...prev, { label: '', href: '' }])
+    setNavItems((prev) => [...prev, { id: generateNavItemId(), label: '', href: '' }])
   }
 
   const removeNavItem = (index) => {
@@ -79,7 +84,7 @@ export default function LayoutSettingsPage() {
       colorScheme: DEFAULT_SETTINGS.colorScheme,
       gridColumns: DEFAULT_SETTINGS.gridColumns,
     })
-    setNavItems([...DEFAULT_SETTINGS.navItems])
+    setNavItems(DEFAULT_SETTINGS.navItems.map(item => ({ ...item, id: generateNavItemId() })))
   }
 
   return (
@@ -157,7 +162,7 @@ export default function LayoutSettingsPage() {
             <h2 className="text-lg font-semibold mb-3">Navigation Items</h2>
             <div className="space-y-2">
               {navItems.map((item, index) => (
-                <div key={index} className="flex items-center gap-2">
+                <div key={item.id} className="flex items-center gap-2">
                   <input
                     type="text"
                     placeholder="Label"
@@ -195,7 +200,7 @@ export default function LayoutSettingsPage() {
           <div className="flex gap-3">
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || loading}
               className="bg-gray-800 hover:bg-gray-700 text-white py-2 px-4 rounded-md transition duration-300 disabled:opacity-50"
             >
               {isSubmitting ? 'Saving...' : 'Save'}

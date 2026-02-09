@@ -36,7 +36,8 @@ export default function ContentEditorPage() {
       try {
         metadata = JSON.parse(data.metadata)
       } catch {
-        metadata = {}
+        toast.error('Metadata must be valid JSON')
+        return
       }
 
       await updatePage(currentPage._id, {
@@ -93,7 +94,7 @@ export default function ContentEditorPage() {
                         : 'hover:bg-gray-100 text-gray-700'
                     }`}
                   >
-                    {page.title}
+                    {page.title || 'Untitled'}
                   </button>
                 </li>
               ))}
