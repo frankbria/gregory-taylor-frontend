@@ -22,6 +22,16 @@ jest.mock('@/components/AdminHeader', () => {
   }
 })
 
+jest.mock('@/components/admin/AdminNav', () => {
+  return function MockAdminNav({ currentPath }) {
+    return <nav data-testid="admin-nav" data-path={currentPath} />
+  }
+})
+
+jest.mock('@/lib/ContentContext', () => ({
+  ContentProvider: ({ children }) => <div data-testid="content-provider">{children}</div>,
+}))
+
 import AdminLayout from '../layout'
 
 describe('AdminLayout', () => {
@@ -76,5 +86,33 @@ describe('AdminLayout', () => {
     render(<AdminLayout><div>child</div></AdminLayout>)
 
     expect(mockPush).not.toHaveBeenCalled()
+  })
+
+  it('renders AdminNav with current pathname when authenticated', () => {
+    mockPathname.mockReturnValue('/admin/content')
+    mockUseAuth.mockReturnValue({ isLoading: false, isAuthenticated: true })
+
+    render(<AdminLayout><div>Content</div></AdminLayout>)
+
+    const nav = screen.getByTestId('admin-nav')
+    expect(nav).toBeInTheDocument()
+    expect(nav).toHaveAttribute('data-path', '/admin/content')
+  })
+
+  it('wraps content with ContentProvider when authenticated', () => {
+    mockUseAuth.mockReturnValue({ isLoading: false, isAuthenticated: true })
+
+    render(<AdminLayout><div>Dashboard</div></AdminLayout>)
+
+    expect(screen.getByTestId('content-provider')).toBeInTheDocument()
+  })
+
+  it('does not render AdminNav on login page', () => {
+    mockPathname.mockReturnValue('/admin/login')
+    mockUseAuth.mockReturnValue({ isLoading: false, isAuthenticated: false })
+
+    render(<AdminLayout><div>Login Form</div></AdminLayout>)
+
+    expect(screen.queryByTestId('admin-nav')).not.toBeInTheDocument()
   })
 })

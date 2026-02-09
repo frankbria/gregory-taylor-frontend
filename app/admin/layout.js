@@ -4,6 +4,8 @@ import { useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { useAuth } from '@/lib/AuthContext'
 import AdminHeader from '@/components/AdminHeader'
+import AdminNav from '@/components/admin/AdminNav'
+import { ContentProvider } from '@/lib/ContentContext'
 
 export default function AdminLayout({ children }) {
   const { isLoading, isAuthenticated } = useAuth()
@@ -29,12 +31,25 @@ export default function AdminLayout({ children }) {
     return null
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <AdminHeader />
-      <main className="container mx-auto px-4 py-8 max-w-5xl">
+  if (pathname === '/admin/login') {
+    return (
+      <div className="min-h-screen bg-gray-50">
         {children}
-      </main>
-    </div>
+      </div>
+    )
+  }
+
+  return (
+    <ContentProvider>
+      <div className="min-h-screen bg-gray-50">
+        <AdminHeader />
+        <div className="flex">
+          <AdminNav currentPath={pathname} />
+          <main className="flex-1 container mx-auto px-4 py-8 max-w-5xl">
+            {children}
+          </main>
+        </div>
+      </div>
+    </ContentProvider>
   )
 }
