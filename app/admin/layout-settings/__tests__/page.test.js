@@ -178,6 +178,51 @@ describe('LayoutSettingsPage', () => {
     })
   })
 
+  describe('nav item editing', () => {
+    it('updates nav item label when edited', async () => {
+      const user = userEvent.setup()
+      render(<LayoutSettingsPage />)
+
+      const labelInputs = screen.getAllByPlaceholderText('Label')
+      await user.clear(labelInputs[0])
+      await user.type(labelInputs[0], 'New Home')
+
+      expect(labelInputs[0]).toHaveValue('New Home')
+    })
+
+    it('updates nav item href when edited', async () => {
+      const user = userEvent.setup()
+      render(<LayoutSettingsPage />)
+
+      const urlInputs = screen.getAllByPlaceholderText('URL')
+      await user.clear(urlInputs[0])
+      await user.type(urlInputs[0], '/new-home')
+
+      expect(urlInputs[0]).toHaveValue('/new-home')
+    })
+  })
+
+  describe('checkbox toggling', () => {
+    it('can toggle show header off', async () => {
+      const user = userEvent.setup()
+      render(<LayoutSettingsPage />)
+
+      const checkbox = screen.getByLabelText('Show Header')
+      expect(checkbox).toBeChecked()
+      await user.click(checkbox)
+      expect(checkbox).not.toBeChecked()
+    })
+
+    it('can change color scheme', async () => {
+      const user = userEvent.setup()
+      render(<LayoutSettingsPage />)
+
+      const select = screen.getByLabelText('Color Scheme')
+      await user.selectOptions(select, 'dark')
+      expect(select).toHaveValue('dark')
+    })
+  })
+
   describe('no settings loaded', () => {
     it('renders empty form when no settings exist', () => {
       mockUseContent.mockReturnValue({
