@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-hot-toast'
 import ReCAPTCHA from 'react-google-recaptcha'
+import EditableContent from '@/components/EditableContent'
 
 export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -80,10 +81,12 @@ export default function ContactPage() {
       <h1 className="text-4xl font-bold mb-8 text-center">Contact</h1>
       
       <div className="bg-gray-50 rounded-lg shadow-md p-6 mb-8">
-        <p className="text-gray-700 mb-6">
-          Have questions about my photography, interested in purchasing prints, or want to discuss wildlife conservation? 
-          Fill out the form below and I'll get back to you as soon as possible.
-        </p>
+        <EditableContent pageId="contact" sectionId="intro">
+          <p className="text-gray-700 mb-6">
+            Have questions about my photography, interested in purchasing prints, or want to discuss wildlife conservation?
+            Fill out the form below and I&apos;ll get back to you as soon as possible.
+          </p>
+        </EditableContent>
         
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Name field */}
