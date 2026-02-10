@@ -27,12 +27,12 @@ export default function PageEditorPage() {
   }, [pageId, selectPage])
 
   useEffect(() => {
-    if (currentPage) {
+    if (currentPage && currentPage._id === pageId) {
       setTitle(currentPage.title || '')
       setDescription(currentPage.description || '')
       setBody(currentPage.body || '')
     }
-  }, [currentPage])
+  }, [currentPage, pageId])
 
   const handleSave = async () => {
     setSaving(true)
