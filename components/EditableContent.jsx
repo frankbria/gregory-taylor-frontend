@@ -23,15 +23,13 @@ export default function EditableContent({ pageId, sectionId, children }) {
       try {
         const base = process.env.NEXT_PUBLIC_API_BASE
         if (!base) {
-          setResolved(true)
-          setLoading(false)
+          if (!cancelled) { setResolved(true); setLoading(false) }
           return
         }
 
         const res = await fetch(`${base}/api/pages/${pageId}`)
         if (!res.ok) {
-          setResolved(true)
-          setLoading(false)
+          if (!cancelled) { setResolved(true); setLoading(false) }
           return
         }
 

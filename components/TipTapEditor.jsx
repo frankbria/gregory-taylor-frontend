@@ -43,6 +43,7 @@ export default function TipTapEditor({ content = '', onChange, editable = true }
 
   const handleLink = () => {
     const url = window.prompt('Enter URL')
+    if (url === null) return
     if (url) {
       editor.chain().focus().setLink({ href: url }).run()
     } else {

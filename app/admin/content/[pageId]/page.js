@@ -19,6 +19,7 @@ export default function PageEditorPage() {
 
   useEffect(() => {
     let cancelled = false
+    setLoadError('')
     selectPage(pageId).catch(() => {
       if (!cancelled) setLoadError('Unable to load page content.')
     })
