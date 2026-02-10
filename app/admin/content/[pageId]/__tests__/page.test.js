@@ -59,7 +59,7 @@ const mockPage = {
 const defaultContentState = {
   currentPage: null,
   loading: false,
-  selectPage: jest.fn(),
+  selectPage: jest.fn().mockResolvedValue(),
   updatePage: jest.fn(),
 }
 
@@ -88,6 +88,20 @@ describe('PageEditorPage ([pageId])', () => {
     it('shows placeholder when page is not yet loaded', () => {
       render(<PageEditorPage />)
       expect(screen.getByText(/loading page/i)).toBeInTheDocument()
+    })
+
+    it('shows error message when selectPage fails', async () => {
+      const mockSelectPage = jest.fn().mockRejectedValue(new Error('Fetch failed'))
+      mockUseContent.mockReturnValue({
+        ...defaultContentState,
+        selectPage: mockSelectPage,
+      })
+
+      render(<PageEditorPage />)
+
+      await waitFor(() => {
+        expect(screen.getByText(/unable to load page content/i)).toBeInTheDocument()
+      })
     })
   })
 

@@ -1,7 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import DOMPurify from 'dompurify'
 
+// Uses raw fetch instead of useAPI() intentionally — public pages should
+// fall back silently without triggering ErrorContext toast notifications.
 export default function EditableContent({ pageId, sectionId, children }) {
   const [managedContent, setManagedContent] = useState(null)
   const [loading, setLoading] = useState(!!pageId)
@@ -34,7 +37,7 @@ export default function EditableContent({ pageId, sectionId, children }) {
 
         const data = await res.json()
         if (!cancelled) {
-          const section = data.sections?.find(s => s.sectionId === sectionId)
+          const section = data?.sections?.find(s => s.sectionId === sectionId)
           if (section?.content) {
             setManagedContent(section.content)
           }
@@ -65,7 +68,7 @@ export default function EditableContent({ pageId, sectionId, children }) {
   }
 
   if (managedContent) {
-    return <div dangerouslySetInnerHTML={{ __html: managedContent }} />
+    return <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(managedContent) }} />
   }
 
   return <>{children}</>

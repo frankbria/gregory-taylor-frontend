@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 
 // Mock EditableContent to just render children (fallback behavior)
 jest.mock('../EditableContent', () => {

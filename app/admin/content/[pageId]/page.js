@@ -15,9 +15,14 @@ export default function PageEditorPage() {
   const [description, setDescription] = useState('')
   const [body, setBody] = useState('')
   const [saving, setSaving] = useState(false)
+  const [loadError, setLoadError] = useState('')
 
   useEffect(() => {
-    selectPage(pageId)
+    let cancelled = false
+    selectPage(pageId).catch(() => {
+      if (!cancelled) setLoadError('Unable to load page content.')
+    })
+    return () => { cancelled = true }
   }, [pageId, selectPage])
 
   useEffect(() => {
@@ -54,7 +59,7 @@ export default function PageEditorPage() {
   }
 
   if (!currentPage) {
-    return <p className="text-gray-500">Loading page...</p>
+    return <p className="text-gray-500">{loadError || 'Loading page...'}</p>
   }
 
   return (

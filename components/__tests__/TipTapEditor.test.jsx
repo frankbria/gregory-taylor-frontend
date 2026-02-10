@@ -152,4 +152,24 @@ describe('TipTapEditor', () => {
     const { container } = render(<TipTapEditor />)
     expect(container.firstChild).toBeNull()
   })
+
+  it('syncs content prop changes into editor via setContent', () => {
+    mockEditor.getHTML.mockReturnValue('<p>old content</p>')
+
+    const { rerender } = render(<TipTapEditor content="<p>old content</p>" />)
+
+    // Simulate content prop change (e.g. async page load)
+    rerender(<TipTapEditor content="<p>new content</p>" />)
+
+    expect(mockEditor.commands.setContent).toHaveBeenCalledWith('<p>new content</p>', false)
+  })
+
+  it('does not call setContent when content matches editor HTML', () => {
+    mockEditor.getHTML.mockReturnValue('<p>same content</p>')
+
+    const { rerender } = render(<TipTapEditor content="<p>same content</p>" />)
+    rerender(<TipTapEditor content="<p>same content</p>" />)
+
+    expect(mockEditor.commands.setContent).not.toHaveBeenCalled()
+  })
 })

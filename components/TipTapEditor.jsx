@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Link from '@tiptap/extension-link'
@@ -21,6 +22,15 @@ export default function TipTapEditor({ content = '', onChange, editable = true }
       }
     },
   })
+
+  // Sync content prop changes (e.g. async page load) into the editor
+  useEffect(() => {
+    if (!editor) return
+    const html = content || ''
+    if (editor.getHTML() !== html) {
+      editor.commands.setContent(html, false)
+    }
+  }, [editor, content])
 
   if (!editor) return null
 

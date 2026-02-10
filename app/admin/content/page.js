@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'react-hot-toast'
 import { useContent } from '@/lib/ContentContext'
 import TipTapEditor from '@/components/TipTapEditor'
+import DOMPurify from 'dompurify'
 
 export default function ContentEditorPage() {
   const { pages, currentPage, loading, refreshPages, selectPage, updatePage } = useContent()
@@ -176,7 +177,7 @@ export default function ContentEditorPage() {
                       <div
                         data-testid="preview-pane"
                         className="border border-gray-300 rounded-md p-4 prose max-w-none overflow-auto min-h-[200px]"
-                        dangerouslySetInnerHTML={{ __html: bodyContent }}
+                        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(bodyContent) }}
                       />
                     )}
                   </div>

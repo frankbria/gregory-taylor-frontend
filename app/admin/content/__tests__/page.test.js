@@ -15,6 +15,10 @@ jest.mock('react-hot-toast', () => ({
   },
 }))
 
+jest.mock('dompurify', () => ({
+  sanitize: (html) => html,
+}))
+
 // Mock TipTapEditor - capture onChange and content props
 let capturedOnChange = null
 jest.mock('@/components/TipTapEditor', () => {

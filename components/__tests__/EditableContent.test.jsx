@@ -1,11 +1,18 @@
 import { render, screen, waitFor } from '@testing-library/react'
 
+// Mock DOMPurify - pass through for testing
+jest.mock('dompurify', () => ({
+  sanitize: (html) => html,
+}))
+
 // Mock the fetch API
 beforeEach(() => {
+  process.env.NEXT_PUBLIC_API_BASE = 'http://test-api.example.com'
   global.fetch = jest.fn()
 })
 
 afterEach(() => {
+  delete process.env.NEXT_PUBLIC_API_BASE
   jest.restoreAllMocks()
 })
 
@@ -102,5 +109,20 @@ describe('EditableContent', () => {
     )
 
     expect(screen.getByText('No pageId fallback')).toBeInTheDocument()
+  })
+
+  test('renders children when NEXT_PUBLIC_API_BASE is not set', async () => {
+    delete process.env.NEXT_PUBLIC_API_BASE
+
+    render(
+      <EditableContent pageId="home" sectionId="hero">
+        <p>No API base fallback</p>
+      </EditableContent>
+    )
+
+    await waitFor(() => {
+      expect(screen.getByText('No API base fallback')).toBeInTheDocument()
+    })
+    expect(global.fetch).not.toHaveBeenCalled()
   })
 })
