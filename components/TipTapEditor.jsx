@@ -28,7 +28,7 @@ export default function TipTapEditor({ content = '', onChange, editable = true }
     if (!editor) return
     const html = content || ''
     if (editor.getHTML() !== html) {
-      editor.commands.setContent(html, false)
+      editor.commands.setContent(html, { emitUpdate: false })
     }
   }, [editor, content])
 

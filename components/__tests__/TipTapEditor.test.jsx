@@ -161,7 +161,7 @@ describe('TipTapEditor', () => {
     // Simulate content prop change (e.g. async page load)
     rerender(<TipTapEditor content="<p>new content</p>" />)
 
-    expect(mockEditor.commands.setContent).toHaveBeenCalledWith('<p>new content</p>', false)
+    expect(mockEditor.commands.setContent).toHaveBeenCalledWith('<p>new content</p>', { emitUpdate: false })
   })
 
   it('does not call setContent when content matches editor HTML', () => {

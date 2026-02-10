@@ -17,6 +17,10 @@ export default function EditableContent({ pageId, sectionId, children }) {
       return
     }
 
+    setManagedContent(null)
+    setLoading(true)
+    setResolved(false)
+
     let cancelled = false
 
     const fetchContent = async () => {
