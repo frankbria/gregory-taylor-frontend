@@ -13,6 +13,7 @@ function CloudinaryImage({
   height,
   objectFit,
   className = '',
+  customSettings,
   ...rest
 }) {
   if (!src) return null
@@ -75,7 +76,7 @@ function CloudinaryImage({
         src={src}
         alt={alt}
         fill
-        loader={isCloudinary ? cloudinaryLoader : undefined}
+        loader={isCloudinary ? (props) => cloudinaryLoader({ ...props, customSettings }) : undefined}
         placeholder={blurDataURL ? 'blur' : undefined}
         blurDataURL={blurDataURL}
         className={`${objectFitClass} ${className}`}
