@@ -6,6 +6,7 @@ import { toast } from 'react-hot-toast'
 import { useContent } from '@/lib/ContentContext'
 import useAPI from '@/lib/api'
 import ImageSettingsForm from '@/components/admin/ImageSettingsForm'
+import CloudinaryImage from '@/components/CloudinaryImage'
 
 export default function ImageSettingsPage() {
   const {
@@ -259,11 +260,14 @@ export default function ImageSettingsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {photos.map((photo) => (
               <div key={photo._id} className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
-                <img
-                  src={photo.src}
-                  alt={photo.title || 'Photo'}
-                  className="w-full h-40 object-cover"
-                />
+                <div className="h-40">
+                  <CloudinaryImage
+                    src={photo.src}
+                    alt={photo.title || 'Photo'}
+                    aspectRatio={16/9}
+                    customSettings={photo.imageSettings}
+                  />
+                </div>
                 <div className="p-3">
                   <p className="font-medium text-sm truncate">{photo.title}</p>
                   <button
@@ -281,9 +285,20 @@ export default function ImageSettingsPage() {
 
       {/* Modal */}
       {selectedPhoto && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6">
-            <h3 className="text-lg font-semibold mb-4">
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          onClick={handleCloseModal}
+          onKeyDown={(e) => e.key === 'Escape' && handleCloseModal()}
+          role="presentation"
+        >
+          <div
+            className="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 id="modal-title" className="text-lg font-semibold mb-4">
               Edit Settings: {selectedPhoto.title}
             </h3>
             <ImageSettingsForm
