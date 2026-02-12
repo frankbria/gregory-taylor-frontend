@@ -67,6 +67,7 @@ describe('EditableContent', () => {
   })
 
   test('falls back to children on network error', async () => {
+    jest.spyOn(console, 'error').mockImplementation(() => {})
     global.fetch.mockRejectedValueOnce(new Error('Network error'))
 
     render(

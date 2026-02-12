@@ -23,6 +23,7 @@ const mockEditor = {
   commands: {
     setContent: jest.fn(),
   },
+  setEditable: jest.fn(),
 }
 
 jest.mock('@tiptap/react', () => ({
@@ -171,5 +172,16 @@ describe('TipTapEditor', () => {
     rerender(<TipTapEditor content="<p>same content</p>" />)
 
     expect(mockEditor.commands.setContent).not.toHaveBeenCalled()
+  })
+
+  it('syncs editable prop changes via setEditable', () => {
+    mockEditor.isEditable = true
+
+    const { rerender } = render(<TipTapEditor editable={true} />)
+
+    mockEditor.isEditable = true
+    rerender(<TipTapEditor editable={false} />)
+
+    expect(mockEditor.setEditable).toHaveBeenCalledWith(false)
   })
 })

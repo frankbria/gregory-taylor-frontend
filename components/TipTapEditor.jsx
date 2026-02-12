@@ -32,6 +32,14 @@ export default function TipTapEditor({ content = '', onChange, editable = true }
     }
   }, [editor, content])
 
+  // Sync editable prop changes — useEditor treats editable as initial-only in TipTap v3
+  useEffect(() => {
+    if (!editor) return
+    if (editor.isEditable !== editable) {
+      editor.setEditable(editable)
+    }
+  }, [editor, editable])
+
   if (!editor) return null
 
   const activeClass = 'bg-gray-800 text-white'
