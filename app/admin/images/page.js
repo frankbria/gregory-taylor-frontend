@@ -17,7 +17,7 @@ export default function ImageSettingsPage() {
     getPhotoSettings,
     updatePhotoSettings,
   } = useContent()
-  const api = useAPI()
+  const { getPhotos } = useAPI()
 
   // Photo gallery state
   const [photos, setPhotos] = useState(null)
@@ -61,7 +61,7 @@ export default function ImageSettingsPage() {
     let cancelled = false
     async function fetchPhotos() {
       try {
-        const data = await api.getPhotos()
+        const data = await getPhotos()
         if (!cancelled) {
           setPhotos(data)
           setPhotosLoading(false)
@@ -75,7 +75,7 @@ export default function ImageSettingsPage() {
     }
     fetchPhotos()
     return () => { cancelled = true }
-  }, [api])
+  }, [getPhotos])
 
   const onSubmit = async (data) => {
     try {

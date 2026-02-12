@@ -65,7 +65,7 @@ export default function ImageSettingsForm({ photo, currentSettings, onSave, onCl
 
   const handleReset = () => {
     reset({
-      quality: 80,
+      quality: defaults.quality === 'auto' ? 80 : defaults.quality,
       sharpen: defaults.sharpen,
       blur: defaults.blur,
       format: defaults.format,
