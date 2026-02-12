@@ -31,7 +31,6 @@ export default function ImageDetailPage() {
 
         // Fetch photo data
         const photoData = await getPhotoBySlug(slug)
-        console.log('Photo data:', photoData)
         setPhoto(photoData)
 
         // Fetch sizes data
@@ -160,6 +159,7 @@ export default function ImageDetailPage() {
             aspectRatio={photo.aspectRatio}
             width={photo.width}
             height={photo.height}
+            customSettings={photo.imageSettings}
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center bg-gray-200 text-gray-500 text-sm">

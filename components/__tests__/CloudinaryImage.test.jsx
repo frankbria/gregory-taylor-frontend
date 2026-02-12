@@ -2,12 +2,14 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import CloudinaryImage from '../CloudinaryImage'
 
-// Mock next/image
+// Mock next/image - invoke loader if provided to simulate real Next.js behavior
 jest.mock('next/image', () => {
-  return function MockImage({ src, alt, fill, className, style, ...rest }) {
+  return function MockImage({ src, alt, fill, className, style, loader, ...rest }) {
+    // Call the loader to simulate what Next.js Image does internally
+    const resolvedSrc = loader ? loader({ src, width: 640, quality: 75 }) : src
     return (
       <img
-        src={src}
+        src={resolvedSrc}
         alt={alt}
         data-fill={fill ? 'true' : 'false'}
         className={className}
@@ -19,11 +21,10 @@ jest.mock('next/image', () => {
   }
 })
 
-// Mock cloudinaryLoader
+// Mock cloudinaryLoader - capture calls to verify customSettings is passed
+const mockCloudinaryLoader = jest.fn(({ src }) => src)
 jest.mock('@/lib/cloudinaryLoader', () => {
-  return function mockLoader({ src }) {
-    return src
-  }
+  return (...args) => mockCloudinaryLoader(...args)
 })
 
 describe('CloudinaryImage Component', () => {
@@ -31,6 +32,10 @@ describe('CloudinaryImage Component', () => {
     src: 'https://res.cloudinary.com/demo/image/upload/sample.jpg',
     alt: 'Test image'
   }
+
+  beforeEach(() => {
+    mockCloudinaryLoader.mockClear()
+  })
 
   describe('Basic rendering', () => {
     it('should render null when src is not provided', () => {
@@ -285,6 +290,62 @@ describe('CloudinaryImage Component', () => {
       render(<CloudinaryImage {...defaultProps} data-custom="value" priority={true} />)
       const image = screen.getByTestId('next-image')
       expect(image).toHaveAttribute('data-custom', 'value')
+    })
+  })
+
+  describe('customSettings prop', () => {
+    it('should pass customSettings to cloudinaryLoader when provided', () => {
+      const settings = { quality: 90, sharpen: 50, format: 'webp' }
+      render(<CloudinaryImage {...defaultProps} customSettings={settings} />)
+
+      // The loader should have been called with customSettings
+      expect(mockCloudinaryLoader).toHaveBeenCalledWith(
+        expect.objectContaining({ customSettings: settings })
+      )
+    })
+
+    it('should not pass customSettings to loader when not provided', () => {
+      render(<CloudinaryImage {...defaultProps} />)
+
+      // The loader should be called without customSettings (undefined)
+      expect(mockCloudinaryLoader).toHaveBeenCalled()
+      expect(mockCloudinaryLoader).toHaveBeenCalledWith(
+        expect.objectContaining({ customSettings: undefined })
+      )
+    })
+
+    it('should render correctly with customSettings and maintain aspect ratio', () => {
+      const settings = { quality: 85, blur: 10 }
+      const { container } = render(
+        <CloudinaryImage {...defaultProps} customSettings={settings} aspectRatio={16/9} />
+      )
+      const wrapper = container.firstChild
+      const image = screen.getByTestId('next-image')
+
+      // Aspect ratio should still work
+      const actual = parseFloat(wrapper.style.paddingTop)
+      expect(actual).toBeCloseTo(56.25, 2)
+      expect(image).toBeInTheDocument()
+    })
+
+    it('should render correctly without customSettings (backward compatible)', () => {
+      const { container } = render(<CloudinaryImage {...defaultProps} />)
+      const wrapper = container.firstChild
+      const image = screen.getByTestId('next-image')
+
+      expect(wrapper).toBeInTheDocument()
+      expect(image).toBeInTheDocument()
+      const actual = parseFloat(wrapper.style.paddingTop)
+      expect(actual).toBeCloseTo(66.67, 2)
+    })
+
+    it('should pass empty customSettings object to loader when provided', () => {
+      const settings = {}
+      render(<CloudinaryImage {...defaultProps} customSettings={settings} />)
+
+      expect(mockCloudinaryLoader).toHaveBeenCalledWith(
+        expect.objectContaining({ customSettings: settings })
+      )
     })
   })
 })

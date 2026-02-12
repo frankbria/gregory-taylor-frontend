@@ -213,4 +213,55 @@ describe('ImageDetailPage', () => {
       })
     })
   })
+
+  describe('Passing customSettings to CloudinaryImage', () => {
+    it('should pass customSettings when photo has imageSettings', async () => {
+      const mockPhoto = {
+        _id: '1',
+        slug: 'test-photo',
+        title: 'Enhanced Photo',
+        description: 'Photo with custom settings',
+        displayUrl: 'https://res.cloudinary.com/demo/image/upload/test.jpg',
+        fullLength: false,
+        imageSettings: { quality: 95, sharpen: 40, blur: 0 }
+      }
+
+      getPhotoBySlug.mockResolvedValue(mockPhoto)
+
+      render(<ImageDetailPage />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Enhanced Photo')).toBeInTheDocument()
+      })
+
+      await waitFor(() => {
+        const lastCall = cloudinaryImageCalls[cloudinaryImageCalls.length - 1]
+        expect(lastCall.customSettings).toEqual({ quality: 95, sharpen: 40, blur: 0 })
+      })
+    })
+
+    it('should not pass customSettings when photo has no imageSettings', async () => {
+      const mockPhoto = {
+        _id: '1',
+        slug: 'test-photo',
+        title: 'Basic Photo',
+        description: 'Photo without custom settings',
+        displayUrl: 'https://res.cloudinary.com/demo/image/upload/test.jpg',
+        fullLength: false
+      }
+
+      getPhotoBySlug.mockResolvedValue(mockPhoto)
+
+      render(<ImageDetailPage />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Basic Photo')).toBeInTheDocument()
+      })
+
+      await waitFor(() => {
+        const lastCall = cloudinaryImageCalls[cloudinaryImageCalls.length - 1]
+        expect(lastCall.customSettings).toBeUndefined()
+      })
+    })
+  })
 })

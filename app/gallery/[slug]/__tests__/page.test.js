@@ -208,6 +208,65 @@ describe('CategoryGalleryPage', () => {
     })
   })
 
+  describe('Passing customSettings to CloudinaryImage', () => {
+    it('should pass customSettings when photo has imageSettings', async () => {
+      const mockPhotos = [
+        {
+          _id: '1',
+          slug: 'photo-1',
+          title: 'Enhanced Photo',
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/test.jpg',
+          fullLength: false,
+          imageSettings: { quality: 85, sharpen: 20, format: 'webp' }
+        }
+      ]
+
+      getPhotosByCategory.mockResolvedValue({
+        category: { name: 'Test Category' },
+        photos: mockPhotos
+      })
+
+      render(<CategoryGalleryPage />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Test Category')).toBeInTheDocument()
+      })
+
+      await waitFor(() => {
+        const lastCall = cloudinaryImageCalls[cloudinaryImageCalls.length - 1]
+        expect(lastCall.customSettings).toEqual({ quality: 85, sharpen: 20, format: 'webp' })
+      })
+    })
+
+    it('should not pass customSettings when photo has no imageSettings', async () => {
+      const mockPhotos = [
+        {
+          _id: '1',
+          slug: 'photo-1',
+          title: 'Basic Photo',
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/test.jpg',
+          fullLength: false
+        }
+      ]
+
+      getPhotosByCategory.mockResolvedValue({
+        category: { name: 'Test Category' },
+        photos: mockPhotos
+      })
+
+      render(<CategoryGalleryPage />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Test Category')).toBeInTheDocument()
+      })
+
+      await waitFor(() => {
+        const lastCall = cloudinaryImageCalls[cloudinaryImageCalls.length - 1]
+        expect(lastCall.customSettings).toBeUndefined()
+      })
+    })
+  })
+
   describe('Grid layout for wide images', () => {
     it('should add wide column span for panoramic images', async () => {
       const mockPhotos = [

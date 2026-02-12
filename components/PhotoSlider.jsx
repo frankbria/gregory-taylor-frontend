@@ -100,7 +100,7 @@ function PhotoSlider() {
             fill
             priority={index === 0}
             sizes="100vw"
-            loader={photo.displayUrl?.includes('res.cloudinary.com') ? cloudinaryLoader : undefined}
+            loader={photo.displayUrl?.includes('res.cloudinary.com') ? (props) => cloudinaryLoader({ ...props, customSettings: photo.imageSettings }) : undefined}
             placeholder={getBlurDataURL(photo.displayUrl) ? 'blur' : undefined}
             blurDataURL={getBlurDataURL(photo.displayUrl)}
             className={isWideImage(photo.aspectRatio) ? 'object-contain' : 'object-cover'}

@@ -155,6 +155,57 @@ describe('CategoryGrid', () => {
     })
   })
 
+  describe('Passing customSettings to CloudinaryImage', () => {
+    it('should pass customSettings when category has imageSettings', async () => {
+      const mockCategories = [
+        {
+          _id: '1',
+          slug: 'landscapes',
+          name: 'Landscapes',
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/landscapes.jpg',
+          imageSettings: { quality: 90, sharpen: 30 }
+        }
+      ]
+
+      getCategories.mockResolvedValue(mockCategories)
+
+      render(<CategoryGrid />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Landscapes')).toBeInTheDocument()
+      })
+
+      await waitFor(() => {
+        const lastCall = cloudinaryImageCalls[cloudinaryImageCalls.length - 1]
+        expect(lastCall.customSettings).toEqual({ quality: 90, sharpen: 30 })
+      })
+    })
+
+    it('should not pass customSettings when category has no imageSettings', async () => {
+      const mockCategories = [
+        {
+          _id: '1',
+          slug: 'legacy',
+          name: 'Legacy Category',
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/legacy.jpg'
+        }
+      ]
+
+      getCategories.mockResolvedValue(mockCategories)
+
+      render(<CategoryGrid />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Legacy Category')).toBeInTheDocument()
+      })
+
+      await waitFor(() => {
+        const lastCall = cloudinaryImageCalls[cloudinaryImageCalls.length - 1]
+        expect(lastCall.customSettings).toBeUndefined()
+      })
+    })
+  })
+
   describe('Category without featured image', () => {
     it('should show "No Image" placeholder when no displayUrl', async () => {
       const mockCategories = [
