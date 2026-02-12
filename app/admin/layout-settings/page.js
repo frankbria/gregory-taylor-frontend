@@ -41,6 +41,7 @@ function ComponentStylingSection() {
   }, [layoutSettings, loadStyles])
 
   const handleSaveComponentStyles = useCallback(async () => {
+    if (!layoutSettings) return
     setSaving(true)
     try {
       await updateLayoutSettings({
