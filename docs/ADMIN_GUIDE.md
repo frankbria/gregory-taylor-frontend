@@ -150,7 +150,8 @@ Images are automatically optimized for different screen sizes through Cloudinary
 - **Layout changes**: Saved immediately when you click "Save"
 - **Image settings**: Saved immediately when you click "Save"
 
-All changes take effect on the live site after saving. There is no separate "publish" step.
+- **Content changes** and **Global settings** (header/footer visibility, grid columns, color scheme, nav items) take effect on the live site after saving.
+- **Component Styling** changes are saved as style configuration. These will be applied to site components in a future update. You can use Export/Import to back up your style work.
 
 ### Previewing Changes
 

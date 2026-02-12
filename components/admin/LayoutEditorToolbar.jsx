@@ -1,7 +1,10 @@
 'use client'
 
 import { useEffect, useCallback, useRef } from 'react'
+import { toast } from 'react-hot-toast'
 import { useLayout } from '@/lib/LayoutContext'
+
+const MAX_IMPORT_SIZE = 1024 * 1024 // 1 MB
 
 export default function LayoutEditorToolbar({ onSave, saving }) {
   const { componentStyles, resetAll, loadStyles, isDirty } = useLayout()
@@ -43,16 +46,35 @@ export default function LayoutEditorToolbar({ onSave, saving }) {
     const file = e.target.files?.[0]
     if (!file) return
 
+    if (file.size > MAX_IMPORT_SIZE) {
+      toast.error('Import file too large (max 1 MB)')
+      if (fileInputRef.current) fileInputRef.current.value = ''
+      return
+    }
+
     const reader = new FileReader()
     reader.onload = (event) => {
       try {
         const styles = JSON.parse(event.target.result)
+        if (typeof styles !== 'object' || styles === null || Array.isArray(styles)) {
+          toast.error('Invalid style file format')
+          return
+        }
+        const valid = Object.values(styles).every(
+          v => Array.isArray(v) && v.every(c => typeof c === 'string')
+        )
+        if (!valid) {
+          toast.error('Invalid style file format')
+          return
+        }
         loadStyles(styles)
+        toast.success('Styles imported successfully')
       } catch {
-        // Invalid JSON - silently ignore
+        toast.error('Failed to parse import file')
       }
     }
     reader.readAsText(file)
+    if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
   return (

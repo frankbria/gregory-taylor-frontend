@@ -19,14 +19,15 @@ function matchesFilter(node, filter) {
   return false
 }
 
-function TreeNode({ node, expanded, onToggle, selectedId, onSelect, getComponentClasses, filter }) {
+function TreeNode({ node, expandedIds, onToggle, selectedId, onSelect, getComponentClasses, filter }) {
   const hasChildren = node.children && node.children.length > 0
   const isSelected = selectedId === node.id
   const classes = getComponentClasses(node.id)
   const classCount = classes.length
+  const expanded = expandedIds.has(node.id)
 
   const isAutoExpanded = filter && hasChildren && node.children.some(child =>
-    child.label.toLowerCase().includes(filter.toLowerCase())
+    matchesFilter(child, filter)
   )
   const showChildren = hasChildren && (expanded || isAutoExpanded)
 
@@ -80,7 +81,7 @@ function TreeNode({ node, expanded, onToggle, selectedId, onSelect, getComponent
               <TreeNode
                 key={child.id}
                 node={child}
-                expanded={expanded}
+                expandedIds={expandedIds}
                 onToggle={onToggle}
                 selectedId={selectedId}
                 onSelect={onSelect}
@@ -170,7 +171,7 @@ export default function ComponentTree({ className = '' }) {
           <TreeNode
             key={node.id}
             node={node}
-            expanded={expandedIds.has(node.id)}
+            expandedIds={expandedIds}
             onToggle={toggleNode}
             selectedId={selectedComponentId}
             onSelect={selectComponent}

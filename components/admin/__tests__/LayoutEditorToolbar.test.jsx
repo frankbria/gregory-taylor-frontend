@@ -8,6 +8,15 @@ jest.mock('@/lib/LayoutContext', () => ({
   useLayout: () => mockUseLayout(),
 }))
 
+jest.mock('react-hot-toast', () => ({
+  toast: {
+    success: jest.fn(),
+    error: jest.fn(),
+  },
+}))
+
+const { toast } = require('react-hot-toast')
+
 import LayoutEditorToolbar from '../LayoutEditorToolbar'
 
 const mockResetAll = jest.fn()
@@ -137,7 +146,7 @@ describe('LayoutEditorToolbar', () => {
     document.createElement.mockRestore()
   })
 
-  it('Import reads uploaded file and calls loadStyles', async () => {
+  it('Import reads uploaded file and calls loadStyles with success toast', async () => {
     const user = userEvent.setup()
     render(<LayoutEditorToolbar onSave={jest.fn()} saving={false} />)
 
@@ -149,6 +158,68 @@ describe('LayoutEditorToolbar', () => {
 
     await waitFor(() => {
       expect(mockLoadStyles).toHaveBeenCalledWith({ header: ['flex', 'p-2'] })
+      expect(toast.success).toHaveBeenCalledWith('Styles imported successfully')
+    })
+  })
+
+  it('Import rejects file exceeding size limit', async () => {
+    const user = userEvent.setup()
+    render(<LayoutEditorToolbar onSave={jest.fn()} saving={false} />)
+
+    const fileInput = screen.getByTestId('import-file-input')
+    const largeContent = 'x'.repeat(1024 * 1024 + 1)
+    const file = new File([largeContent], 'big.json', { type: 'application/json' })
+
+    await user.upload(fileInput, file)
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith('Import file too large (max 1 MB)')
+      expect(mockLoadStyles).not.toHaveBeenCalled()
+    })
+  })
+
+  it('Import rejects non-object JSON (array)', async () => {
+    const user = userEvent.setup()
+    render(<LayoutEditorToolbar onSave={jest.fn()} saving={false} />)
+
+    const fileInput = screen.getByTestId('import-file-input')
+    const file = new File(['[1,2,3]'], 'array.json', { type: 'application/json' })
+
+    await user.upload(fileInput, file)
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith('Invalid style file format')
+      expect(mockLoadStyles).not.toHaveBeenCalled()
+    })
+  })
+
+  it('Import rejects object with non-string-array values', async () => {
+    const user = userEvent.setup()
+    render(<LayoutEditorToolbar onSave={jest.fn()} saving={false} />)
+
+    const fileInput = screen.getByTestId('import-file-input')
+    const file = new File([JSON.stringify({ header: 'not-an-array' })], 'bad.json', { type: 'application/json' })
+
+    await user.upload(fileInput, file)
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith('Invalid style file format')
+      expect(mockLoadStyles).not.toHaveBeenCalled()
+    })
+  })
+
+  it('Import rejects invalid JSON with error toast', async () => {
+    const user = userEvent.setup()
+    render(<LayoutEditorToolbar onSave={jest.fn()} saving={false} />)
+
+    const fileInput = screen.getByTestId('import-file-input')
+    const file = new File(['not-json{{{'], 'broken.json', { type: 'application/json' })
+
+    await user.upload(fileInput, file)
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith('Failed to parse import file')
+      expect(mockLoadStyles).not.toHaveBeenCalled()
     })
   })
 

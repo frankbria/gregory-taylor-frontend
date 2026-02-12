@@ -295,6 +295,8 @@ export default function TailwindClassEditor({ className }) {
                   const val = e.target.value
                   if (val && Number(val) >= 1 && Number(val) <= 12) {
                     handleSelectChange('grid-cols', `grid-cols-${val}`)
+                  } else {
+                    handleSelectChange('grid-cols', '')
                   }
                 }}
                 className="px-3 py-2 border border-gray-300 rounded-md bg-white text-sm w-20"

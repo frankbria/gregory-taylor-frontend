@@ -249,6 +249,155 @@ describe('TailwindClassEditor', () => {
     })
   })
 
+  describe('Sizing tab', () => {
+    beforeEach(() => {
+      mockSelectedComponentId = 'header'
+    })
+
+    it('selecting width adds w- class', async () => {
+      const user = userEvent.setup()
+      render(<TailwindClassEditor />)
+
+      await user.click(screen.getByRole('tab', { name: /sizing/i }))
+      await user.selectOptions(screen.getByLabelText(/^width$/i), 'w-full')
+      expect(mockAddClass).toHaveBeenCalledWith('header', 'w-full')
+    })
+
+    it('selecting height adds h- class', async () => {
+      const user = userEvent.setup()
+      render(<TailwindClassEditor />)
+
+      await user.click(screen.getByRole('tab', { name: /sizing/i }))
+      await user.selectOptions(screen.getByLabelText(/^height$/i), 'h-screen')
+      expect(mockAddClass).toHaveBeenCalledWith('header', 'h-screen')
+    })
+  })
+
+  describe('Effects tab', () => {
+    beforeEach(() => {
+      mockSelectedComponentId = 'header'
+    })
+
+    it('selecting border width adds border class', async () => {
+      const user = userEvent.setup()
+      render(<TailwindClassEditor />)
+
+      await user.click(screen.getByRole('tab', { name: /effects/i }))
+      await user.selectOptions(screen.getByLabelText(/border width/i), 'border-2')
+      expect(mockAddClass).toHaveBeenCalledWith('header', 'border-2')
+    })
+
+    it('selecting border radius adds rounded class', async () => {
+      const user = userEvent.setup()
+      render(<TailwindClassEditor />)
+
+      await user.click(screen.getByRole('tab', { name: /effects/i }))
+      await user.selectOptions(screen.getByLabelText(/border radius/i), 'rounded-lg')
+      expect(mockAddClass).toHaveBeenCalledWith('header', 'rounded-lg')
+    })
+
+    it('selecting shadow adds shadow class', async () => {
+      const user = userEvent.setup()
+      render(<TailwindClassEditor />)
+
+      await user.click(screen.getByRole('tab', { name: /effects/i }))
+      await user.selectOptions(screen.getByLabelText(/^shadow$/i), 'shadow-md')
+      expect(mockAddClass).toHaveBeenCalledWith('header', 'shadow-md')
+    })
+  })
+
+  describe('Layout tab - grid columns', () => {
+    beforeEach(() => {
+      mockSelectedComponentId = 'header'
+    })
+
+    it('entering valid grid columns adds grid-cols class', async () => {
+      const user = userEvent.setup()
+      render(<TailwindClassEditor />)
+
+      await user.click(screen.getByRole('tab', { name: /layout/i }))
+      const input = screen.getByLabelText(/grid columns/i)
+      await user.type(input, '3')
+      expect(mockAddClass).toHaveBeenCalledWith('header', 'grid-cols-3')
+    })
+
+    it('clearing grid columns removes stale grid-cols class', async () => {
+      mockGetComponentClasses.mockReturnValue(['grid-cols-3'])
+      const user = userEvent.setup()
+      render(<TailwindClassEditor />)
+
+      await user.click(screen.getByRole('tab', { name: /layout/i }))
+      const input = screen.getByLabelText(/grid columns/i)
+      await user.clear(input)
+      expect(mockRemoveClass).toHaveBeenCalledWith('header', 'grid-cols-3')
+    })
+
+    it('selecting flex direction adds flex direction class', async () => {
+      const user = userEvent.setup()
+      render(<TailwindClassEditor />)
+
+      await user.click(screen.getByRole('tab', { name: /layout/i }))
+      await user.click(screen.getByRole('radio', { name: /flex-col/i }))
+      expect(mockAddClass).toHaveBeenCalledWith('header', 'flex-col')
+    })
+
+    it('selecting justify option adds justify class', async () => {
+      const user = userEvent.setup()
+      render(<TailwindClassEditor />)
+
+      await user.click(screen.getByRole('tab', { name: /layout/i }))
+      await user.click(screen.getByRole('radio', { name: /justify-center/i }))
+      expect(mockAddClass).toHaveBeenCalledWith('header', 'justify-center')
+    })
+
+    it('selecting align option adds items class', async () => {
+      const user = userEvent.setup()
+      render(<TailwindClassEditor />)
+
+      await user.click(screen.getByRole('tab', { name: /layout/i }))
+      await user.click(screen.getByRole('radio', { name: /items-center/i }))
+      expect(mockAddClass).toHaveBeenCalledWith('header', 'items-center')
+    })
+  })
+
+  describe('Spacing tab - additional controls', () => {
+    beforeEach(() => {
+      mockSelectedComponentId = 'header'
+    })
+
+    it('selecting margin-x adds mx- class', async () => {
+      const user = userEvent.setup()
+      render(<TailwindClassEditor />)
+
+      await user.selectOptions(screen.getByLabelText(/margin x/i), 'mx-4')
+      expect(mockAddClass).toHaveBeenCalledWith('header', 'mx-4')
+    })
+
+    it('selecting margin-y adds my- class', async () => {
+      const user = userEvent.setup()
+      render(<TailwindClassEditor />)
+
+      await user.selectOptions(screen.getByLabelText(/margin y/i), 'my-2')
+      expect(mockAddClass).toHaveBeenCalledWith('header', 'my-2')
+    })
+
+    it('selecting padding-x adds px- class', async () => {
+      const user = userEvent.setup()
+      render(<TailwindClassEditor />)
+
+      await user.selectOptions(screen.getByLabelText(/padding x/i), 'px-6')
+      expect(mockAddClass).toHaveBeenCalledWith('header', 'px-6')
+    })
+
+    it('selecting gap adds gap- class', async () => {
+      const user = userEvent.setup()
+      render(<TailwindClassEditor />)
+
+      await user.selectOptions(screen.getByLabelText(/^gap$/i), 'gap-4')
+      expect(mockAddClass).toHaveBeenCalledWith('header', 'gap-4')
+    })
+  })
+
   describe('custom class input', () => {
     beforeEach(() => {
       mockSelectedComponentId = 'header'
