@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-hot-toast'
 import { HiChevronRight, HiChevronDown } from 'react-icons/hi2'
@@ -28,10 +28,15 @@ function ComponentStylingSection() {
   const { layoutSettings, updateLayoutSettings } = useContent()
   const { componentStyles, markSaved, loadStyles } = useLayout()
   const [saving, setSaving] = useState(false)
+  const lastLoadedRef = useRef(null)
 
   useEffect(() => {
-    if (layoutSettings?.componentStyles) {
-      loadStyles(layoutSettings.componentStyles)
+    const serverStyles = layoutSettings?.componentStyles
+    if (!serverStyles) return
+    const serialized = JSON.stringify(serverStyles)
+    if (serialized !== lastLoadedRef.current) {
+      lastLoadedRef.current = serialized
+      loadStyles(serverStyles)
     }
   }, [layoutSettings, loadStyles])
 
@@ -104,8 +109,9 @@ export default function LayoutSettingsPage() {
 
   const onSubmit = async (data) => {
     try {
+      const { componentStyles: _cs, ...restSettings } = layoutSettings || {}
       await updateLayoutSettings({
-        ...layoutSettings,
+        ...restSettings,
         showHeader: data.showHeader,
         showFooter: data.showFooter,
         colorScheme: data.colorScheme,

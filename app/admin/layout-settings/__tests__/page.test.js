@@ -178,7 +178,7 @@ describe('LayoutSettingsPage', () => {
       })
     })
 
-    it('preserves existing settings when saving global settings', async () => {
+    it('global save excludes componentStyles to prevent overwriting unsaved edits', async () => {
       const mockUpdate = jest.fn().mockResolvedValue()
       mockUseContent.mockReturnValue({
         ...defaultContentState,
@@ -191,9 +191,10 @@ describe('LayoutSettingsPage', () => {
       await user.click(screen.getByRole('button', { name: /^save$/i }))
 
       await waitFor(() => {
-        expect(mockUpdate).toHaveBeenCalledWith(expect.objectContaining({
-          componentStyles: { header: ['bg-black'] },
-        }))
+        expect(mockUpdate).toHaveBeenCalled()
+        const payload = mockUpdate.mock.calls[0][0]
+        expect(payload).not.toHaveProperty('componentStyles')
+        expect(payload).toHaveProperty('showHeader', true)
       })
     })
 
