@@ -160,6 +160,7 @@ export default function ImageDetailPage() {
             aspectRatio={photo.aspectRatio}
             width={photo.width}
             height={photo.height}
+            customSettings={photo.imageSettings}
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center bg-gray-200 text-gray-500 text-sm">

@@ -6,12 +6,22 @@ import useAPI from '@/lib/api'
 // Mock dependencies
 jest.mock('@/lib/api')
 
-// Mock next/image to capture props
+// Mock cloudinaryLoader to capture calls
+const mockCloudinaryLoader = jest.fn(({ src }) => src)
+jest.mock('@/lib/cloudinaryLoader', () => {
+  return (...args) => mockCloudinaryLoader(...args)
+})
+
+// Mock next/image to capture props and invoke loader
 let imageRenderCalls = []
 
 jest.mock('next/image', () => {
   return function MockImage(props) {
     imageRenderCalls.push(props)
+    // Invoke loader to verify it receives customSettings
+    if (props.loader) {
+      props.loader({ src: props.src, width: 640, quality: 75 })
+    }
     return (
       <img
         src={props.src}
@@ -30,6 +40,7 @@ describe('PhotoSlider', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     imageRenderCalls = []
+    mockCloudinaryLoader.mockClear()
     jest.useFakeTimers()
 
     useAPI.mockReturnValue({
@@ -268,6 +279,59 @@ describe('PhotoSlider', () => {
       await waitFor(() => {
         const images = screen.getAllByTestId('slider-image')
         expect(images.length).toBe(2)
+      })
+    })
+  })
+
+  describe('Passing imageSettings to cloudinaryLoader', () => {
+    it('should pass imageSettings as customSettings when photo has imageSettings', async () => {
+      const mockPhotos = [
+        {
+          _id: '1',
+          title: 'Enhanced Photo',
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/enhanced.jpg',
+          imageSettings: { quality: 90, sharpen: 25 }
+        }
+      ]
+
+      mockGetFeaturedPhotos.mockResolvedValue(mockPhotos)
+
+      render(<PhotoSlider />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Enhanced Photo')).toBeInTheDocument()
+      })
+
+      await waitFor(() => {
+        expect(mockCloudinaryLoader).toHaveBeenCalledWith(
+          expect.objectContaining({ customSettings: { quality: 90, sharpen: 25 } })
+        )
+      })
+    })
+
+    it('should not pass customSettings when photo has no imageSettings', async () => {
+      mockCloudinaryLoader.mockClear()
+
+      const mockPhotos = [
+        {
+          _id: '1',
+          title: 'Basic Photo',
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/basic.jpg'
+        }
+      ]
+
+      mockGetFeaturedPhotos.mockResolvedValue(mockPhotos)
+
+      render(<PhotoSlider />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Basic Photo')).toBeInTheDocument()
+      })
+
+      await waitFor(() => {
+        expect(mockCloudinaryLoader).toHaveBeenCalledWith(
+          expect.objectContaining({ customSettings: undefined })
+        )
       })
     })
   })
