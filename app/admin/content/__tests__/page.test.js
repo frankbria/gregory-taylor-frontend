@@ -1,5 +1,5 @@
 import React from 'react'
-import { render, screen, waitFor, within } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { toast } from 'react-hot-toast'
 
@@ -15,11 +15,32 @@ jest.mock('react-hot-toast', () => ({
   },
 }))
 
+jest.mock('dompurify', () => ({
+  sanitize: (html) => html,
+}))
+
+// Mock TipTapEditor - capture onChange and content props
+let capturedOnChange = null
+jest.mock('@/components/TipTapEditor', () => {
+  return function MockTipTapEditor({ content, onChange }) {
+    capturedOnChange = onChange
+    return (
+      <div data-testid="tiptap-editor" data-content={content || ''}>
+        <textarea
+          data-testid="tiptap-textarea"
+          value={content || ''}
+          onChange={(e) => onChange && onChange(e.target.value)}
+        />
+      </div>
+    )
+  }
+})
+
 import ContentEditorPage from '../page'
 
 const mockPages = [
-  { _id: 'page1', title: 'Home', description: 'Home page', body: 'Welcome to our site', metadata: {} },
-  { _id: 'page2', title: 'About', description: 'About page', body: 'About us content', metadata: { featured: true } },
+  { _id: 'page1', title: 'Home', description: 'Home page', body: '<p>Welcome to our site</p>', metadata: {} },
+  { _id: 'page2', title: 'About', description: 'About page', body: '<p>About us content</p>', metadata: { featured: true } },
 ]
 
 const defaultContentState = {
@@ -34,6 +55,7 @@ const defaultContentState = {
 describe('ContentEditorPage', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    capturedOnChange = null
     mockUseContent.mockReturnValue(defaultContentState)
   })
 
@@ -95,7 +117,19 @@ describe('ContentEditorPage', () => {
 
       expect(screen.getByLabelText('Title')).toHaveValue('Home')
       expect(screen.getByLabelText('Description')).toHaveValue('Home page')
-      expect(screen.getByLabelText('Body')).toHaveValue('Welcome to our site')
+    })
+
+    it('renders TipTapEditor with body content when page is selected', () => {
+      mockUseContent.mockReturnValue({
+        ...defaultContentState,
+        currentPage: mockPages[0],
+      })
+
+      render(<ContentEditorPage />)
+
+      const editor = screen.getByTestId('tiptap-editor')
+      expect(editor).toBeInTheDocument()
+      expect(editor).toHaveAttribute('data-content', '<p>Welcome to our site</p>')
     })
 
     it('shows no form when no page is selected', () => {
@@ -105,7 +139,7 @@ describe('ContentEditorPage', () => {
   })
 
   describe('form submission', () => {
-    it('calls updatePage with form data on save', async () => {
+    it('calls updatePage with form data including TipTapEditor body on save', async () => {
       const mockUpdatePage = jest.fn().mockResolvedValue()
       mockUseContent.mockReturnValue({
         ...defaultContentState,
@@ -126,7 +160,7 @@ describe('ContentEditorPage', () => {
         expect(mockUpdatePage).toHaveBeenCalledWith('page1', expect.objectContaining({
           title: 'Updated Home',
           description: 'Home page',
-          body: 'Welcome to our site',
+          body: '<p>Welcome to our site</p>',
         }))
       })
     })
@@ -205,6 +239,49 @@ describe('ContentEditorPage', () => {
       await waitFor(() => {
         expect(screen.getByText('Description is required')).toBeInTheDocument()
       })
+    })
+  })
+
+  describe('preview pane', () => {
+    it('renders preview toggle button when page is selected', () => {
+      mockUseContent.mockReturnValue({
+        ...defaultContentState,
+        currentPage: mockPages[0],
+      })
+
+      render(<ContentEditorPage />)
+      expect(screen.getByRole('button', { name: /preview/i })).toBeInTheDocument()
+    })
+
+    it('shows preview pane when preview button is clicked', async () => {
+      mockUseContent.mockReturnValue({
+        ...defaultContentState,
+        currentPage: mockPages[0],
+      })
+
+      const user = userEvent.setup()
+      render(<ContentEditorPage />)
+
+      await user.click(screen.getByRole('button', { name: /preview/i }))
+
+      expect(screen.getByTestId('preview-pane')).toBeInTheDocument()
+    })
+
+    it('hides preview pane when preview button is toggled off', async () => {
+      mockUseContent.mockReturnValue({
+        ...defaultContentState,
+        currentPage: mockPages[0],
+      })
+
+      const user = userEvent.setup()
+      render(<ContentEditorPage />)
+
+      const previewBtn = screen.getByRole('button', { name: /preview/i })
+      await user.click(previewBtn)
+      expect(screen.getByTestId('preview-pane')).toBeInTheDocument()
+
+      await user.click(previewBtn)
+      expect(screen.queryByTestId('preview-pane')).not.toBeInTheDocument()
     })
   })
 

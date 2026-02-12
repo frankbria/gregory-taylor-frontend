@@ -1,12 +1,16 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-hot-toast'
 import { useContent } from '@/lib/ContentContext'
+import TipTapEditor from '@/components/TipTapEditor'
+import DOMPurify from 'dompurify'
 
 export default function ContentEditorPage() {
   const { pages, currentPage, loading, refreshPages, selectPage, updatePage } = useContent()
+  const [bodyContent, setBodyContent] = useState('')
+  const [showPreview, setShowPreview] = useState(false)
 
   const {
     register,
@@ -24,11 +28,15 @@ export default function ContentEditorPage() {
       reset({
         title: currentPage.title || '',
         description: currentPage.description || '',
-        body: currentPage.body || '',
         metadata: currentPage.metadata ? JSON.stringify(currentPage.metadata, null, 2) : '{}',
       })
+      setBodyContent(currentPage.body || '')
     }
   }, [currentPage, reset])
+
+  const handleBodyChange = useCallback((html) => {
+    setBodyContent(html)
+  }, [])
 
   const onSubmit = async (data) => {
     try {
@@ -43,7 +51,7 @@ export default function ContentEditorPage() {
       await updatePage(currentPage._id, {
         title: data.title,
         description: data.description,
-        body: data.body,
+        body: bodyContent,
         metadata,
       })
       toast.success('Page updated successfully')
@@ -57,9 +65,9 @@ export default function ContentEditorPage() {
       reset({
         title: currentPage.title || '',
         description: currentPage.description || '',
-        body: currentPage.body || '',
         metadata: currentPage.metadata ? JSON.stringify(currentPage.metadata, null, 2) : '{}',
       })
+      setBodyContent(currentPage.body || '')
     }
   }
 
@@ -143,17 +151,36 @@ export default function ContentEditorPage() {
                   )}
                 </div>
 
-                {/* Body */}
+                {/* Body - TipTap Editor with Preview Toggle */}
                 <div>
-                  <label htmlFor="body" className="block text-sm font-medium text-gray-700 mb-1">
-                    Body
-                  </label>
-                  <textarea
-                    id="body"
-                    rows={8}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md bg-white"
-                    {...register('body')}
-                  />
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Body
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setShowPreview(!showPreview)}
+                      className="text-sm px-3 py-1 rounded border border-gray-300 hover:bg-gray-50 transition duration-200"
+                    >
+                      {showPreview ? 'Hide Preview' : 'Preview'}
+                    </button>
+                  </div>
+
+                  <div className={showPreview ? 'grid grid-cols-2 gap-4' : ''}>
+                    <div>
+                      <TipTapEditor
+                        content={bodyContent}
+                        onChange={handleBodyChange}
+                      />
+                    </div>
+                    {showPreview && (
+                      <div
+                        data-testid="preview-pane"
+                        className="border border-gray-300 rounded-md p-4 prose max-w-none overflow-auto min-h-[200px]"
+                        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(bodyContent) }}
+                      />
+                    )}
+                  </div>
                 </div>
 
                 {/* Metadata */}
