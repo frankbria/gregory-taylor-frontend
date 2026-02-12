@@ -6,10 +6,9 @@ function buildImageUrl(src, settings) {
   const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
   if (!cloudName) return src
 
-  const relativeSrc = src.replace(
-    /^https?:\/\/res\.cloudinary\.com\/[^/]+\/image\/upload\//,
-    ''
-  )
+  const cloudinaryPattern = /^https?:\/\/res\.cloudinary\.com\/[^/]+\/image\/upload\//
+  if (!cloudinaryPattern.test(src)) return src
+  const relativeSrc = src.replace(cloudinaryPattern, '')
   const transformations = buildTransformationString(settings)
   if (!transformations) {
     return `https://res.cloudinary.com/${cloudName}/image/upload/${relativeSrc}`
