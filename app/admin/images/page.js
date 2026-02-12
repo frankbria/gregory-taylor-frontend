@@ -75,7 +75,7 @@ export default function ImageSettingsPage() {
     }
     fetchPhotos()
     return () => { cancelled = true }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [api])
 
   const onSubmit = async (data) => {
     try {
@@ -111,6 +111,15 @@ export default function ImageSettingsPage() {
     setSelectedPhoto(null)
     setSelectedPhotoSettings(null)
   }, [])
+
+  useEffect(() => {
+    if (!selectedPhoto) return
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') handleCloseModal()
+    }
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [selectedPhoto, handleCloseModal])
 
   return (
     <div>
@@ -288,7 +297,6 @@ export default function ImageSettingsPage() {
         <div
           className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
           onClick={handleCloseModal}
-          onKeyDown={(e) => e.key === 'Escape' && handleCloseModal()}
           role="presentation"
         >
           <div

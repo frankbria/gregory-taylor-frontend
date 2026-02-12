@@ -310,8 +310,6 @@ describe('PhotoSlider', () => {
     })
 
     it('should not pass customSettings when photo has no imageSettings', async () => {
-      mockCloudinaryLoader.mockClear()
-
       const mockPhotos = [
         {
           _id: '1',

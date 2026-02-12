@@ -4,11 +4,16 @@ import { buildTransformationString } from '@/lib/cloudinaryTransformations'
 
 function buildImageUrl(src, settings) {
   const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+  if (!cloudName) return src
+
   const relativeSrc = src.replace(
     /^https?:\/\/res\.cloudinary\.com\/[^/]+\/image\/upload\//,
     ''
   )
   const transformations = buildTransformationString(settings)
+  if (!transformations) {
+    return `https://res.cloudinary.com/${cloudName}/image/upload/${relativeSrc}`
+  }
   return `https://res.cloudinary.com/${cloudName}/image/upload/${transformations}/${relativeSrc}`
 }
 

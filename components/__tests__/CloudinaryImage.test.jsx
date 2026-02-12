@@ -308,11 +308,10 @@ describe('CloudinaryImage Component', () => {
       render(<CloudinaryImage {...defaultProps} />)
 
       // The loader should be called without customSettings (undefined)
-      if (mockCloudinaryLoader.mock.calls.length > 0) {
-        expect(mockCloudinaryLoader).toHaveBeenCalledWith(
-          expect.objectContaining({ customSettings: undefined })
-        )
-      }
+      expect(mockCloudinaryLoader).toHaveBeenCalled()
+      expect(mockCloudinaryLoader).toHaveBeenCalledWith(
+        expect.objectContaining({ customSettings: undefined })
+      )
     })
 
     it('should render correctly with customSettings and maintain aspect ratio', () => {

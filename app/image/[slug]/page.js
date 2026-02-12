@@ -31,7 +31,6 @@ export default function ImageDetailPage() {
 
         // Fetch photo data
         const photoData = await getPhotoBySlug(slug)
-        console.log('Photo data:', photoData)
         setPhoto(photoData)
 
         // Fetch sizes data
