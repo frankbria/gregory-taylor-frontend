@@ -129,6 +129,76 @@ The `app/api/checkout/route.js` is marked with `export const dynamic = 'force-dy
 
 Tests mock Stripe completely (see `jest.setup.js` and `lib/__tests__/stripe.test.js`). No real Stripe API calls in tests.
 
+## Admin Panel & Layout Configuration
+
+### Authentication (`/admin/login`)
+- BetterAuth integration via `lib/AuthContext.js`
+- Auth guard in `app/admin/layout.js` redirects unauthenticated users
+- `useAuth()` hook provides `session`, `user`, `isAuthenticated`, `signOut()`
+
+### Admin Dashboard (`/admin`)
+- Quick-access cards to Content, Images, and Layout sections
+- `ContentProvider` wraps all admin pages for shared state
+
+### Content Editor (`/admin/content`)
+- WYSIWYG editing with TipTap rich text editor
+- Page list with edit/delete operations
+- Per-page editing at `/admin/content/[pageId]`
+
+### Image Settings (`/admin/images`)
+- Global image defaults (quality, sharpen, blur, format)
+- Per-photo override settings via modal form
+- Live Cloudinary preview of transformations
+
+### Layout Editor (`/admin/layout-settings`)
+Visual tool for configuring site layout and component Tailwind classes.
+
+**Global Settings** (collapsible section):
+- Visibility toggles (show/hide header, footer)
+- Grid columns configuration (1-12)
+- Color scheme (light/dark)
+- Navigation item management (add/remove/edit)
+
+**Component Styling** (main section):
+- Component tree showing site hierarchy (Header, Hero, Gallery Grid, Photo Detail, Footer)
+- Tabbed Tailwind class editor: Spacing, Sizing, Layout, Colors, Typography, Effects
+- Color-coded class tags with dismiss capability
+- Save/Revert/Preview/Export/Import toolbar
+- Dirty state tracking with unsaved changes warning
+
+**State Architecture**:
+- `ContentContext` manages persisted layout settings (read/write to backend API)
+- `LayoutContext` manages transient editing state (selected component, modified classes, dirty tracking)
+- Component styles stored as `componentStyles` key in layout settings JSON:
+  ```json
+  { "componentStyles": { "header": ["bg-black", "py-4"], "hero": ["text-center"] } }
+  ```
+
+**API Endpoints** (via `lib/contentApi.js`):
+- `GET /api/admin/settings/layout` - Fetch all layout settings
+- `PUT /api/admin/settings/layout` - Update layout settings (including componentStyles)
+
+### Dev Inspector
+- `DevInspectorWrapper` in root layout (development mode only)
+- `InspectorContext` for element inspection state
+- `ElementInspector` overlay + `InspectorToggle` button
+
+### Admin State Management
+- `ContentContext` (`lib/ContentContext.js`): Pages, image settings, layout settings, photo settings
+- `LayoutContext` (`lib/LayoutContext.js`): Component selection, class editing, dirty tracking
+- `AuthContext` (`lib/AuthContext.js`): Session, user, authentication status
+
+### Admin Components
+- `components/AdminHeader.jsx` - Top bar with logo, back link, user info
+- `components/admin/AdminNav.jsx` - Sidebar navigation
+- `components/admin/ComponentTree.jsx` - Hierarchical site section tree
+- `components/admin/TailwindClassEditor.jsx` - Tabbed Tailwind class controls
+- `components/admin/ClassTagList.jsx` - Color-coded dismissible class tags
+- `components/admin/LayoutEditorToolbar.jsx` - Save/Revert/Preview/Export/Import
+- `components/admin/ImageSettingsForm.jsx` - Per-photo image settings modal
+- `components/admin/CloudinaryPreview.jsx` - Live image transformation preview
+- `components/TipTapEditor.jsx` - Rich text WYSIWYG editor
+
 ## Common Workflows
 
 ### Adding a New Gallery Category

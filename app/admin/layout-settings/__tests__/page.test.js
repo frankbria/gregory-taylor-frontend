@@ -15,6 +15,46 @@ jest.mock('react-hot-toast', () => ({
   },
 }))
 
+// Mock the admin components to avoid deep dependency chains
+jest.mock('@/components/admin/ComponentTree', () => {
+  return function MockComponentTree() {
+    return <div data-testid="component-tree">ComponentTree</div>
+  }
+})
+
+jest.mock('@/components/admin/TailwindClassEditor', () => {
+  return function MockTailwindClassEditor() {
+    return <div data-testid="tailwind-class-editor">TailwindClassEditor</div>
+  }
+})
+
+jest.mock('@/components/admin/ClassTagList', () => {
+  return function MockClassTagList() {
+    return <div data-testid="class-tag-list">ClassTagList</div>
+  }
+})
+
+jest.mock('@/components/admin/LayoutEditorToolbar', () => {
+  return function MockLayoutEditorToolbar({ onSave, saving }) {
+    return (
+      <div data-testid="layout-editor-toolbar">
+        <button onClick={onSave} disabled={saving}>
+          {saving ? 'Saving...' : 'Save Component Styles'}
+        </button>
+      </div>
+    )
+  }
+})
+
+jest.mock('@/lib/LayoutContext', () => ({
+  LayoutProvider: ({ children }) => <div data-testid="layout-provider">{children}</div>,
+  useLayout: () => ({
+    componentStyles: { header: ['bg-black'] },
+    markSaved: jest.fn(),
+    loadStyles: jest.fn(),
+  }),
+}))
+
 import LayoutSettingsPage from '../page'
 
 const mockLayoutSettings = {
@@ -26,6 +66,7 @@ const mockLayoutSettings = {
   ],
   colorScheme: 'light',
   gridColumns: 3,
+  componentStyles: { header: ['bg-black'] },
 }
 
 const defaultContentState = {
@@ -76,6 +117,44 @@ describe('LayoutSettingsPage', () => {
       expect(screen.getByDisplayValue('Home')).toBeInTheDocument()
       expect(screen.getByDisplayValue('Gallery')).toBeInTheDocument()
     })
+
+    it('renders the component styling section', () => {
+      render(<LayoutSettingsPage />)
+
+      expect(screen.getByTestId('layout-provider')).toBeInTheDocument()
+      expect(screen.getByTestId('component-tree')).toBeInTheDocument()
+      expect(screen.getByTestId('tailwind-class-editor')).toBeInTheDocument()
+      expect(screen.getByTestId('class-tag-list')).toBeInTheDocument()
+      expect(screen.getByTestId('layout-editor-toolbar')).toBeInTheDocument()
+    })
+  })
+
+  describe('global settings collapsible', () => {
+    it('shows global settings expanded by default', () => {
+      render(<LayoutSettingsPage />)
+      expect(screen.getByText('Global Settings')).toBeInTheDocument()
+      expect(screen.getByLabelText('Show Header')).toBeInTheDocument()
+    })
+
+    it('collapses global settings on toggle click', async () => {
+      const user = userEvent.setup()
+      render(<LayoutSettingsPage />)
+
+      await user.click(screen.getByText('Global Settings'))
+
+      expect(screen.queryByLabelText('Show Header')).not.toBeInTheDocument()
+    })
+
+    it('expands global settings when collapsed and toggled', async () => {
+      const user = userEvent.setup()
+      render(<LayoutSettingsPage />)
+
+      await user.click(screen.getByText('Global Settings'))
+      expect(screen.queryByLabelText('Show Header')).not.toBeInTheDocument()
+
+      await user.click(screen.getByText('Global Settings'))
+      expect(screen.getByLabelText('Show Header')).toBeInTheDocument()
+    })
   })
 
   describe('form submission', () => {
@@ -89,13 +168,33 @@ describe('LayoutSettingsPage', () => {
       const user = userEvent.setup()
       render(<LayoutSettingsPage />)
 
-      await user.click(screen.getByRole('button', { name: /save/i }))
+      await user.click(screen.getByRole('button', { name: /^save$/i }))
 
       await waitFor(() => {
         expect(mockUpdate).toHaveBeenCalledWith(expect.objectContaining({
           showHeader: true,
           showFooter: true,
         }))
+      })
+    })
+
+    it('global save excludes componentStyles to prevent overwriting unsaved edits', async () => {
+      const mockUpdate = jest.fn().mockResolvedValue()
+      mockUseContent.mockReturnValue({
+        ...defaultContentState,
+        updateLayoutSettings: mockUpdate,
+      })
+
+      const user = userEvent.setup()
+      render(<LayoutSettingsPage />)
+
+      await user.click(screen.getByRole('button', { name: /^save$/i }))
+
+      await waitFor(() => {
+        expect(mockUpdate).toHaveBeenCalled()
+        const payload = mockUpdate.mock.calls[0][0]
+        expect(payload).not.toHaveProperty('componentStyles')
+        expect(payload).toHaveProperty('showHeader', true)
       })
     })
 
@@ -109,7 +208,7 @@ describe('LayoutSettingsPage', () => {
       const user = userEvent.setup()
       render(<LayoutSettingsPage />)
 
-      await user.click(screen.getByRole('button', { name: /save/i }))
+      await user.click(screen.getByRole('button', { name: /^save$/i }))
 
       await waitFor(() => {
         expect(toast.success).toHaveBeenCalledWith('Layout settings updated successfully')
@@ -126,10 +225,65 @@ describe('LayoutSettingsPage', () => {
       const user = userEvent.setup()
       render(<LayoutSettingsPage />)
 
-      await user.click(screen.getByRole('button', { name: /save/i }))
+      await user.click(screen.getByRole('button', { name: /^save$/i }))
 
       await waitFor(() => {
         expect(toast.error).toHaveBeenCalledWith('Failed to update layout settings')
+      })
+    })
+  })
+
+  describe('component styling save', () => {
+    it('calls updateLayoutSettings when saving component styles', async () => {
+      const mockUpdate = jest.fn().mockResolvedValue()
+      mockUseContent.mockReturnValue({
+        ...defaultContentState,
+        updateLayoutSettings: mockUpdate,
+      })
+
+      const user = userEvent.setup()
+      render(<LayoutSettingsPage />)
+
+      await user.click(screen.getByText('Save Component Styles'))
+
+      await waitFor(() => {
+        expect(mockUpdate).toHaveBeenCalledWith(expect.objectContaining({
+          componentStyles: { header: ['bg-black'] },
+        }))
+      })
+    })
+
+    it('shows success toast when component styles saved', async () => {
+      const mockUpdate = jest.fn().mockResolvedValue()
+      mockUseContent.mockReturnValue({
+        ...defaultContentState,
+        updateLayoutSettings: mockUpdate,
+      })
+
+      const user = userEvent.setup()
+      render(<LayoutSettingsPage />)
+
+      await user.click(screen.getByText('Save Component Styles'))
+
+      await waitFor(() => {
+        expect(toast.success).toHaveBeenCalledWith('Component styles saved')
+      })
+    })
+
+    it('shows error toast when component style save fails', async () => {
+      const mockUpdate = jest.fn().mockRejectedValue(new Error('fail'))
+      mockUseContent.mockReturnValue({
+        ...defaultContentState,
+        updateLayoutSettings: mockUpdate,
+      })
+
+      const user = userEvent.setup()
+      render(<LayoutSettingsPage />)
+
+      await user.click(screen.getByText('Save Component Styles'))
+
+      await waitFor(() => {
+        expect(toast.error).toHaveBeenCalledWith('Failed to save component styles')
       })
     })
   })
