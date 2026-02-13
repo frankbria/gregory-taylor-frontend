@@ -55,12 +55,14 @@ function TreeNode({ node, expandedIds, onToggle, selectedId, onSelect, getCompon
           <span className="w-5 mr-1" />
         )}
 
-        <span
+        <button
+          type="button"
           onClick={() => onSelect(node.id)}
-          className="flex-1 text-sm font-medium text-gray-800"
+          aria-pressed={isSelected}
+          className="flex-1 text-left text-sm font-medium text-gray-800"
         >
           {node.label}
-        </span>
+        </button>
 
         <span className={`text-xs px-1.5 py-0.5 rounded-full ${TYPE_BADGE_STYLES[node.type] || ''}`}>
           {node.type}

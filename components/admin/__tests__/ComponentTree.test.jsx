@@ -261,4 +261,32 @@ describe('ComponentTree', () => {
     const wrapper = container.firstChild
     expect(wrapper).toHaveClass('mt-4')
   })
+
+  it('node label is keyboard accessible via button element', () => {
+    render(<ComponentTree />)
+
+    const headerNode = screen.getByTestId('tree-node-header')
+    const labelButton = within(headerNode).getByRole('button', { name: 'Header' })
+    expect(labelButton).toBeInTheDocument()
+    expect(labelButton.tagName).toBe('BUTTON')
+  })
+
+  it('sets aria-pressed on selected node label', () => {
+    mockUseLayout.mockReturnValue({
+      selectedComponentId: 'hero',
+      tree: sampleTree,
+      selectComponent: mockSelectComponent,
+      getComponentClasses: mockGetComponentClasses,
+    })
+
+    render(<ComponentTree />)
+
+    const heroNode = screen.getByTestId('tree-node-hero')
+    const labelButton = within(heroNode).getByRole('button', { name: 'Hero Section' })
+    expect(labelButton).toHaveAttribute('aria-pressed', 'true')
+
+    const headerNode = screen.getByTestId('tree-node-header')
+    const headerButton = within(headerNode).getByRole('button', { name: 'Header' })
+    expect(headerButton).toHaveAttribute('aria-pressed', 'false')
+  })
 })
