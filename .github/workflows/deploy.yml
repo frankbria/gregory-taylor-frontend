@@ -57,6 +57,7 @@ jobs:
           NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: ${{ vars.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME }}
           NEXT_PUBLIC_RECAPTCHA_SITE_KEY: ${{ vars.NEXT_PUBLIC_RECAPTCHA_SITE_KEY }}
           STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
@@ -104,6 +105,17 @@ jobs:
             -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.VPS_PORT }}" \
             ./deploy/ \
             ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ vars.DEPLOY_PATH }}/
+
+      - name: Write runtime environment file
+        run: |
+          ssh -i ~/.ssh/deploy_key -p ${{ secrets.VPS_PORT }} \
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} 'bash -c "
+              cat > ${{ vars.DEPLOY_PATH }}/.env.production.local <<EOF
+          STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}
+          BETTER_AUTH_SECRET=${{ secrets.BETTER_AUTH_SECRET }}
+          EOF
+              chmod 600 ${{ vars.DEPLOY_PATH }}/.env.production.local
+            "'
 
       - name: Install dependencies and restart PM2
         run: |
