@@ -20,12 +20,17 @@ jest.mock('next/headers', () => ({
 }))
 
 // Mock global Response.json for route handlers
+const originalResponse = global.Response
 global.Response = {
   json: (data, options) => ({
     json: async () => data,
     status: options?.status || 200,
   }),
 }
+
+afterAll(() => {
+  global.Response = originalResponse
+})
 
 import { GET, PUT } from '@/app/api/admin/settings/images/route'
 import { auth } from '@/lib/auth'
@@ -88,6 +93,18 @@ describe('PUT /api/admin/settings/images', () => {
 
     expect(response.status).toBe(401)
     expect(body.error).toBeDefined()
+  })
+
+  it('should return 400 for non-object body', async () => {
+    auth.api.getSession.mockResolvedValue({ user: { id: '1' } })
+
+    const mockRequest = { json: async () => 'not-an-object' }
+    const response = await PUT(mockRequest)
+    const body = await response.json()
+
+    expect(response.status).toBe(400)
+    expect(body.error).toBeDefined()
+    expect(upsertSetting).not.toHaveBeenCalled()
   })
 
   it('should save image settings and return success', async () => {

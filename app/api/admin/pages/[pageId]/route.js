@@ -2,6 +2,8 @@ import { auth } from '@/lib/auth'
 import { getPage, upsertPage } from '@/lib/admin-db'
 import { headers } from 'next/headers'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(request, { params }) {
   try {
     const session = await auth.api.getSession({ headers: await headers() })

@@ -2,6 +2,8 @@ import { auth } from '@/lib/auth'
 import { getPhotoSettings, upsertPhotoSettings } from '@/lib/admin-db'
 import { headers } from 'next/headers'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(request, { params }) {
   try {
     const session = await auth.api.getSession({ headers: await headers() })
@@ -15,7 +17,12 @@ export async function GET(request, { params }) {
       return Response.json({})
     }
 
-    return Response.json(JSON.parse(row.settings))
+    try {
+      return Response.json(JSON.parse(row.settings))
+    } catch {
+      console.error(`Malformed photo settings JSON for photoId: ${photoId}`)
+      return Response.json({})
+    }
   } catch (err) {
     console.error('GET /api/admin/photos/[photoId]/image-settings error:', err)
     return Response.json({ error: 'Internal server error' }, { status: 500 })
@@ -31,6 +38,9 @@ export async function PUT(request, { params }) {
 
     const { photoId } = await params
     const body = await request.json()
+    if (typeof body !== 'object' || body === null || Array.isArray(body)) {
+      return Response.json({ error: 'Invalid photo settings' }, { status: 400 })
+    }
     upsertPhotoSettings(photoId, JSON.stringify(body))
 
     return Response.json({ success: true })

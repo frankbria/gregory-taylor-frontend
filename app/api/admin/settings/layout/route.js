@@ -2,6 +2,8 @@ import { auth } from '@/lib/auth'
 import { getSetting, upsertSetting } from '@/lib/admin-db'
 import { headers } from 'next/headers'
 
+export const dynamic = 'force-dynamic'
+
 const DEFAULT_LAYOUT = {
   showHeader: true,
   showFooter: true,
@@ -23,7 +25,12 @@ export async function GET() {
       return Response.json(DEFAULT_LAYOUT)
     }
 
-    return Response.json(JSON.parse(row.value))
+    try {
+      return Response.json(JSON.parse(row.value))
+    } catch {
+      console.error('Malformed layout settings JSON in database')
+      return Response.json(DEFAULT_LAYOUT)
+    }
   } catch (err) {
     console.error('GET /api/admin/settings/layout error:', err)
     return Response.json({ error: 'Internal server error' }, { status: 500 })

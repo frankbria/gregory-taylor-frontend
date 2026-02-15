@@ -20,12 +20,17 @@ jest.mock('next/headers', () => ({
 }))
 
 // Mock global Response.json for route handlers
+const originalResponse = global.Response
 global.Response = {
   json: (data, options) => ({
     json: async () => data,
     status: options?.status || 200,
   }),
 }
+
+afterAll(() => {
+  global.Response = originalResponse
+})
 
 import { GET, PUT } from '@/app/api/admin/pages/[pageId]/route'
 import { auth } from '@/lib/auth'
