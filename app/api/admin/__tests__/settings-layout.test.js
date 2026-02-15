@@ -99,6 +99,42 @@ describe('PUT /api/admin/settings/layout', () => {
     expect(body.error).toBeDefined()
   })
 
+  it('should return 400 for non-object body', async () => {
+    auth.api.getSession.mockResolvedValue({ user: { id: '1' } })
+
+    const mockRequest = { json: async () => 'not-an-object' }
+    const response = await PUT(mockRequest)
+    const body = await response.json()
+
+    expect(response.status).toBe(400)
+    expect(body.error).toBeDefined()
+    expect(upsertSetting).not.toHaveBeenCalled()
+  })
+
+  it('should return 400 for invalid gridColumns', async () => {
+    auth.api.getSession.mockResolvedValue({ user: { id: '1' } })
+
+    const mockRequest = { json: async () => ({ gridColumns: 0 }) }
+    const response = await PUT(mockRequest)
+    const body = await response.json()
+
+    expect(response.status).toBe(400)
+    expect(body.error).toContain('gridColumns')
+    expect(upsertSetting).not.toHaveBeenCalled()
+  })
+
+  it('should return 400 for invalid colorScheme', async () => {
+    auth.api.getSession.mockResolvedValue({ user: { id: '1' } })
+
+    const mockRequest = { json: async () => ({ colorScheme: 'neon' }) }
+    const response = await PUT(mockRequest)
+    const body = await response.json()
+
+    expect(response.status).toBe(400)
+    expect(body.error).toContain('colorScheme')
+    expect(upsertSetting).not.toHaveBeenCalled()
+  })
+
   it('should save layout settings and return success', async () => {
     auth.api.getSession.mockResolvedValue({ user: { id: '1' } })
     upsertSetting.mockReturnValue({ changes: 1 })

@@ -38,6 +38,15 @@ export async function PUT(request) {
     }
 
     const body = await request.json()
+    if (typeof body !== 'object' || body === null || Array.isArray(body)) {
+      return Response.json({ error: 'Invalid layout settings' }, { status: 400 })
+    }
+    if (body.gridColumns !== undefined && (typeof body.gridColumns !== 'number' || body.gridColumns < 1 || body.gridColumns > 12)) {
+      return Response.json({ error: 'gridColumns must be a number between 1 and 12' }, { status: 400 })
+    }
+    if (body.colorScheme !== undefined && !['light', 'dark'].includes(body.colorScheme)) {
+      return Response.json({ error: 'colorScheme must be "light" or "dark"' }, { status: 400 })
+    }
     upsertSetting('layout', JSON.stringify(body))
 
     return Response.json({ success: true })

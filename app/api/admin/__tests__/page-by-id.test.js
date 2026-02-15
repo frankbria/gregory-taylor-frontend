@@ -102,6 +102,24 @@ describe('PUT /api/admin/pages/[pageId]', () => {
     expect(body.error).toBeDefined()
   })
 
+  it('should return 400 when title or content is missing', async () => {
+    auth.api.getSession.mockResolvedValue({ user: { id: '1' } })
+
+    const mockRequest = {
+      json: async () => ({ title: 123, content: null }),
+    }
+
+    const response = await PUT(
+      mockRequest,
+      { params: Promise.resolve({ pageId: 'home' }) }
+    )
+    const body = await response.json()
+
+    expect(response.status).toBe(400)
+    expect(body.error).toBeDefined()
+    expect(upsertPage).not.toHaveBeenCalled()
+  })
+
   it('should update a page and return success', async () => {
     auth.api.getSession.mockResolvedValue({ user: { id: '1' } })
     upsertPage.mockReturnValue({ changes: 1 })

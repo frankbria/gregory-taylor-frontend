@@ -31,6 +31,9 @@ export async function PUT(request, { params }) {
 
     const { pageId } = await params
     const { title, content } = await request.json()
+    if (typeof title !== 'string' || typeof content !== 'string') {
+      return Response.json({ error: 'Missing or invalid title/content' }, { status: 400 })
+    }
     upsertPage(pageId, title, content)
 
     return Response.json({ success: true })
