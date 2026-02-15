@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Photography e-commerce frontend built with Next.js 15, featuring Stripe payment integration, shopping cart functionality, and gallery displays. Works in conjunction with a backend API (assumed to run on localhost:4000 in development).
+Photography e-commerce frontend built with Next.js 15, featuring Stripe payment integration, shopping cart functionality, and gallery displays. Works in conjunction with a backend API (assumed to run on localhost:4010 in development).
 
 **Backend Repository**: The administrative backend is located at [https://github.com/frankbria/gregory-taylor-backend](https://github.com/frankbria/gregory-taylor-backend)
 
@@ -35,14 +35,15 @@ The app uses a dual-approach API pattern with both hooks and standalone function
 
 **Primary Pattern (useAPI hook)**:
 - `lib/api.js` exports `useAPI()` hook that provides API methods with integrated error handling via `ErrorContext`
-- All API calls use `NEXT_PUBLIC_API_BASE` environment variable
+- Public/catalog API calls (categories, photos, orders) use `NEXT_PUBLIC_API_BASE` environment variable
+- Admin API calls (pages, settings, layout) use relative URLs — served by local Next.js API routes backed by SQLite
 - Error handling automatically displays toast notifications via `react-hot-toast`
 
 **Legacy Pattern (standalone exports)**:
 - Same file exports standalone async functions (`getCategories()`, `getPhotosByCategory()`, etc.) for backward compatibility
 - Used in Server Components or where hooks aren't available
 
-**API Proxy**: In development, `/api/*` requests are proxied to `http://localhost:4000/api/*` via `next.config.mjs` rewrites.
+**API Proxy**: In development, unmatched `/api/*` requests are proxied to `http://localhost:4010/api/*` via `next.config.mjs` fallback rewrites. Local API routes (auth, admin) take precedence over the proxy.
 
 ### State Management
 
@@ -92,7 +93,7 @@ Required variables (create `.env.local`):
 
 ```bash
 # API Configuration
-NEXT_PUBLIC_API_BASE=http://localhost:4000  # Backend API base URL
+NEXT_PUBLIC_API_BASE=http://localhost:4010  # Backend API base URL
 
 # Stripe
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
@@ -167,7 +168,7 @@ Visual tool for configuring site layout and component Tailwind classes.
 - Dirty state tracking with unsaved changes warning
 
 **State Architecture**:
-- `ContentContext` manages persisted layout settings (read/write to backend API)
+- `ContentContext` manages persisted layout settings (read/write to local SQLite via admin API routes)
 - `LayoutContext` manages transient editing state (selected component, modified classes, dirty tracking)
 - Component styles stored as `componentStyles` key in layout settings JSON:
   ```json
@@ -213,7 +214,7 @@ npm test -- --testNamePattern="checkout"  # Run tests matching pattern
 ```
 
 ### Debugging API Issues
-- Check Network tab: proxied requests should go to `localhost:4000` in dev
+- Check Network tab: proxied requests should go to `localhost:4010` in dev (admin routes stay local)
 - Verify `NEXT_PUBLIC_API_BASE` is set correctly
 - Check ErrorContext state via React DevTools
 - Toast notifications will show API errors automatically
