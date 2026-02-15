@@ -1,0 +1,42 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "343ab4ea747c",
+  "session_id": "556ddc07-3fb1-4d1a-a74b-9b861fd3748c",
+  "strategy": "manual-commit",
+  "created_at": "2026-02-15T04:33:41.072785299Z",
+  "branch": "feature/issue-42-frontend-admin-api",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "app/api/admin/__tests__/page-by-id.test.js",
+    "app/api/admin/__tests__/pages.test.js",
+    "app/api/admin/__tests__/photo-image-settings.test.js",
+    "app/api/admin/__tests__/settings-images.test.js",
+    "app/api/admin/__tests__/settings-layout.test.js",
+    "app/api/admin/pages/[pageId]/route.js",
+    "app/api/admin/pages/route.js",
+    "app/api/admin/photos/[photoId]/image-settings/route.js",
+    "app/api/admin/settings/images/route.js",
+    "app/api/admin/settings/layout/route.js"
+  ],
+  "agent": "Claude Code",
+  "transcript_identifier_at_start": "33cc456d-09b7-4423-bb35-f13b5fae2695",
+  "checkpoint_transcript_start": 2576,
+  "transcript_lines_at_start": 2576,
+  "token_usage": {
+    "input_tokens": 43,
+    "cache_creation_tokens": 56333,
+    "cache_read_tokens": 5667042,
+    "output_tokens": 3093,
+    "api_call_count": 39
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-02-15T04:33:39.251398259Z",
+    "agent_lines": 85,
+    "human_added": 212,
+    "human_modified": 1,
+    "human_removed": 0,
+    "total_committed": 298,
+    "agent_percentage": 28.523489932885905
+  },
+  "transcript_path": ".claude/projects/-home-frankbria-projects-gregory-taylor-frontend/556ddc07-3fb1-4d1a-a74b-9b861fd3748c.jsonl"
+}

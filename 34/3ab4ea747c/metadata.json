@@ -1,0 +1,35 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "343ab4ea747c",
+  "strategy": "manual-commit",
+  "branch": "feature/issue-42-frontend-admin-api",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "app/api/admin/__tests__/page-by-id.test.js",
+    "app/api/admin/__tests__/pages.test.js",
+    "app/api/admin/__tests__/photo-image-settings.test.js",
+    "app/api/admin/__tests__/settings-images.test.js",
+    "app/api/admin/__tests__/settings-layout.test.js",
+    "app/api/admin/pages/[pageId]/route.js",
+    "app/api/admin/pages/route.js",
+    "app/api/admin/photos/[photoId]/image-settings/route.js",
+    "app/api/admin/settings/images/route.js",
+    "app/api/admin/settings/layout/route.js"
+  ],
+  "sessions": [
+    {
+      "metadata": "/34/3ab4ea747c/0/metadata.json",
+      "transcript": "/34/3ab4ea747c/0/full.jsonl",
+      "context": "/34/3ab4ea747c/0/context.md",
+      "content_hash": "/34/3ab4ea747c/0/content_hash.txt",
+      "prompt": "/34/3ab4ea747c/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 43,
+    "cache_creation_tokens": 56333,
+    "cache_read_tokens": 5667042,
+    "output_tokens": 3093,
+    "api_call_count": 39
+  }
+}
