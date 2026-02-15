@@ -1,0 +1,54 @@
+{
+  "cli_version": "0.4.4",
+  "checkpoint_id": "b6158f620cee",
+  "strategy": "manual-commit",
+  "branch": "feature/issue-42-frontend-admin-api",
+  "checkpoints_count": 3,
+  "files_touched": [
+    ".claude/settings.json",
+    ".env.local",
+    "1a0f69a0-2026-02-14.png",
+    "23b12414-2026-02-14.png",
+    "42d5ae4e-2026-02-14.png",
+    "4ba9e713-2026-02-14.png",
+    "58c300fe-2026-02-14.png",
+    "5a7d10c7-2026-02-14.png",
+    "8b33ad79-2026-02-14.png",
+    "admin.db-journal",
+    "app/api/admin/pages/[pageId]/route.js",
+    "app/api/admin/pages/route.js",
+    "app/api/admin/photos/[photoId]/image-settings/route.js",
+    "app/api/admin/settings/images/route.js",
+    "app/api/admin/settings/layout/route.js",
+    "b81586c8-2026-02-14.png",
+    "demo-admin-pages.md",
+    "demo-screenshots/01-login-page.png",
+    "demo-screenshots/02-admin-dashboard.png",
+    "demo-screenshots/03-content-editor.png",
+    "demo-screenshots/04-image-settings.png",
+    "demo-screenshots/05-layout-settings.png",
+    "demo-screenshots/06-layout-component-edit.png",
+    "lib/admin-db.js",
+    "lib/api.js",
+    "lib/auth.js",
+    "lib/contentApi.js",
+    "next.config.mjs",
+    "scripts/seed-admin.mjs"
+  ],
+  "sessions": [
+    {
+      "metadata": "/b6/158f620cee/0/metadata.json",
+      "transcript": "/b6/158f620cee/0/full.jsonl",
+      "context": "/b6/158f620cee/0/context.md",
+      "content_hash": "/b6/158f620cee/0/content_hash.txt",
+      "prompt": "/b6/158f620cee/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 2223,
+    "cache_creation_tokens": 515610,
+    "cache_read_tokens": 21088847,
+    "output_tokens": 20303,
+    "api_call_count": 213
+  }
+}
