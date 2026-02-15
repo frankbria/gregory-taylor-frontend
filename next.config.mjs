@@ -3,13 +3,15 @@
 const nextConfig = {
   async rewrites() {
     return process.env.NODE_ENV === 'development'
-      ? [
-          {
-            source: '/api/:path*',
-            destination: 'http://localhost:4000/api/:path*',
-          },
-        ]
-      : []
+      ? {
+          fallback: [
+            {
+              source: '/api/:path*',
+              destination: 'http://localhost:4010/api/:path*',
+            },
+          ],
+        }
+      : { fallback: [] }
   },
   images: {
     remotePatterns: [
