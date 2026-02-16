@@ -50,8 +50,18 @@ describe('GET /api/admin/pages', () => {
     expect(body.error).toBeDefined()
   })
 
+  it('should return 401 when authenticated but not admin', async () => {
+    auth.api.getSession.mockResolvedValue({ user: { id: '1', role: 'user' } })
+
+    const response = await GET()
+    const body = await response.json()
+
+    expect(response.status).toBe(401)
+    expect(body.error).toBeDefined()
+  })
+
   it('should return all pages when authenticated', async () => {
-    auth.api.getSession.mockResolvedValue({ user: { id: '1' } })
+    auth.api.getSession.mockResolvedValue({ user: { id: '1', role: 'admin' } })
     const mockPages = [
       { id: 'home', title: 'Home', content: '<p>Welcome</p>' },
       { id: 'about', title: 'About', content: '<p>About us</p>' },
@@ -62,11 +72,11 @@ describe('GET /api/admin/pages', () => {
     const body = await response.json()
 
     expect(response.status).toBe(200)
-    expect(body).toEqual(mockPages)
+    expect(body).toEqual(mockPages.map(p => ({ ...p, _id: p.id })))
   })
 
   it('should return empty array when no pages exist', async () => {
-    auth.api.getSession.mockResolvedValue({ user: { id: '1' } })
+    auth.api.getSession.mockResolvedValue({ user: { id: '1', role: 'admin' } })
     getAllPages.mockReturnValue([])
 
     const response = await GET()

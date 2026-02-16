@@ -55,7 +55,7 @@ describe('GET /api/admin/photos/[photoId]/image-settings', () => {
   })
 
   it('should return empty object when no settings exist for photo', async () => {
-    auth.api.getSession.mockResolvedValue({ user: { id: '1' } })
+    auth.api.getSession.mockResolvedValue({ user: { id: '1', role: 'admin' } })
     getPhotoSettings.mockReturnValue(undefined)
 
     const response = await GET(
@@ -70,7 +70,7 @@ describe('GET /api/admin/photos/[photoId]/image-settings', () => {
   })
 
   it('should return stored photo settings', async () => {
-    auth.api.getSession.mockResolvedValue({ user: { id: '1' } })
+    auth.api.getSession.mockResolvedValue({ user: { id: '1', role: 'admin' } })
     const settings = { quality: 85, sharpen: true }
     getPhotoSettings.mockReturnValue({ photoId: 'photo-1', settings: JSON.stringify(settings) })
 
@@ -108,7 +108,7 @@ describe('PUT /api/admin/photos/[photoId]/image-settings', () => {
   })
 
   it('should return 400 for non-object body', async () => {
-    auth.api.getSession.mockResolvedValue({ user: { id: '1' } })
+    auth.api.getSession.mockResolvedValue({ user: { id: '1', role: 'admin' } })
 
     const mockRequest = { json: async () => [1, 2, 3] }
     const response = await PUT(
@@ -123,7 +123,7 @@ describe('PUT /api/admin/photos/[photoId]/image-settings', () => {
   })
 
   it('should save photo settings and return success', async () => {
-    auth.api.getSession.mockResolvedValue({ user: { id: '1' } })
+    auth.api.getSession.mockResolvedValue({ user: { id: '1', role: 'admin' } })
     upsertPhotoSettings.mockReturnValue({ changes: 1 })
 
     const newSettings = { quality: 90, blur: 5 }

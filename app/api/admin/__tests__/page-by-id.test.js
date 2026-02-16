@@ -55,7 +55,7 @@ describe('GET /api/admin/pages/[pageId]', () => {
   })
 
   it('should return a page by id', async () => {
-    auth.api.getSession.mockResolvedValue({ user: { id: '1' } })
+    auth.api.getSession.mockResolvedValue({ user: { id: '1', role: 'admin' } })
     const mockPage = { id: 'home', title: 'Home', content: '<p>Welcome</p>' }
     getPage.mockReturnValue(mockPage)
 
@@ -66,12 +66,12 @@ describe('GET /api/admin/pages/[pageId]', () => {
     const body = await response.json()
 
     expect(response.status).toBe(200)
-    expect(body).toEqual(mockPage)
+    expect(body).toEqual({ ...mockPage, _id: mockPage.id, body: mockPage.content })
     expect(getPage).toHaveBeenCalledWith('home')
   })
 
   it('should return 404 when page not found', async () => {
-    auth.api.getSession.mockResolvedValue({ user: { id: '1' } })
+    auth.api.getSession.mockResolvedValue({ user: { id: '1', role: 'admin' } })
     getPage.mockReturnValue(undefined)
 
     const response = await GET(
@@ -108,7 +108,7 @@ describe('PUT /api/admin/pages/[pageId]', () => {
   })
 
   it('should return 400 when title or content is missing', async () => {
-    auth.api.getSession.mockResolvedValue({ user: { id: '1' } })
+    auth.api.getSession.mockResolvedValue({ user: { id: '1', role: 'admin' } })
 
     const mockRequest = {
       json: async () => ({ title: 123, content: null }),
@@ -126,7 +126,7 @@ describe('PUT /api/admin/pages/[pageId]', () => {
   })
 
   it('should update a page and return success', async () => {
-    auth.api.getSession.mockResolvedValue({ user: { id: '1' } })
+    auth.api.getSession.mockResolvedValue({ user: { id: '1', role: 'admin' } })
     upsertPage.mockReturnValue({ changes: 1 })
 
     const mockRequest = {

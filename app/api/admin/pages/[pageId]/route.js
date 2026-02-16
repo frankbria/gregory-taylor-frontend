@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic'
 export async function GET(request, { params }) {
   try {
     const session = await auth.api.getSession({ headers: await headers() })
-    if (!session) {
+    if (!session || session.user.role !== 'admin') {
       return Response.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -27,7 +27,7 @@ export async function GET(request, { params }) {
 export async function PUT(request, { params }) {
   try {
     const session = await auth.api.getSession({ headers: await headers() })
-    if (!session) {
+    if (!session || session.user.role !== 'admin') {
       return Response.json({ error: 'Unauthorized' }, { status: 401 })
     }
 

@@ -61,7 +61,7 @@ describe('GET /api/admin/settings/layout', () => {
   })
 
   it('should return default layout when no settings exist', async () => {
-    auth.api.getSession.mockResolvedValue({ user: { id: '1' } })
+    auth.api.getSession.mockResolvedValue({ user: { id: '1', role: 'admin' } })
     getSetting.mockReturnValue(undefined)
 
     const response = await GET()
@@ -73,7 +73,7 @@ describe('GET /api/admin/settings/layout', () => {
   })
 
   it('should return stored layout settings', async () => {
-    auth.api.getSession.mockResolvedValue({ user: { id: '1' } })
+    auth.api.getSession.mockResolvedValue({ user: { id: '1', role: 'admin' } })
     const layoutSettings = { ...DEFAULT_LAYOUT, gridColumns: 4, colorScheme: 'dark' }
     getSetting.mockReturnValue({ key: 'layout', value: JSON.stringify(layoutSettings) })
 
@@ -105,7 +105,7 @@ describe('PUT /api/admin/settings/layout', () => {
   })
 
   it('should return 400 for non-object body', async () => {
-    auth.api.getSession.mockResolvedValue({ user: { id: '1' } })
+    auth.api.getSession.mockResolvedValue({ user: { id: '1', role: 'admin' } })
 
     const mockRequest = { json: async () => 'not-an-object' }
     const response = await PUT(mockRequest)
@@ -117,7 +117,7 @@ describe('PUT /api/admin/settings/layout', () => {
   })
 
   it('should return 400 for invalid gridColumns', async () => {
-    auth.api.getSession.mockResolvedValue({ user: { id: '1' } })
+    auth.api.getSession.mockResolvedValue({ user: { id: '1', role: 'admin' } })
 
     const mockRequest = { json: async () => ({ gridColumns: 0 }) }
     const response = await PUT(mockRequest)
@@ -129,7 +129,7 @@ describe('PUT /api/admin/settings/layout', () => {
   })
 
   it('should return 400 for invalid colorScheme', async () => {
-    auth.api.getSession.mockResolvedValue({ user: { id: '1' } })
+    auth.api.getSession.mockResolvedValue({ user: { id: '1', role: 'admin' } })
 
     const mockRequest = { json: async () => ({ colorScheme: 'neon' }) }
     const response = await PUT(mockRequest)
@@ -141,7 +141,7 @@ describe('PUT /api/admin/settings/layout', () => {
   })
 
   it('should save layout settings and return success', async () => {
-    auth.api.getSession.mockResolvedValue({ user: { id: '1' } })
+    auth.api.getSession.mockResolvedValue({ user: { id: '1', role: 'admin' } })
     upsertSetting.mockReturnValue({ changes: 1 })
 
     const newLayout = { ...DEFAULT_LAYOUT, gridColumns: 4 }

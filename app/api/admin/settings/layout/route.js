@@ -16,7 +16,7 @@ const DEFAULT_LAYOUT = {
 export async function GET() {
   try {
     const session = await auth.api.getSession({ headers: await headers() })
-    if (!session) {
+    if (!session || session.user.role !== 'admin') {
       return Response.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -40,7 +40,7 @@ export async function GET() {
 export async function PUT(request) {
   try {
     const session = await auth.api.getSession({ headers: await headers() })
-    if (!session) {
+    if (!session || session.user.role !== 'admin') {
       return Response.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
