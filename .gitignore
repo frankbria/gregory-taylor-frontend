@@ -43,6 +43,20 @@ next-env.d.ts
 
 # sqlite database
 *.db
+*.db-shm
+*.db-wal
+
+# demo artifacts
+demo-screenshots/
+*.png
+ADMIN_DEMO_SUMMARY.md
+AUTH_SETUP_GUIDE.md
+admin-panel-demo.md
+
+# user creation scripts
+create-admin-user.js
+scripts/create-user.mjs
+scripts/create_user.py
 
 # claude code
 .claude/settings.local.json
