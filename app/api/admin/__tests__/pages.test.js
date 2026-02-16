@@ -72,7 +72,7 @@ describe('GET /api/admin/pages', () => {
     const body = await response.json()
 
     expect(response.status).toBe(200)
-    expect(body).toEqual(mockPages.map(p => ({ ...p, _id: p.id })))
+    expect(body).toEqual(mockPages.map(p => ({ ...p, _id: p.id, body: p.content })))
   })
 
   it('should return empty array when no pages exist', async () => {

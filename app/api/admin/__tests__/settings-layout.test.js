@@ -140,8 +140,46 @@ describe('PUT /api/admin/settings/layout', () => {
     expect(upsertSetting).not.toHaveBeenCalled()
   })
 
-  it('should save layout settings and return success', async () => {
+  it('should return 400 for non-integer gridColumns', async () => {
     auth.api.getSession.mockResolvedValue({ user: { id: '1', role: 'admin' } })
+
+    const mockRequest = { json: async () => ({ gridColumns: 2.5 }) }
+    const response = await PUT(mockRequest)
+    const body = await response.json()
+
+    expect(response.status).toBe(400)
+    expect(body.error).toContain('gridColumns')
+    expect(upsertSetting).not.toHaveBeenCalled()
+  })
+
+  it('should return 400 for invalid JSON body', async () => {
+    auth.api.getSession.mockResolvedValue({ user: { id: '1', role: 'admin' } })
+
+    const mockRequest = { json: async () => { throw new SyntaxError('Unexpected token') } }
+    const response = await PUT(mockRequest)
+    const body = await response.json()
+
+    expect(response.status).toBe(400)
+    expect(body.error).toContain('Invalid JSON')
+  })
+
+  it('should merge partial update with existing settings', async () => {
+    auth.api.getSession.mockResolvedValue({ user: { id: '1', role: 'admin' } })
+    getSetting.mockReturnValue({ key: 'layout', value: JSON.stringify(DEFAULT_LAYOUT) })
+    upsertSetting.mockReturnValue({ changes: 1 })
+
+    const mockRequest = { json: async () => ({ gridColumns: 4 }) }
+    const response = await PUT(mockRequest)
+    const body = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(body.success).toBe(true)
+    expect(upsertSetting).toHaveBeenCalledWith('layout', JSON.stringify({ ...DEFAULT_LAYOUT, gridColumns: 4 }))
+  })
+
+  it('should save full layout settings and return success', async () => {
+    auth.api.getSession.mockResolvedValue({ user: { id: '1', role: 'admin' } })
+    getSetting.mockReturnValue(undefined)
     upsertSetting.mockReturnValue({ changes: 1 })
 
     const newLayout = { ...DEFAULT_LAYOUT, gridColumns: 4 }

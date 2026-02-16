@@ -16,7 +16,7 @@ const DEFAULT_LAYOUT = {
 export async function GET() {
   try {
     const session = await auth.api.getSession({ headers: await headers() })
-    if (!session || session.user.role !== 'admin') {
+    if (!session || session?.user?.role !== 'admin') {
       return Response.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -40,21 +40,30 @@ export async function GET() {
 export async function PUT(request) {
   try {
     const session = await auth.api.getSession({ headers: await headers() })
-    if (!session || session.user.role !== 'admin') {
+    if (!session || session?.user?.role !== 'admin') {
       return Response.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const body = await request.json()
+    let body
+    try {
+      body = await request.json()
+    } catch {
+      return Response.json({ error: 'Invalid JSON' }, { status: 400 })
+    }
     if (typeof body !== 'object' || body === null || Array.isArray(body)) {
       return Response.json({ error: 'Invalid layout settings' }, { status: 400 })
     }
-    if (body.gridColumns !== undefined && (typeof body.gridColumns !== 'number' || body.gridColumns < 1 || body.gridColumns > 12)) {
-      return Response.json({ error: 'gridColumns must be a number between 1 and 12' }, { status: 400 })
+    if (body.gridColumns !== undefined && (!Number.isInteger(body.gridColumns) || body.gridColumns < 1 || body.gridColumns > 12)) {
+      return Response.json({ error: 'gridColumns must be an integer between 1 and 12' }, { status: 400 })
     }
     if (body.colorScheme !== undefined && !['light', 'dark'].includes(body.colorScheme)) {
       return Response.json({ error: 'colorScheme must be "light" or "dark"' }, { status: 400 })
     }
-    upsertSetting('layout', JSON.stringify(body))
+
+    const existing = getSetting('layout')
+    const current = existing ? JSON.parse(existing.value) : DEFAULT_LAYOUT
+    const merged = { ...current, ...body }
+    upsertSetting('layout', JSON.stringify(merged))
 
     return Response.json({ success: true })
   } catch (err) {

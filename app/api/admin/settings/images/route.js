@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic'
 export async function GET() {
   try {
     const session = await auth.api.getSession({ headers: await headers() })
-    if (!session || session.user.role !== 'admin') {
+    if (!session || session?.user?.role !== 'admin') {
       return Response.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -31,11 +31,16 @@ export async function GET() {
 export async function PUT(request) {
   try {
     const session = await auth.api.getSession({ headers: await headers() })
-    if (!session || session.user.role !== 'admin') {
+    if (!session || session?.user?.role !== 'admin') {
       return Response.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const body = await request.json()
+    let body
+    try {
+      body = await request.json()
+    } catch {
+      return Response.json({ error: 'Invalid JSON' }, { status: 400 })
+    }
     if (typeof body !== 'object' || body === null || Array.isArray(body)) {
       return Response.json({ error: 'Invalid image settings' }, { status: 400 })
     }

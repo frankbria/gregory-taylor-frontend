@@ -7,11 +7,11 @@ export const dynamic = 'force-dynamic'
 export async function GET() {
   try {
     const session = await auth.api.getSession({ headers: await headers() })
-    if (!session || session.user.role !== 'admin') {
+    if (!session || session?.user?.role !== 'admin') {
       return Response.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const pages = getAllPages().map(p => ({ ...p, _id: p.id }))
+    const pages = getAllPages().map(p => ({ ...p, _id: p.id, body: p.content }))
     return Response.json(pages)
   } catch (err) {
     console.error('GET /api/admin/pages error:', err)
