@@ -17,7 +17,7 @@ export async function GET(request, { params }) {
       return Response.json({ error: 'Page not found' }, { status: 404 })
     }
 
-    return Response.json(page)
+    return Response.json({ ...page, _id: page.id, body: page.content })
   } catch (err) {
     console.error('GET /api/admin/pages/[pageId] error:', err)
     return Response.json({ error: 'Internal server error' }, { status: 500 })
@@ -32,7 +32,9 @@ export async function PUT(request, { params }) {
     }
 
     const { pageId } = await params
-    const { title, content } = await request.json()
+    const data = await request.json()
+    const title = data.title
+    const content = data.body || data.content
     if (typeof title !== 'string' || typeof content !== 'string') {
       return Response.json({ error: 'Missing or invalid title/content' }, { status: 400 })
     }

@@ -11,7 +11,7 @@ export async function GET() {
       return Response.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const pages = getAllPages()
+    const pages = getAllPages().map(p => ({ ...p, _id: p.id }))
     return Response.json(pages)
   } catch (err) {
     console.error('GET /api/admin/pages error:', err)
