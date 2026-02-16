@@ -163,6 +163,20 @@ describe('PUT /api/admin/settings/layout', () => {
     expect(body.error).toContain('Invalid JSON')
   })
 
+  it('should fall back to defaults when existing settings are malformed JSON', async () => {
+    auth.api.getSession.mockResolvedValue({ user: { id: '1', role: 'admin' } })
+    getSetting.mockReturnValue({ key: 'layout', value: '{corrupted json' })
+    upsertSetting.mockReturnValue({ changes: 1 })
+
+    const mockRequest = { json: async () => ({ gridColumns: 5 }) }
+    const response = await PUT(mockRequest)
+    const body = await response.json()
+
+    expect(response.status).toBe(200)
+    expect(body.success).toBe(true)
+    expect(upsertSetting).toHaveBeenCalledWith('layout', JSON.stringify({ ...DEFAULT_LAYOUT, gridColumns: 5 }))
+  })
+
   it('should merge partial update with existing settings', async () => {
     auth.api.getSession.mockResolvedValue({ user: { id: '1', role: 'admin' } })
     getSetting.mockReturnValue({ key: 'layout', value: JSON.stringify(DEFAULT_LAYOUT) })

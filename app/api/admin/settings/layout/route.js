@@ -61,7 +61,14 @@ export async function PUT(request) {
     }
 
     const existing = getSetting('layout')
-    const current = existing ? JSON.parse(existing.value) : DEFAULT_LAYOUT
+    let current = DEFAULT_LAYOUT
+    if (existing) {
+      try {
+        current = JSON.parse(existing.value)
+      } catch {
+        console.error('Malformed layout settings JSON in database, using defaults for merge')
+      }
+    }
     const merged = { ...current, ...body }
     upsertSetting('layout', JSON.stringify(merged))
 
