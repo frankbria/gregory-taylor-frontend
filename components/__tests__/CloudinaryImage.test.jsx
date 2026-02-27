@@ -1,12 +1,14 @@
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import CloudinaryImage from '../CloudinaryImage'
 
 // Mock next/image - invoke loader if provided to simulate real Next.js behavior
+let lastImageProps = null
 jest.mock('next/image', () => {
-  return function MockImage({ src, alt, fill, className, style, loader, ...rest }) {
+  return function MockImage({ src, alt, fill, className, style, loader, onError, ...rest }) {
     // Call the loader to simulate what Next.js Image does internally
     const resolvedSrc = loader ? loader({ src, width: 640, quality: 75 }) : src
+    lastImageProps = { onError }
     return (
       <img
         src={resolvedSrc}
@@ -15,6 +17,7 @@ jest.mock('next/image', () => {
         className={className}
         style={style}
         data-testid="next-image"
+        onError={onError}
         {...rest}
       />
     )
@@ -346,6 +349,61 @@ describe('CloudinaryImage Component', () => {
       expect(mockCloudinaryLoader).toHaveBeenCalledWith(
         expect.objectContaining({ customSettings: settings })
       )
+    })
+  })
+
+  describe('Error handling and fallback', () => {
+    it('should show fallback placeholder when image fails to load', () => {
+      render(<CloudinaryImage {...defaultProps} />)
+
+      const img = screen.getByTestId('next-image')
+      fireEvent.error(img)
+
+      expect(screen.getByText('Image unavailable')).toBeInTheDocument()
+      expect(screen.queryByTestId('next-image')).not.toBeInTheDocument()
+    })
+
+    it('should log error to console when image fails', () => {
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation()
+
+      render(<CloudinaryImage {...defaultProps} />)
+      fireEvent.error(screen.getByTestId('next-image'))
+
+      expect(consoleSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Failed to load image:')
+      )
+      consoleSpy.mockRestore()
+    })
+
+    it('should show accessible fallback with aria-label', () => {
+      render(<CloudinaryImage {...defaultProps} />)
+      fireEvent.error(screen.getByTestId('next-image'))
+
+      const fallback = screen.getByRole('img')
+      expect(fallback).toHaveAttribute('aria-label', 'Test image')
+    })
+
+    it('should reset error state when src prop changes', () => {
+      const { rerender } = render(<CloudinaryImage {...defaultProps} />)
+
+      fireEvent.error(screen.getByTestId('next-image'))
+      expect(screen.getByText('Image unavailable')).toBeInTheDocument()
+
+      rerender(<CloudinaryImage src="https://res.cloudinary.com/demo/image/upload/new.jpg" alt="New image" />)
+      expect(screen.getByTestId('next-image')).toBeInTheDocument()
+      expect(screen.queryByText('Image unavailable')).not.toBeInTheDocument()
+    })
+
+    it('should preserve aspect ratio in fallback placeholder', () => {
+      const { container } = render(
+        <CloudinaryImage src={defaultProps.src} alt="test" aspectRatio={16 / 9} />
+      )
+
+      fireEvent.error(screen.getByTestId('next-image'))
+
+      const fallbackDiv = container.querySelector('[role="img"]')
+      const expectedPadding = `${100 / (16 / 9)}%`
+      expect(fallbackDiv.style.paddingTop).toBe(expectedPadding)
     })
   })
 })
