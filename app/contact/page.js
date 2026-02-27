@@ -44,21 +44,23 @@ export default function ContactPage() {
     setIsSubmitting(true)
     
     try {
-      // Here you would implement the actual API call to send the email
-      // For example:
-      // const response = await fetch('/api/contact', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     ...data,
-      //     captchaValue,
-      //     aiCheckAnswer
-      //   })
-      // })
-      
-      // Simulate API call for now
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...data,
+          captchaValue,
+          aiCheckAnswer
+        })
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        toast.error(result.error || 'Failed to send message. Please try again.')
+        return
+      }
+
       toast.success('Message sent successfully!')
       reset()
       setCaptchaValue(null)
