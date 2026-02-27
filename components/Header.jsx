@@ -17,20 +17,19 @@ function Header() {
 
       {/* Navigation */}
       <nav className="bg-black text-white uppercase text-sm tracking-wide py-2">
-        <div className="max-w-5xl mx-auto flex justify-center items-center gap-6 relative">
-          <Link href="/" className="hover:underline">Home</Link>
-          <Link href="/gallery" className="hover:underline">Gallery</Link>
-          <Link href="/about" className="hover:underline">About</Link>
-          <Link href="/contact" className="hover:underline">Contact</Link>
-          <Link href="/orders" className="hover:underline">My Orders</Link>
-
-          {/* Cart icon positioned on the right edge */}
-          <div className="absolute right-60 flex items-center space-x-1">
-            <Link href="/cart" className="flex items-center hover:text-blue-400 transition">
-              <FaShoppingCart />
-              <span className="ml-1">{cartCount}</span>
-            </Link>
+        <div className="max-w-5xl mx-auto px-4 flex items-center gap-6">
+          <div className="flex flex-1 justify-center items-center gap-6">
+            <Link href="/" className="hover:underline">Home</Link>
+            <Link href="/gallery" className="hover:underline">Gallery</Link>
+            <Link href="/about" className="hover:underline">About</Link>
+            <Link href="/contact" className="hover:underline">Contact</Link>
+            <Link href="/orders" className="hover:underline">My Orders</Link>
           </div>
+
+          <Link href="/cart" className="flex items-center hover:text-blue-400 transition">
+            <FaShoppingCart />
+            <span className="ml-1">{cartCount}</span>
+          </Link>
         </div>
       </nav>
     </header>
