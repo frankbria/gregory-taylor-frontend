@@ -34,7 +34,7 @@ export async function POST(request) {
     const { name, email, subject, message, captchaValue, aiCheckAnswer } =
       await request.json()
 
-    if (!name || !email || !message) {
+    if (!name?.trim() || !email?.trim() || !message?.trim()) {
       return NextResponse.json(
         { error: 'Name, email, and message are required' },
         { status: 400 }
@@ -62,8 +62,8 @@ export async function POST(request) {
       )
     }
 
-    const answerLower = aiCheckAnswer.toLowerCase()
-    const isValidAnswer = VALID_ANSWERS.some((a) => answerLower.includes(a))
+    const answerLower = aiCheckAnswer.trim().toLowerCase()
+    const isValidAnswer = VALID_ANSWERS.some((a) => answerLower === a)
     if (!isValidAnswer) {
       return NextResponse.json(
         { error: 'Incorrect answer to verification question' },

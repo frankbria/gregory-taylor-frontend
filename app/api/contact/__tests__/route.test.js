@@ -55,8 +55,10 @@ describe('Contact API Route', () => {
   describe('input validation', () => {
     it.each([
       ['name', { name: '' }, 'Name, email, and message are required'],
+      ['whitespace-only name', { name: '   ' }, 'Name, email, and message are required'],
       ['email', { email: '' }, 'Name, email, and message are required'],
       ['message', { message: '' }, 'Name, email, and message are required'],
+      ['whitespace-only message', { message: '  \n  ' }, 'Name, email, and message are required'],
       ['email format', { email: 'not-an-email' }, 'Invalid email address'],
       ['captcha', { captchaValue: '' }, 'Please complete the captcha verification'],
       ['verification answer', { aiCheckAnswer: '' }, 'Please answer the verification question'],
@@ -66,6 +68,17 @@ describe('Contact API Route', () => {
 
       expect(NextResponse.json).toHaveBeenCalledWith(
         { error: expectedError },
+        { status: 400 }
+      )
+      expect(mockSend).not.toHaveBeenCalled()
+    })
+
+    it('rejects substring matches like "notwildlife"', async () => {
+      mockCaptchaSuccess()
+      await POST(mockRequest({ ...validBody, aiCheckAnswer: 'notwildlife' }))
+
+      expect(NextResponse.json).toHaveBeenCalledWith(
+        { error: 'Incorrect answer to verification question' },
         { status: 400 }
       )
       expect(mockSend).not.toHaveBeenCalled()
