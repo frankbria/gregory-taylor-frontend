@@ -166,7 +166,7 @@ export default function ContactPage() {
           {/* reCAPTCHA */}
           <div className="flex justify-center">
             <ReCAPTCHA
-              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'} // Test key - replace with your actual key
+              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
               onChange={handleCaptchaChange}
             />
           </div>
