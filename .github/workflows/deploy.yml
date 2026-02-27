@@ -113,6 +113,9 @@ jobs:
               cat > ${{ vars.DEPLOY_PATH }}/.env.production.local <<EOF
           STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}
           BETTER_AUTH_SECRET=${{ secrets.BETTER_AUTH_SECRET }}
+          RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}
+          CONTACT_EMAIL=${{ secrets.CONTACT_EMAIL }}
+          RECAPTCHA_SECRET_KEY=${{ secrets.RECAPTCHA_SECRET_KEY }}
           EOF
               chmod 600 ${{ vars.DEPLOY_PATH }}/.env.production.local
             "'
