@@ -23,6 +23,14 @@ function sanitizeHtml(str) {
 
 export async function POST(request) {
   try {
+    if (!process.env.RESEND_API_KEY || !process.env.CONTACT_EMAIL) {
+      console.error('Contact API misconfigured: missing RESEND_API_KEY or CONTACT_EMAIL')
+      return NextResponse.json(
+        { error: 'Contact form is temporarily unavailable.' },
+        { status: 503 }
+      )
+    }
+
     const { name, email, subject, message, captchaValue, aiCheckAnswer } =
       await request.json()
 
@@ -69,7 +77,10 @@ export async function POST(request) {
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${captchaValue}`,
+        body: new URLSearchParams({
+          secret: process.env.RECAPTCHA_SECRET_KEY,
+          response: captchaValue,
+        }).toString(),
       }
     )
     const captchaData = await captchaResponse.json()
@@ -87,8 +98,9 @@ export async function POST(request) {
     const safeSubject = sanitizeHtml(subject || '')
     const safeMessage = sanitizeHtml(message).replace(/\n/g, '<br>')
 
-    const emailSubject = subject
-      ? `Contact Form: ${subject}`
+    const cleanSubject = (subject || '').replace(/[\r\n]/g, ' ').trim()
+    const emailSubject = cleanSubject
+      ? `Contact Form: ${cleanSubject}`
       : 'Contact Form Submission'
 
     // Send notification email to photographer
@@ -107,18 +119,22 @@ export async function POST(request) {
       `,
     })
 
-    // Send confirmation email to user
-    await getResend().emails.send({
-      from: fromEmail,
-      to: [email],
-      subject: 'Thank you for contacting Greg Taylor Photography',
-      html: `
-        <h2>Thank you for reaching out!</h2>
-        <p>Hi ${safeName},</p>
-        <p>I've received your message and will get back to you within 24-48 hours.</p>
-        <p>Best regards,<br>Greg Taylor</p>
-      `,
-    })
+    // Send confirmation email to user (best-effort — don't fail the request)
+    try {
+      await getResend().emails.send({
+        from: fromEmail,
+        to: [email],
+        subject: 'Thank you for contacting Greg Taylor Photography',
+        html: `
+          <h2>Thank you for reaching out!</h2>
+          <p>Hi ${safeName},</p>
+          <p>I've received your message and will get back to you within 24-48 hours.</p>
+          <p>Best regards,<br>Greg Taylor</p>
+        `,
+      })
+    } catch (confirmErr) {
+      console.error('Failed to send confirmation email:', confirmErr)
+    }
 
     return NextResponse.json({ message: 'Message sent successfully' })
   } catch (err) {

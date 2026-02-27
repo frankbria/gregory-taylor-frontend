@@ -99,19 +99,29 @@ describe('Contact API Route', () => {
   // --- reCAPTCHA Verification ---
 
   describe('reCAPTCHA verification', () => {
-    it('sends token to Google verification endpoint', async () => {
+    it('sends URL-encoded token to Google verification endpoint', async () => {
       mockCaptchaSuccess()
       mockEmailSuccess()
       await POST(mockRequest(validBody))
 
-      expect(global.fetch).toHaveBeenCalledWith(
-        'https://www.google.com/recaptcha/api/siteverify',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: `secret=test-recaptcha-secret&response=valid-captcha-token`,
-        }
-      )
+      const fetchCall = global.fetch.mock.calls[0]
+      expect(fetchCall[0]).toBe('https://www.google.com/recaptcha/api/siteverify')
+      expect(fetchCall[1].method).toBe('POST')
+      expect(fetchCall[1].headers).toEqual({ 'Content-Type': 'application/x-www-form-urlencoded' })
+
+      const params = new URLSearchParams(fetchCall[1].body)
+      expect(params.get('secret')).toBe('test-recaptcha-secret')
+      expect(params.get('response')).toBe('valid-captcha-token')
+    })
+
+    it('safely encodes special characters in captcha token', async () => {
+      mockCaptchaSuccess()
+      mockEmailSuccess()
+      await POST(mockRequest({ ...validBody, captchaValue: 'fake&remoteip=1.2.3.4' }))
+
+      const params = new URLSearchParams(global.fetch.mock.calls[0][1].body)
+      expect(params.get('response')).toBe('fake&remoteip=1.2.3.4')
+      expect(params.get('remoteip')).toBeNull()
     })
 
     it('rejects when Google says token is invalid', async () => {
@@ -203,6 +213,35 @@ describe('Contact API Route', () => {
   // --- Error Handling ---
 
   describe('error handling', () => {
+    it('returns 503 when CONTACT_EMAIL env var is missing', async () => {
+      const original = process.env.CONTACT_EMAIL
+      delete process.env.CONTACT_EMAIL
+
+      await POST(mockRequest(validBody))
+
+      expect(NextResponse.json).toHaveBeenCalledWith(
+        { error: 'Contact form is temporarily unavailable.' },
+        { status: 503 }
+      )
+      expect(mockSend).not.toHaveBeenCalled()
+
+      process.env.CONTACT_EMAIL = original
+    })
+
+    it('returns 503 when RESEND_API_KEY env var is missing', async () => {
+      const original = process.env.RESEND_API_KEY
+      delete process.env.RESEND_API_KEY
+
+      await POST(mockRequest(validBody))
+
+      expect(NextResponse.json).toHaveBeenCalledWith(
+        { error: 'Contact form is temporarily unavailable.' },
+        { status: 503 }
+      )
+
+      process.env.RESEND_API_KEY = original
+    })
+
     it('returns 500 when Resend API fails', async () => {
       mockCaptchaSuccess()
       mockSend.mockRejectedValueOnce(new Error('Resend API error'))
@@ -211,6 +250,18 @@ describe('Contact API Route', () => {
       expect(NextResponse.json).toHaveBeenCalledWith(
         { error: 'Failed to send message. Please try again.' },
         { status: 500 }
+      )
+    })
+
+    it('still succeeds when confirmation email fails (best-effort)', async () => {
+      mockCaptchaSuccess()
+      mockSend.mockResolvedValueOnce({ id: 'notif-1' })
+      mockSend.mockRejectedValueOnce(new Error('Confirmation failed'))
+
+      await POST(mockRequest(validBody))
+
+      expect(NextResponse.json).toHaveBeenCalledWith(
+        { message: 'Message sent successfully' }
       )
     })
 

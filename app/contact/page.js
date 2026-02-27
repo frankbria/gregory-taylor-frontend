@@ -18,15 +18,17 @@ export default function ContactPage() {
     reset 
   } = useForm()
 
-  // Generate a random photography question for AI protection
+  // Photography question for AI protection — stable across re-renders
   const photographyQuestions = [
     { question: "What is the main subject in my photograph collections?", answer: "wildlife" },
     { question: "What type of animal do I educate people about in the Southwest?", answer: "rattlesnakes" },
     { question: "What was my first camera? (Hint: Canon model)", answer: "powershot s120" },
   ]
-  
-  const randomIndex = Math.floor(Math.random() * photographyQuestions.length)
-  const currentQuestion = photographyQuestions[randomIndex]
+
+  const [currentQuestion] = useState(() => {
+    const randomIndex = Math.floor(Math.random() * photographyQuestions.length)
+    return photographyQuestions[randomIndex]
+  })
 
   const onSubmit = async (data) => {
     // Check if captcha is completed
