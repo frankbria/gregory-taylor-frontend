@@ -47,6 +47,7 @@ describe('Footer', () => {
       (link) => link.getAttribute('href')?.includes('instagram.com')
     )
     expect(igLink).toHaveAttribute('target', '_blank')
+    expect(igLink).toHaveAttribute('rel', 'noreferrer')
   })
 
   it('renders LinkedIn link with correct URL', () => {
@@ -55,6 +56,7 @@ describe('Footer', () => {
       (link) => link.getAttribute('href')?.includes('linkedin.com')
     )
     expect(liLink).toHaveAttribute('target', '_blank')
+    expect(liLink).toHaveAttribute('rel', 'noreferrer')
   })
 
   it('renders the contact link', () => {
