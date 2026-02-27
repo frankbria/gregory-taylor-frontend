@@ -11,7 +11,7 @@ test.describe('Photo browsing', () => {
     await page.goto('/gallery')
     // Either category links load from the backend, or empty state shows
     // Wait for content to settle
-    await page.waitForTimeout(2000)
+    await page.waitForLoadState('networkidle')
 
     const hasCategories = await page.locator('a[href^="/gallery/"]').count() > 0
     const hasContent = await page.locator('main').textContent()
@@ -22,7 +22,7 @@ test.describe('Photo browsing', () => {
 
   test('clicking a category navigates to category page', async ({ page }) => {
     await page.goto('/gallery')
-    await page.waitForTimeout(2000)
+    await page.waitForLoadState('networkidle')
 
     const categoryLink = page.locator('a[href^="/gallery/"]').first()
     const hasCategories = await categoryLink.count() > 0

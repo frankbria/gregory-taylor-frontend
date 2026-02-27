@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
 import path from 'path'
 
-const BACKEND_DIR = path.resolve(__dirname, '../gregory-taylor-backend')
+const BACKEND_DIR = process.env.BACKEND_DIR || path.resolve(__dirname, '../gregory-taylor-backend')
 
 export default defineConfig({
   testDir: './e2e',

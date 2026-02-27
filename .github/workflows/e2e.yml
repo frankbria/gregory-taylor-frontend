@@ -47,6 +47,7 @@ jobs:
       - name: Run E2E tests
         run: npm run test:e2e
         env:
+          BACKEND_DIR: ${{ github.workspace }}/../gregory-taylor-backend
           NEXT_PUBLIC_API_BASE: http://localhost:4010
           NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: pk_test_demo
           STRIPE_SECRET_KEY: sk_test_demo

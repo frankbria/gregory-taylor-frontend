@@ -13,13 +13,13 @@ test.describe('Contact form', () => {
     await expect(page.locator('#aiCheck')).toBeVisible()
   })
 
-  test('shows validation errors for empty required fields', async ({ page }) => {
+  test('prevents submission with empty required fields', async ({ page }) => {
+    // Fill only the name to bypass HTML5 required on it, leave others empty
+    await page.fill('#name', 'Test')
     await page.click('button[type="submit"]')
 
-    // HTML5 or react-hook-form validation should prevent submission
-    // The name field should show as invalid
-    const nameField = page.locator('#name')
-    await expect(nameField).toBeVisible()
+    // The form should not navigate away — still on /contact
+    await expect(page).toHaveURL('/contact')
   })
 
   test('can fill out the form', async ({ page }) => {
