@@ -18,15 +18,17 @@ export default function ContactPage() {
     reset 
   } = useForm()
 
-  // Generate a random photography question for AI protection
+  // Photography question for AI protection — stable across re-renders
   const photographyQuestions = [
     { question: "What is the main subject in my photograph collections?", answer: "wildlife" },
     { question: "What type of animal do I educate people about in the Southwest?", answer: "rattlesnakes" },
     { question: "What was my first camera? (Hint: Canon model)", answer: "powershot s120" },
   ]
-  
-  const randomIndex = Math.floor(Math.random() * photographyQuestions.length)
-  const currentQuestion = photographyQuestions[randomIndex]
+
+  const [currentQuestion] = useState(() => {
+    const randomIndex = Math.floor(Math.random() * photographyQuestions.length)
+    return photographyQuestions[randomIndex]
+  })
 
   const onSubmit = async (data) => {
     // Check if captcha is completed
@@ -44,21 +46,23 @@ export default function ContactPage() {
     setIsSubmitting(true)
     
     try {
-      // Here you would implement the actual API call to send the email
-      // For example:
-      // const response = await fetch('/api/contact', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     ...data,
-      //     captchaValue,
-      //     aiCheckAnswer
-      //   })
-      // })
-      
-      // Simulate API call for now
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...data,
+          captchaValue,
+          aiCheckAnswer
+        })
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        toast.error(result.error || 'Failed to send message. Please try again.')
+        return
+      }
+
       toast.success('Message sent successfully!')
       reset()
       setCaptchaValue(null)
