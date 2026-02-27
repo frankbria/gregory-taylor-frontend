@@ -11,8 +11,7 @@ jest.mock('next/link', () => {
   return MockLink
 })
 jest.mock('@/components/CloudinaryImage', () => {
-  const MockCloudinaryImage = function(props) {
-    // eslint-disable-next-line @next/next/no-img-element
+  const MockCloudinaryImage = function (props) {
     return <img src={props.src} alt={props.alt} data-testid="cloudinary-image" />
   }
   MockCloudinaryImage.displayName = 'MockCloudinaryImage'
@@ -40,7 +39,7 @@ describe('OrdersPage Component', () => {
       _id: '507f1f77bcf86cd799439011',
       userId: 'user123',
       createdAt: '2024-01-15T10:30:00Z',
-      totalAmount: 150.00,
+      totalAmount: 150.0,
       status: 'paid',
       items: [
         {
@@ -50,15 +49,15 @@ describe('OrdersPage Component', () => {
           frame: 'Black Frame',
           format: 'Canvas',
           quantity: 2,
-          unitPrice: 75.00
-        }
-      ]
+          unitPrice: 75.0,
+        },
+      ],
     },
     {
       _id: '507f1f77bcf86cd799439012',
       userId: 'user123',
       createdAt: '2024-01-10T14:20:00Z',
-      totalAmount: 50.00,
+      totalAmount: 50.0,
       status: 'fulfilled',
       items: [
         {
@@ -68,16 +67,16 @@ describe('OrdersPage Component', () => {
           frame: 'White Frame',
           format: 'Photo Paper',
           quantity: 1,
-          unitPrice: 50.00
-        }
-      ]
-    }
+          unitPrice: 50.0,
+        },
+      ],
+    },
   ]
 
   beforeEach(() => {
     jest.clearAllMocks()
     useAPI.mockReturnValue({
-      getUserOrders: mockGetUserOrders
+      getUserOrders: mockGetUserOrders,
     })
   })
 
@@ -104,7 +103,10 @@ describe('OrdersPage Component', () => {
       })
 
       expect(screen.getByText('Browse Gallery')).toBeInTheDocument()
-      expect(screen.getByRole('link', { name: 'Browse Gallery' })).toHaveAttribute('href', '/gallery')
+      expect(screen.getByRole('link', { name: 'Browse Gallery' })).toHaveAttribute(
+        'href',
+        '/gallery'
+      )
     })
   })
 
@@ -228,10 +230,12 @@ describe('OrdersPage Component', () => {
 
     it('should display gray badge for other statuses', async () => {
       localStorageMock.getItem.mockReturnValue('user123')
-      mockGetUserOrders.mockResolvedValue([{
-        ...mockOrders[0],
-        status: 'pending'
-      }])
+      mockGetUserOrders.mockResolvedValue([
+        {
+          ...mockOrders[0],
+          status: 'pending',
+        },
+      ])
 
       render(<OrdersPage />)
 
@@ -308,7 +312,7 @@ describe('OrdersPage Component', () => {
         _id: '507f1f77bcf86cd799439099',
         userId: 'user123',
         createdAt: '2024-01-20T10:00:00Z',
-        totalAmount: 200.00,
+        totalAmount: 200.0,
         status: 'paid',
         items: [
           {
@@ -318,7 +322,7 @@ describe('OrdersPage Component', () => {
             frame: 'Black',
             format: 'Canvas',
             quantity: 1,
-            unitPrice: 100.00
+            unitPrice: 100.0,
           },
           {
             imageUrl: 'https://res.cloudinary.com/test/image2.jpg',
@@ -327,9 +331,9 @@ describe('OrdersPage Component', () => {
             frame: 'White',
             format: 'Paper',
             quantity: 2,
-            unitPrice: 50.00
-          }
-        ]
+            unitPrice: 50.0,
+          },
+        ],
       }
 
       localStorageMock.getItem.mockReturnValue('user123')
@@ -352,9 +356,9 @@ describe('OrdersPage Component', () => {
       const orderWithoutId = {
         userId: 'user123',
         createdAt: '2024-01-15T10:30:00Z',
-        totalAmount: 100.00,
+        totalAmount: 100.0,
         status: 'paid',
-        items: [{ imageUrl: 'https://example.com/img.jpg', title: 'Test', unitPrice: 100 }]
+        items: [{ imageUrl: 'https://example.com/img.jpg', title: 'Test', unitPrice: 100 }],
       }
 
       localStorageMock.getItem.mockReturnValue('user123')
@@ -371,9 +375,9 @@ describe('OrdersPage Component', () => {
       const orderWithoutDate = {
         _id: '507f1f77bcf86cd799439011',
         userId: 'user123',
-        totalAmount: 100.00,
+        totalAmount: 100.0,
         status: 'paid',
-        items: [{ imageUrl: 'https://example.com/img.jpg', title: 'Test', unitPrice: 100 }]
+        items: [{ imageUrl: 'https://example.com/img.jpg', title: 'Test', unitPrice: 100 }],
       }
 
       localStorageMock.getItem.mockReturnValue('user123')
@@ -391,9 +395,9 @@ describe('OrdersPage Component', () => {
         _id: '507f1f77bcf86cd799439011',
         userId: 'user123',
         createdAt: 'not-a-date',
-        totalAmount: 100.00,
+        totalAmount: 100.0,
         status: 'paid',
-        items: [{ imageUrl: 'https://example.com/img.jpg', title: 'Test', unitPrice: 100 }]
+        items: [{ imageUrl: 'https://example.com/img.jpg', title: 'Test', unitPrice: 100 }],
       }
 
       localStorageMock.getItem.mockReturnValue('user123')
@@ -412,7 +416,7 @@ describe('OrdersPage Component', () => {
         userId: 'user123',
         createdAt: '2024-01-15T10:30:00Z',
         status: 'paid',
-        items: [{ imageUrl: 'https://example.com/img.jpg', title: 'Test', unitPrice: 100 }]
+        items: [{ imageUrl: 'https://example.com/img.jpg', title: 'Test', unitPrice: 100 }],
       }
 
       localStorageMock.getItem.mockReturnValue('user123')
@@ -430,8 +434,8 @@ describe('OrdersPage Component', () => {
         _id: '507f1f77bcf86cd799439011',
         userId: 'user123',
         createdAt: '2024-01-15T10:30:00Z',
-        totalAmount: 100.00,
-        items: [{ imageUrl: 'https://example.com/img.jpg', title: 'Test', unitPrice: 100 }]
+        totalAmount: 100.0,
+        items: [{ imageUrl: 'https://example.com/img.jpg', title: 'Test', unitPrice: 100 }],
       }
 
       localStorageMock.getItem.mockReturnValue('user123')
@@ -450,8 +454,8 @@ describe('OrdersPage Component', () => {
         _id: '507f1f77bcf86cd799439011',
         userId: 'user123',
         createdAt: '2024-01-15T10:30:00Z',
-        totalAmount: 100.00,
-        status: 'paid'
+        totalAmount: 100.0,
+        status: 'paid',
       }
 
       localStorageMock.getItem.mockReturnValue('user123')
@@ -472,9 +476,9 @@ describe('OrdersPage Component', () => {
         _id: '507f1f77bcf86cd799439011',
         userId: 'user123',
         createdAt: '2024-01-15T10:30:00Z',
-        totalAmount: 100.00,
+        totalAmount: 100.0,
         status: 'paid',
-        items: [{ imageUrl: 'https://example.com/img.jpg', unitPrice: 100 }]
+        items: [{ imageUrl: 'https://example.com/img.jpg', unitPrice: 100 }],
       }
 
       localStorageMock.getItem.mockReturnValue('user123')
@@ -492,9 +496,9 @@ describe('OrdersPage Component', () => {
         _id: '507f1f77bcf86cd799439011',
         userId: 'user123',
         createdAt: '2024-01-15T10:30:00Z',
-        totalAmount: 100.00,
+        totalAmount: 100.0,
         status: 'paid',
-        items: [{ imageUrl: 'https://example.com/img.jpg', title: 'Test Photo', unitPrice: 100 }]
+        items: [{ imageUrl: 'https://example.com/img.jpg', title: 'Test Photo', unitPrice: 100 }],
       }
 
       localStorageMock.getItem.mockReturnValue('user123')
@@ -512,9 +516,9 @@ describe('OrdersPage Component', () => {
         _id: '507f1f77bcf86cd799439011',
         userId: 'user123',
         createdAt: '2024-01-15T10:30:00Z',
-        totalAmount: 100.00,
+        totalAmount: 100.0,
         status: 'paid',
-        items: [{ imageUrl: 'https://example.com/img.jpg', title: 'Test Photo' }]
+        items: [{ imageUrl: 'https://example.com/img.jpg', title: 'Test Photo' }],
       }
 
       localStorageMock.getItem.mockReturnValue('user123')
@@ -532,9 +536,9 @@ describe('OrdersPage Component', () => {
         _id: '507f1f77bcf86cd799439011',
         userId: 'user123',
         createdAt: '2024-01-15T10:30:00Z',
-        totalAmount: 100.00,
+        totalAmount: 100.0,
         status: 'paid',
-        items: [{ imageUrl: 'https://example.com/img.jpg', title: 'Test Photo', unitPrice: 100 }]
+        items: [{ imageUrl: 'https://example.com/img.jpg', title: 'Test Photo', unitPrice: 100 }],
       }
 
       localStorageMock.getItem.mockReturnValue('user123')
