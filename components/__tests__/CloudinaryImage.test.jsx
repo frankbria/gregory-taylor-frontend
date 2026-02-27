@@ -383,6 +383,17 @@ describe('CloudinaryImage Component', () => {
       expect(fallback).toHaveAttribute('aria-label', 'Test image')
     })
 
+    it('should reset error state when src prop changes', () => {
+      const { rerender } = render(<CloudinaryImage {...defaultProps} />)
+
+      fireEvent.error(screen.getByTestId('next-image'))
+      expect(screen.getByText('Image unavailable')).toBeInTheDocument()
+
+      rerender(<CloudinaryImage src="https://res.cloudinary.com/demo/image/upload/new.jpg" alt="New image" />)
+      expect(screen.getByTestId('next-image')).toBeInTheDocument()
+      expect(screen.queryByText('Image unavailable')).not.toBeInTheDocument()
+    })
+
     it('should preserve aspect ratio in fallback placeholder', () => {
       const { container } = render(
         <CloudinaryImage src={defaultProps.src} alt="test" aspectRatio={16 / 9} />

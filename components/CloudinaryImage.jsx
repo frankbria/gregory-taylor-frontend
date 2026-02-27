@@ -1,11 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import cloudinaryLoader from '@/lib/cloudinaryLoader'
 import withInspector from '@/lib/withInspector'
-
-const FALLBACK_SRC = '/placeholder-image.svg'
 
 function CloudinaryImage({
   src,
@@ -20,6 +18,10 @@ function CloudinaryImage({
   ...rest
 }) {
   const [hasError, setHasError] = useState(false)
+
+  useEffect(() => {
+    setHasError(false)
+  }, [src])
 
   if (!src) return null
 
@@ -83,7 +85,7 @@ function CloudinaryImage({
   if (hasError) {
     return (
       <div
-        className={`relative w-full bg-gray-200 flex items-center justify-center`}
+        className="relative w-full bg-gray-200 flex items-center justify-center"
         style={{ paddingTop: `${paddingTop}%` }}
         role="img"
         aria-label={alt || 'Image unavailable'}
