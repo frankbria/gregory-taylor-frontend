@@ -20,9 +20,8 @@ jest.mock('next/link', () => {
 let cloudinaryImageCalls = []
 
 jest.mock('@/components/CloudinaryImage', () => {
-  const MockCloudinaryImage = function(props) {
+  const MockCloudinaryImage = function (props) {
     cloudinaryImageCalls.push(props)
-    // eslint-disable-next-line @next/next/no-img-element
     return <img src={props.src} alt={props.alt} data-testid="cloudinary-image" />
   }
   MockCloudinaryImage.displayName = 'MockCloudinaryImage'
@@ -36,17 +35,17 @@ describe('CartPage Component', () => {
 
   const mockSizes = [
     { _id: 'size1', name: '8x10', price: 20 },
-    { _id: 'size2', name: '11x14', price: 30 }
+    { _id: 'size2', name: '11x14', price: 30 },
   ]
 
   const mockFrames = [
     { _id: 'frame1', name: 'Black Frame', price: 15 },
-    { _id: 'frame2', name: 'White Frame', price: 15 }
+    { _id: 'frame2', name: 'White Frame', price: 15 },
   ]
 
   const mockFormats = [
     { _id: 'format1', name: 'Canvas', price: 25 },
-    { _id: 'format2', name: 'Photo Paper', price: 10 }
+    { _id: 'format2', name: 'Photo Paper', price: 10 },
   ]
 
   beforeEach(() => {
@@ -57,7 +56,7 @@ describe('CartPage Component', () => {
       cart: [],
       removeFromCart: mockRemoveFromCart,
       updateQuantity: mockUpdateQuantity,
-      clearCart: mockClearCart
+      clearCart: mockClearCart,
     })
 
     getSizes.mockResolvedValue(mockSizes)
@@ -101,7 +100,7 @@ describe('CartPage Component', () => {
         formatId: 'format1',
         format: 'Canvas',
         quantity: 2,
-        price: 60 // 20 + 15 + 25
+        price: 60, // 20 + 15 + 25
       },
       {
         id: 'item2',
@@ -110,8 +109,8 @@ describe('CartPage Component', () => {
         sizeId: 'size2',
         size: '11x14',
         quantity: 1,
-        price: 30
-      }
+        price: 30,
+      },
     ]
 
     beforeEach(() => {
@@ -119,7 +118,7 @@ describe('CartPage Component', () => {
         cart: mockCartItems,
         removeFromCart: mockRemoveFromCart,
         updateQuantity: mockUpdateQuantity,
-        clearCart: mockClearCart
+        clearCart: mockClearCart,
       })
     })
 
@@ -193,26 +192,29 @@ describe('CartPage Component', () => {
           sizeId: 'size1',
           frameId: 'frame1',
           formatId: 'format1',
-          quantity: 1
-        }
+          quantity: 1,
+        },
       ]
 
       useCart.mockReturnValue({
         cart: itemsWithoutPrice,
         removeFromCart: mockRemoveFromCart,
         updateQuantity: mockUpdateQuantity,
-        clearCart: mockClearCart
+        clearCart: mockClearCart,
       })
 
       await act(async () => {
         render(<CartPage />)
       })
 
-      await waitFor(() => {
-        // 20 (size) + 15 (frame) + 25 (format) = 60
-        const prices = screen.getAllByText('$60.00')
-        expect(prices.length).toBeGreaterThan(0)
-      }, { timeout: 3000 })
+      await waitFor(
+        () => {
+          // 20 (size) + 15 (frame) + 25 (format) = 60
+          const prices = screen.getAllByText('$60.00')
+          expect(prices.length).toBeGreaterThan(0)
+        },
+        { timeout: 3000 }
+      )
     })
   })
 
@@ -223,8 +225,8 @@ describe('CartPage Component', () => {
         title: 'Test Photo',
         price: 50,
         quantity: 1,
-        displayUrl: 'https://example.com/photo.jpg'
-      }
+        displayUrl: 'https://example.com/photo.jpg',
+      },
     ]
 
     beforeEach(() => {
@@ -232,7 +234,7 @@ describe('CartPage Component', () => {
         cart: mockCartItems,
         removeFromCart: mockRemoveFromCart,
         updateQuantity: mockUpdateQuantity,
-        clearCart: mockClearCart
+        clearCart: mockClearCart,
       })
     })
 
@@ -258,8 +260,8 @@ describe('CartPage Component', () => {
     })
 
     it('should show loading state during checkout', async () => {
-      createCheckoutSession.mockImplementation(() =>
-        new Promise(resolve => setTimeout(() => resolve({ id: 'cs_test_123' }), 100))
+      createCheckoutSession.mockImplementation(
+        () => new Promise((resolve) => setTimeout(() => resolve({ id: 'cs_test_123' }), 100))
       )
       redirectToCheckout.mockResolvedValue({ success: true })
 
@@ -314,8 +316,8 @@ describe('CartPage Component', () => {
     })
 
     it('should disable checkout button during processing', async () => {
-      createCheckoutSession.mockImplementation(() =>
-        new Promise(resolve => setTimeout(() => resolve({ id: 'cs_test_123' }), 100))
+      createCheckoutSession.mockImplementation(
+        () => new Promise((resolve) => setTimeout(() => resolve({ id: 'cs_test_123' }), 100))
       )
       redirectToCheckout.mockResolvedValue({ success: true })
 
@@ -356,10 +358,7 @@ describe('CartPage Component', () => {
       render(<CartPage />)
 
       await waitFor(() => {
-        expect(consoleErrorSpy).toHaveBeenCalledWith(
-          'Error loading price data:',
-          expect.any(Error)
-        )
+        expect(consoleErrorSpy).toHaveBeenCalledWith('Error loading price data:', expect.any(Error))
       })
 
       consoleErrorSpy.mockRestore()
@@ -375,25 +374,28 @@ describe('CartPage Component', () => {
           displayUrl: 'https://example.com/photo.jpg',
           price: 100,
           sizeId: 'size1',
-          quantity: 1
-        }
+          quantity: 1,
+        },
       ]
 
       useCart.mockReturnValue({
         cart: cartWithPrices,
         removeFromCart: mockRemoveFromCart,
         updateQuantity: mockUpdateQuantity,
-        clearCart: mockClearCart
+        clearCart: mockClearCart,
       })
 
       await act(async () => {
         render(<CartPage />)
       })
 
-      await waitFor(() => {
-        const prices = screen.getAllByText('$100.00')
-        expect(prices.length).toBeGreaterThan(0)
-      }, { timeout: 3000 })
+      await waitFor(
+        () => {
+          const prices = screen.getAllByText('$100.00')
+          expect(prices.length).toBeGreaterThan(0)
+        },
+        { timeout: 3000 }
+      )
     })
 
     it('should calculate price from components when item.price not valid', async () => {
@@ -405,26 +407,29 @@ describe('CartPage Component', () => {
           price: NaN,
           sizeId: 'size1',
           frameId: 'frame1',
-          quantity: 1
-        }
+          quantity: 1,
+        },
       ]
 
       useCart.mockReturnValue({
         cart: cartWithoutPrices,
         removeFromCart: mockRemoveFromCart,
         updateQuantity: mockUpdateQuantity,
-        clearCart: mockClearCart
+        clearCart: mockClearCart,
       })
 
       await act(async () => {
         render(<CartPage />)
       })
 
-      await waitFor(() => {
-        // 20 (size) + 15 (frame) = 35
-        const prices = screen.getAllByText('$35.00')
-        expect(prices.length).toBeGreaterThan(0)
-      }, { timeout: 3000 })
+      await waitFor(
+        () => {
+          // 20 (size) + 15 (frame) = 35
+          const prices = screen.getAllByText('$35.00')
+          expect(prices.length).toBeGreaterThan(0)
+        },
+        { timeout: 3000 }
+      )
     })
 
     it('should handle missing component IDs gracefully', async () => {
@@ -433,25 +438,28 @@ describe('CartPage Component', () => {
           id: 'item1',
           title: 'Photo',
           displayUrl: 'https://example.com/photo.jpg',
-          quantity: 1
-        }
+          quantity: 1,
+        },
       ]
 
       useCart.mockReturnValue({
         cart: cartWithMissingIds,
         removeFromCart: mockRemoveFromCart,
         updateQuantity: mockUpdateQuantity,
-        clearCart: mockClearCart
+        clearCart: mockClearCart,
       })
 
       await act(async () => {
         render(<CartPage />)
       })
 
-      await waitFor(() => {
-        const prices = screen.getAllByText('$0.00')
-        expect(prices.length).toBeGreaterThan(0)
-      }, { timeout: 3000 })
+      await waitFor(
+        () => {
+          const prices = screen.getAllByText('$0.00')
+          expect(prices.length).toBeGreaterThan(0)
+        },
+        { timeout: 3000 }
+      )
     })
   })
 
@@ -464,15 +472,15 @@ describe('CartPage Component', () => {
           displayUrl: 'https://example.com/photo.jpg',
           price: 50,
           quantity: 1,
-          aspectRatio: 16/9
-        }
+          aspectRatio: 16 / 9,
+        },
       ]
 
       useCart.mockReturnValue({
         cart: cartWithAspectRatio,
         removeFromCart: mockRemoveFromCart,
         updateQuantity: mockUpdateQuantity,
-        clearCart: mockClearCart
+        clearCart: mockClearCart,
       })
 
       render(<CartPage />)
@@ -483,7 +491,7 @@ describe('CartPage Component', () => {
 
       await waitFor(() => {
         const lastCall = cloudinaryImageCalls[cloudinaryImageCalls.length - 1]
-        expect(lastCall.aspectRatio).toBe(16/9)
+        expect(lastCall.aspectRatio).toBe(16 / 9)
       })
     })
 
@@ -496,15 +504,15 @@ describe('CartPage Component', () => {
           price: 50,
           quantity: 1,
           width: 1920,
-          height: 1080
-        }
+          height: 1080,
+        },
       ]
 
       useCart.mockReturnValue({
         cart: cartWithDimensions,
         removeFromCart: mockRemoveFromCart,
         updateQuantity: mockUpdateQuantity,
-        clearCart: mockClearCart
+        clearCart: mockClearCart,
       })
 
       render(<CartPage />)
@@ -527,16 +535,16 @@ describe('CartPage Component', () => {
           title: 'Legacy cart item',
           displayUrl: 'https://example.com/photo.jpg',
           price: 50,
-          quantity: 1
+          quantity: 1,
           // No dimension props
-        }
+        },
       ]
 
       useCart.mockReturnValue({
         cart: cartWithoutDimensions,
         removeFromCart: mockRemoveFromCart,
         updateQuantity: mockUpdateQuantity,
-        clearCart: mockClearCart
+        clearCart: mockClearCart,
       })
 
       render(<CartPage />)
