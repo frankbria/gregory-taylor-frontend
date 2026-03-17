@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: frankbria/gregory-taylor-backend
-          path: ../gregory-taylor-backend
+          path: gregory-taylor-backend
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
@@ -39,7 +39,7 @@ jobs:
 
       - name: Install backend dependencies
         run: npm ci
-        working-directory: ../gregory-taylor-backend
+        working-directory: gregory-taylor-backend
 
       - name: Install Playwright browsers
         run: npx playwright install chromium --with-deps
@@ -47,7 +47,7 @@ jobs:
       - name: Run E2E tests
         run: npm run test:e2e
         env:
-          BACKEND_DIR: ${{ github.workspace }}/../gregory-taylor-backend
+          BACKEND_DIR: ${{ github.workspace }}/gregory-taylor-backend
           NEXT_PUBLIC_API_BASE: http://localhost:4010
           NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: pk_test_demo
           STRIPE_SECRET_KEY: sk_test_demo
