@@ -102,6 +102,7 @@ describe('CategoryGrid', () => {
       expect(
         screen.getByText('Check back soon for new photography collections.')
       ).toBeInTheDocument()
+      expect(screen.getByRole('link', { name: 'Back to Home' })).toHaveAttribute('href', '/')
     })
   })
 

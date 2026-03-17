@@ -48,9 +48,15 @@ function CategoryGrid() {
       <div className="text-center py-20">
         <FaFolderOpen className="w-20 h-20 mx-auto text-gray-300 mb-6" />
         <h2 className="text-2xl font-bold mb-2">No gallery categories available yet.</h2>
-        <p className="text-gray-600 dark:text-gray-300">
+        <p className="text-gray-600 dark:text-gray-300 mb-6">
           Check back soon for new photography collections.
         </p>
+        <Link
+          href="/"
+          className="inline-block bg-black text-white px-6 py-3 rounded hover:bg-gray-800 transition"
+        >
+          Back to Home
+        </Link>
       </div>
     )
   }
