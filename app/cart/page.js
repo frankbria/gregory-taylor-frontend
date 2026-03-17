@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useCart } from '@/lib/CartContext'
-import { FaTrash } from 'react-icons/fa'
+import { FaTrash, FaShoppingCart } from 'react-icons/fa'
 import Link from 'next/link'
 import { toast } from 'react-hot-toast'
 import { createCheckoutSession, redirectToCheckout } from '@/lib/stripe'
@@ -89,11 +89,15 @@ export default function CartPage() {
 
   if (cart.length === 0) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-12 text-center">
+      <div className="max-w-4xl mx-auto px-4 py-20 text-center">
         <h1 className="text-3xl font-serif mb-6">Your Shopping Cart</h1>
-        <p className="mb-8">Your cart is empty.</p>
-        <Link 
-          href="/gallery" 
+        <FaShoppingCart className="w-24 h-24 mx-auto text-gray-300 mb-6" />
+        <p className="text-xl font-medium mb-2">Your cart is empty.</p>
+        <p className="text-gray-600 dark:text-gray-300 mb-6">
+          Start adding photos to your cart to see them here!
+        </p>
+        <Link
+          href="/gallery"
           className="inline-block bg-black text-white px-6 py-3 rounded hover:bg-gray-800 transition"
         >
           Continue Shopping

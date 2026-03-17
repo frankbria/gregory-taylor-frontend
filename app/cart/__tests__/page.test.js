@@ -65,12 +65,18 @@ describe('CartPage Component', () => {
   })
 
   describe('Empty Cart', () => {
-    it('should display empty cart message when cart is empty', () => {
+    it('should display empty cart message with icon when cart is empty', () => {
       render(<CartPage />)
 
       expect(screen.getByText('Your Shopping Cart')).toBeInTheDocument()
       expect(screen.getByText('Your cart is empty.')).toBeInTheDocument()
-      expect(screen.getByText('Continue Shopping')).toBeInTheDocument()
+      expect(
+        screen.getByText('Start adding photos to your cart to see them here!')
+      ).toBeInTheDocument()
+      expect(screen.getByRole('link', { name: 'Continue Shopping' })).toHaveAttribute(
+        'href',
+        '/gallery'
+      )
     })
 
     it('should show error toast when attempting checkout with empty cart', async () => {

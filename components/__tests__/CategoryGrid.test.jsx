@@ -89,6 +89,22 @@ describe('CategoryGrid', () => {
     })
   })
 
+  describe('Empty state', () => {
+    it('should show empty state when no categories are returned', async () => {
+      getCategories.mockResolvedValue([])
+
+      render(<CategoryGrid />)
+
+      await waitFor(() => {
+        expect(screen.getByText('No gallery categories available yet.')).toBeInTheDocument()
+      })
+
+      expect(
+        screen.getByText('Check back soon for new photography collections.')
+      ).toBeInTheDocument()
+    })
+  })
+
   describe('Passing dimension props to CloudinaryImage', () => {
     it('should pass aspectRatio prop when category has aspectRatio', async () => {
       const mockCategories = [

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { toast } from 'react-hot-toast'
+import { FaFolderOpen } from 'react-icons/fa'
 import { getCategories } from '@/lib/api'
 import CloudinaryImage from '@/components/CloudinaryImage'
 import CategoryGridSkeleton from '@/components/CategoryGridSkeleton'
@@ -38,6 +39,18 @@ function CategoryGrid() {
     return (
       <div className="text-center py-12">
         <p className="text-red-600 text-lg">Failed to load categories.</p>
+      </div>
+    )
+  }
+
+  if (categories.length === 0) {
+    return (
+      <div className="text-center py-20">
+        <FaFolderOpen className="w-20 h-20 mx-auto text-gray-300 mb-6" />
+        <h2 className="text-2xl font-bold mb-2">No gallery categories available yet.</h2>
+        <p className="text-gray-600 dark:text-gray-300">
+          Check back soon for new photography collections.
+        </p>
       </div>
     )
   }
