@@ -43,6 +43,38 @@ describe('CategoryGrid', () => {
     cloudinaryImageCalls = []
   })
 
+  describe('Loading skeleton', () => {
+    it('should show skeleton while categories are loading', () => {
+      getCategories.mockImplementation(() => new Promise(() => {})) // Never resolves
+
+      render(<CategoryGrid />)
+
+      const skeletonItems = screen.getAllByTestId('category-skeleton-item')
+      expect(skeletonItems.length).toBeGreaterThan(0)
+    })
+
+    it('should hide skeleton after categories load', async () => {
+      const mockCategories = [
+        {
+          _id: '1',
+          slug: 'landscapes',
+          name: 'Landscapes',
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/landscapes.jpg',
+        },
+      ]
+
+      getCategories.mockResolvedValue(mockCategories)
+
+      render(<CategoryGrid />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Landscapes')).toBeInTheDocument()
+      })
+
+      expect(screen.queryAllByTestId('category-skeleton-item')).toHaveLength(0)
+    })
+  })
+
   describe('Passing dimension props to CloudinaryImage', () => {
     it('should pass aspectRatio prop when category has aspectRatio', async () => {
       const mockCategories = [

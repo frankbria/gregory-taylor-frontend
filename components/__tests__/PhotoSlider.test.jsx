@@ -53,12 +53,17 @@ describe('PhotoSlider', () => {
   })
 
   describe('Loading and Error States', () => {
-    it('should show loading state while fetching photos', () => {
+    it('should show loading skeleton while fetching photos', () => {
       mockGetFeaturedPhotos.mockImplementation(() => new Promise(() => {})) // Never resolves
 
-      render(<PhotoSlider />)
+      const { container } = render(<PhotoSlider />)
 
-      expect(screen.getByText('Loading...')).toBeInTheDocument()
+      // Should render the structural skeleton with animate-pulse
+      const skeleton = container.querySelector('.animate-pulse')
+      expect(skeleton).not.toBeNull()
+      // Should have nav button placeholders (two rounded circles)
+      const circles = container.querySelectorAll('.rounded-full')
+      expect(circles.length).toBeGreaterThanOrEqual(2)
     })
 
     it('should show error message when fetch fails', async () => {

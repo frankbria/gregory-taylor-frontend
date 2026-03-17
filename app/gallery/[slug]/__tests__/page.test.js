@@ -50,6 +50,42 @@ describe('CategoryGalleryPage', () => {
     cloudinaryImageCalls = []
   })
 
+  describe('Loading skeleton', () => {
+    it('should show skeleton while photos are loading', () => {
+      getPhotosByCategory.mockImplementation(() => new Promise(() => {})) // Never resolves
+
+      render(<CategoryGalleryPage />)
+
+      const skeletonItems = screen.getAllByTestId('skeleton-item')
+      expect(skeletonItems.length).toBeGreaterThan(0)
+    })
+
+    it('should hide skeleton after photos load', async () => {
+      const mockPhotos = [
+        {
+          _id: '1',
+          slug: 'photo-1',
+          title: 'Test Photo',
+          displayUrl: 'https://res.cloudinary.com/demo/image/upload/test.jpg',
+          fullLength: false,
+        },
+      ]
+
+      getPhotosByCategory.mockResolvedValue({
+        category: { name: 'Test Category' },
+        photos: mockPhotos,
+      })
+
+      render(<CategoryGalleryPage />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Test Category')).toBeInTheDocument()
+      })
+
+      expect(screen.queryAllByTestId('skeleton-item')).toHaveLength(0)
+    })
+  })
+
   describe('Passing dimension props to CloudinaryImage', () => {
     it('should pass aspectRatio prop when photo has aspectRatio', async () => {
       const mockPhotos = [
