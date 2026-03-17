@@ -56,6 +56,8 @@ describe('CategoryGalleryPage', () => {
 
       render(<CategoryGalleryPage />)
 
+      const skeleton = screen.getByRole('status', { name: 'Loading images' })
+      expect(skeleton).toBeInTheDocument()
       const skeletonItems = screen.getAllByTestId('skeleton-item')
       expect(skeletonItems.length).toBeGreaterThan(0)
     })
@@ -80,6 +82,20 @@ describe('CategoryGalleryPage', () => {
 
       await waitFor(() => {
         expect(screen.getByText('Test Category')).toBeInTheDocument()
+      })
+
+      expect(screen.queryAllByTestId('skeleton-item')).toHaveLength(0)
+    })
+
+    it('should show error message when fetch fails', async () => {
+      getPhotosByCategory.mockRejectedValue(new Error('Network error'))
+
+      render(<CategoryGalleryPage />)
+
+      await waitFor(() => {
+        expect(
+          screen.getByText('Failed to load photos for this category.')
+        ).toBeInTheDocument()
       })
 
       expect(screen.queryAllByTestId('skeleton-item')).toHaveLength(0)

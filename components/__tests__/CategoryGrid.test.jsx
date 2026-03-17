@@ -49,6 +49,8 @@ describe('CategoryGrid', () => {
 
       render(<CategoryGrid />)
 
+      const skeleton = screen.getByRole('status', { name: 'Loading categories' })
+      expect(skeleton).toBeInTheDocument()
       const skeletonItems = screen.getAllByTestId('category-skeleton-item')
       expect(skeletonItems.length).toBeGreaterThan(0)
     })
@@ -69,6 +71,18 @@ describe('CategoryGrid', () => {
 
       await waitFor(() => {
         expect(screen.getByText('Landscapes')).toBeInTheDocument()
+      })
+
+      expect(screen.queryAllByTestId('category-skeleton-item')).toHaveLength(0)
+    })
+
+    it('should show error message when fetch fails', async () => {
+      getCategories.mockRejectedValue(new Error('Network error'))
+
+      render(<CategoryGrid />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Failed to load categories.')).toBeInTheDocument()
       })
 
       expect(screen.queryAllByTestId('category-skeleton-item')).toHaveLength(0)

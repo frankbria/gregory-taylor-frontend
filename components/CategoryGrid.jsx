@@ -11,6 +11,7 @@ import withInspector from '@/lib/withInspector'
 function CategoryGrid() {
   const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -20,6 +21,7 @@ function CategoryGrid() {
       } catch (err) {
         console.error('Error fetching categories:', err)
         toast.error('Failed to load categories')
+        setError(true)
       } finally {
         setLoading(false)
       }
@@ -30,6 +32,14 @@ function CategoryGrid() {
 
   if (loading) {
     return <CategoryGridSkeleton count={6} />
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-red-600 text-lg">Failed to load categories.</p>
+      </div>
+    )
   }
 
   return (

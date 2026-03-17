@@ -66,7 +66,7 @@ function PhotoSlider() {
 
   if (isLoading) {
     return (
-      <div className="relative w-full h-[50vh] md:h-[70vh] bg-gray-200 dark:bg-gray-700 animate-pulse">
+      <div role="status" aria-label="Loading featured photos" className="relative w-full h-[50vh] md:h-[70vh] bg-gray-200 dark:bg-gray-700 animate-pulse">
         <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-gray-300 dark:from-gray-800 to-transparent" />
         <div className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-gray-300 dark:bg-gray-600 rounded-full" />
         <div className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-gray-300 dark:bg-gray-600 rounded-full" />

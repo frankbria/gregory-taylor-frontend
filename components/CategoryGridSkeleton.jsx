@@ -1,6 +1,6 @@
 export default function CategoryGridSkeleton({ count = 6 }) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+    <div role="status" aria-label="Loading categories" className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
       {Array.from({ length: count }).map((_, i) => (
         <div
           key={i}

@@ -58,9 +58,10 @@ describe('PhotoSlider', () => {
 
       const { container } = render(<PhotoSlider />)
 
-      // Should render the structural skeleton with animate-pulse
-      const skeleton = container.querySelector('.animate-pulse')
+      // Should render the structural skeleton with animate-pulse and accessibility
+      const skeleton = screen.getByRole('status', { name: 'Loading featured photos' })
       expect(skeleton).not.toBeNull()
+      expect(skeleton.className).toContain('animate-pulse')
       // Should have nav button placeholders (two rounded circles)
       const circles = container.querySelectorAll('.rounded-full')
       expect(circles.length).toBeGreaterThanOrEqual(2)

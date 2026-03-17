@@ -16,6 +16,7 @@ export default function CategoryGalleryPage() {
   const [photos, setPhotos] = useState([])
   const [categoryName, setCategoryName] = useState('')
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     const fetchPhotos = async () => {
@@ -26,6 +27,7 @@ export default function CategoryGalleryPage() {
       } catch (err) {
         console.error('Error loading category photos:', err)
         toast.error('Failed to load photos for this category')
+        setError(true)
       } finally {
         setLoading(false)
       }
@@ -41,6 +43,14 @@ export default function CategoryGalleryPage() {
           <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-48 mx-auto mb-2 animate-pulse" />
         </div>
         <ImageGridSkeleton count={12} />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto p-6 text-center">
+        <p className="text-red-600 text-lg">Failed to load photos for this category.</p>
       </div>
     )
   }
