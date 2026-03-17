@@ -9,11 +9,14 @@ import Link from 'next/link'
 import { toast } from 'react-hot-toast'
 import { getPhotosByCategory } from '@/lib/api'
 import CloudinaryImage from '@/components/CloudinaryImage'
+import ImageGridSkeleton from '@/components/ImageGridSkeleton'
 
 export default function CategoryGalleryPage() {
   const { slug } = useParams()
   const [photos, setPhotos] = useState([])
   const [categoryName, setCategoryName] = useState('')
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     const fetchPhotos = async () => {
@@ -24,11 +27,33 @@ export default function CategoryGalleryPage() {
       } catch (err) {
         console.error('Error loading category photos:', err)
         toast.error('Failed to load photos for this category')
+        setError(true)
+      } finally {
+        setLoading(false)
       }
     }
 
     fetchPhotos()
   }, [slug])
+
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
+        <div className="border-b pb-2 text-center">
+          <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-48 mx-auto mb-2 animate-pulse" />
+        </div>
+        <ImageGridSkeleton count={12} />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto p-6 text-center">
+        <p className="text-red-600 text-lg">Failed to load photos for this category.</p>
+      </div>
+    )
+  }
 
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-6">

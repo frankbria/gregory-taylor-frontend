@@ -5,10 +5,13 @@ import Link from 'next/link'
 import { toast } from 'react-hot-toast'
 import { getCategories } from '@/lib/api'
 import CloudinaryImage from '@/components/CloudinaryImage'
+import CategoryGridSkeleton from '@/components/CategoryGridSkeleton'
 import withInspector from '@/lib/withInspector'
 
 function CategoryGrid() {
   const [categories, setCategories] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -18,11 +21,26 @@ function CategoryGrid() {
       } catch (err) {
         console.error('Error fetching categories:', err)
         toast.error('Failed to load categories')
+        setError(true)
+      } finally {
+        setLoading(false)
       }
     }
 
     fetchData()
   }, [])
+
+  if (loading) {
+    return <CategoryGridSkeleton count={6} />
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-red-600 text-lg">Failed to load categories.</p>
+      </div>
+    )
+  }
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">

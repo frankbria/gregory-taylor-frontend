@@ -66,8 +66,15 @@ function PhotoSlider() {
 
   if (isLoading) {
     return (
-      <div className="w-full h-[50vh] md:h-[70vh] bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-        <div className="animate-pulse text-xl">Loading...</div>
+      <div role="status" aria-label="Loading featured photos" className="relative w-full h-[50vh] md:h-[70vh] bg-gray-200 dark:bg-gray-700 animate-pulse">
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-gray-300 dark:from-gray-800 to-transparent" />
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-gray-300 dark:bg-gray-600 rounded-full" />
+        <div className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-gray-300 dark:bg-gray-600 rounded-full" />
+        <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="w-2 h-2 bg-gray-300 dark:bg-gray-600 rounded-full" />
+          ))}
+        </div>
       </div>
     );
   }
