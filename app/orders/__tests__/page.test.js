@@ -92,7 +92,7 @@ describe('OrdersPage Component', () => {
   })
 
   describe('No userId in localStorage', () => {
-    it('should display empty state when no userId exists', async () => {
+    it('should display empty state with icon when no userId exists', async () => {
       localStorageMock.getItem.mockReturnValue(null)
 
       render(<OrdersPage />)
@@ -102,7 +102,9 @@ describe('OrdersPage Component', () => {
         expect(screen.getByText("You haven't placed any orders yet.")).toBeInTheDocument()
       })
 
-      expect(screen.getByText('Browse Gallery')).toBeInTheDocument()
+      expect(
+        screen.getByText('Start shopping to see your order history here!')
+      ).toBeInTheDocument()
       expect(screen.getByRole('link', { name: 'Browse Gallery' })).toHaveAttribute(
         'href',
         '/gallery'

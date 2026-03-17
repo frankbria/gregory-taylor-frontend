@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { toast } from 'react-hot-toast'
+import { FaImage } from 'react-icons/fa'
 import { getPhotosByCategory } from '@/lib/api'
 import CloudinaryImage from '@/components/CloudinaryImage'
 import ImageGridSkeleton from '@/components/ImageGridSkeleton'
@@ -51,6 +52,28 @@ export default function CategoryGalleryPage() {
     return (
       <div className="max-w-7xl mx-auto p-6 text-center">
         <p className="text-red-600 text-lg">Failed to load photos for this category.</p>
+      </div>
+    )
+  }
+
+  if (photos.length === 0) {
+    return (
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
+        <div className="border-b pb-2 text-center">
+          <h1 className="text-3xl font-bold text-white">{categoryName}</h1>
+        </div>
+        <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-12 text-center">
+          <FaImage className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+          <p className="text-gray-600 dark:text-gray-300 mb-4">
+            No photos in this category yet.
+          </p>
+          <Link
+            href="/gallery"
+            className="inline-block bg-black text-white px-6 py-3 rounded hover:bg-gray-800 transition"
+          >
+            Browse All Categories
+          </Link>
+        </div>
       </div>
     )
   }

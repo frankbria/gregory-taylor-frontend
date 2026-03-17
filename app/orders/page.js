@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
+import { FaReceipt } from 'react-icons/fa'
 import useAPI from '@/lib/api'
 import CloudinaryImage from '@/components/CloudinaryImage'
 
@@ -73,17 +74,21 @@ export default function OrdersPage() {
 
   if (orders.length === 0) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-12 text-center">
+      <div className="max-w-4xl mx-auto px-4 py-20 text-center">
         <h1 className="text-3xl font-serif mb-6">My Orders</h1>
-        <div className="bg-gray-100 rounded-lg p-8">
-          <p className="mb-6">You haven&apos;t placed any orders yet.</p>
-          <Link
-            href="/gallery"
-            className="inline-block bg-black text-white px-6 py-3 rounded hover:bg-gray-800 transition"
-          >
-            Browse Gallery
-          </Link>
-        </div>
+        <FaReceipt className="w-20 h-20 mx-auto text-gray-300 mb-6" />
+        <p className="text-xl font-medium mb-2">
+          You haven&apos;t placed any orders yet.
+        </p>
+        <p className="text-gray-600 dark:text-gray-300 mb-6">
+          Start shopping to see your order history here!
+        </p>
+        <Link
+          href="/gallery"
+          className="inline-block bg-black text-white px-6 py-3 rounded hover:bg-gray-800 transition"
+        >
+          Browse Gallery
+        </Link>
       </div>
     )
   }

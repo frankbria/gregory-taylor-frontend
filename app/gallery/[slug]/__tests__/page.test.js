@@ -102,6 +102,27 @@ describe('CategoryGalleryPage', () => {
     })
   })
 
+  describe('Empty state', () => {
+    it('should show empty state when no photos are returned', async () => {
+      getPhotosByCategory.mockResolvedValue({
+        category: { name: 'Empty Category' },
+        photos: [],
+      })
+
+      render(<CategoryGalleryPage />)
+
+      await waitFor(() => {
+        expect(screen.getByText('Empty Category')).toBeInTheDocument()
+      })
+
+      expect(screen.getByText('No photos in this category yet.')).toBeInTheDocument()
+      expect(screen.getByRole('link', { name: 'Browse All Categories' })).toHaveAttribute(
+        'href',
+        '/gallery'
+      )
+    })
+  })
+
   describe('Passing dimension props to CloudinaryImage', () => {
     it('should pass aspectRatio prop when photo has aspectRatio', async () => {
       const mockPhotos = [
